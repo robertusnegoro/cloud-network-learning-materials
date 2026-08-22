@@ -46,3 +46,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Secrets & Environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.secret
+credentials
+

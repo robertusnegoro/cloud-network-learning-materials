@@ -54,7 +54,19 @@ terraform validate
 
 ---
 
-## 4. Content & Language Standards
+## 4. Public Repository & Security Guardrails
+
+> [!CAUTION]
+> **PUBLIC REPOSITORY SECURITY POLICIES**
+> 1. **Zero Secret Policy**: NEVER commit credentials, API keys, AWS secret access keys, real production AWS account numbers, private keys (`.pem`, `.key`), certificates, or internal corporate passwords/tokens.
+> 2. **Sanitized RFC Data**: Always use RFC standard placeholder addresses (`10.0.0.0/16`, `172.16.0.0/12`, `192.168.0.0/16`, `100.64.0.0/10` CGNAT, `192.0.2.0/24` TEST-NET-1, `198.51.100.0/24` TEST-NET-2, `203.0.113.0/24` TEST-NET-3) and dummy AWS Account IDs (`123456789012`, `111122223333`).
+> 3. **Main Branch Protection**: Only the repository owner (`robertusnegoro`) possesses administrative push permissions to `main`. All external contributions must go through forks and Pull Requests.
+> 4. **Commit Hygiene**: AI assistants must use `--no-gpg-sign` when executing commits automatically in sandbox/CLI environments to avoid hanging on GPG passphrase prompts.
+> 5. **Destructive Command Ban**: Never execute `git push --force`, `git reset --hard`, `git clean -fd`, or `git branch -D` without explicit owner authorization.
+
+---
+
+## 5. Content & Language Standards
 
 ### Bilingual Writing Rule
 - **Narrative & Explanation**: Professional **Bahasa Indonesia** (clear, technical, grammatically standard).
@@ -66,7 +78,7 @@ terraform validate
 
 ---
 
-## 5. Code & File Conventions
+## 6. Code & File Conventions
 
 ### VitePress Markdown (`docs/`)
 - **Frontmatter**: Every markdown page must include YAML frontmatter (`title`, `description`).
@@ -100,7 +112,7 @@ terraform validate
 
 ---
 
-## 6. Directory Structure Quick Reference
+## 7. Directory Structure Quick Reference
 
 ```
 cloud-network-learning-materials/
@@ -111,6 +123,7 @@ cloud-network-learning-materials/
 ├── skills-lock.json                   # Installed skills metadata & lock
 ├── .agents/skills/                    # Local skills repository & agent prompts
 ├── .claude/skills/                    # Claude Code skills & safety guardrails
+├── .github/                           # PR templates & GitHub Actions CI/CD workflows
 ├── docs/
 │   ├── index.md                       # Landing page & curriculum roadmap
 │   ├── .vitepress/
@@ -119,16 +132,16 @@ cloud-network-learning-materials/
 │   │       ├── index.ts               # Theme entry point & global component registration
 │   │       ├── style.css              # Custom styling & dark mode tokens
 │   │       └── components/            # Interactive Vue 3 visualizers & tools
-│   ├── modules/                       # 17 Advanced Curriculum Modules (01 to 17)
-│   ├── interactive/                   # 6 Interactive Simulator & Drill Pages
-│   ├── labs/                          # 5 Hands-on Lab Guides & Walkthroughs
+│   ├── modules/                       # 34 Advanced Curriculum Modules (01 to 34)
+│   ├── interactive/                   # 8 Interactive Simulator & Drill Pages
+│   ├── labs/                          # 7 Hands-on Lab Guides & Walkthroughs
 │   └── reference/                     # SME Cheat Sheets & RFC summaries
-└── labs/                              # Production Terraform IaC Blueprints (01 to 05)
+└── labs/                              # Production Terraform IaC Blueprints (01 to 07)
 ```
 
 ---
 
-## 7. Definition of Done for AI Assistants
+## 8. Definition of Done for AI Assistants
 
 Before confirming any task complete:
 1. **Self-Review**: Verify all modified files match repository language standards and technical rigor.

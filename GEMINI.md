@@ -18,6 +18,9 @@ npm run preview    # Preview built documentation site
 - **Precision Edits**: Use `view_file` to inspect lines and `replace_file_content` for atomic changes.
 - **Verification Gate**: Execute `npm run build` using `run_command` before concluding any documentation or frontend change.
 - **Skills & Subagents**: Skill definitions live in `.agents/skills/`. Dispatch subagents via `invoke_subagent` for parallel exploration.
+- **Public Repo Security**: Zero secret policy. Never commit credentials, private keys, or actual AWS account/secret data.
+- **Commit Flag**: Always append `--no-gpg-sign` to avoid passphrase prompts during agent commits.
+- **Branch Ownership**: Push only to `main` as repo owner (`robertusnegoro`). No force-pushing.
 
 ### Core Language & Terminology Rule
 - **Prose & Explanations**: Professional Bahasa Indonesia.

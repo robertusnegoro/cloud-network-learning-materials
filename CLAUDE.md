@@ -17,6 +17,9 @@ npm run preview    # Preview built documentation site
 ### Git Guardrails & Safety
 Strictly follow the safety guardrails in `.claude/skills/git-guardrails-claude-code`:
 - **Prohibited without explicit confirmation**: `git push --force`, `git reset --hard`, `git clean -fd`, `git branch -D`.
+- **Public Repo Secret Guardrail**: Never commit credentials, private keys, real AWS secrets, or internal proprietary tokens.
+- **Commit Flag**: Always use `--no-gpg-sign` for automated CLI commits to avoid passphrase hang.
+- **Main Branch Access**: Only the repository owner (`robertusnegoro`) can push to `main`.
 - Always inspect `git status` and `git diff` before committing.
 
 ### Core Language & Terminology Rule

@@ -725,6 +725,18 @@ div[class*="language-mermaid"],
    ========================================================================== */
 svg {
   box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* Default safety constraint for any SVG inside interactive components */
+.interactive-card svg:not(.chart-svg):not(.topology-canvas) {
+  width: 1rem;
+  height: 1rem;
+  max-width: 1.25rem;
+  max-height: 1.25rem;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* Constrain SVG sizes across interactive cards & titles */
@@ -806,6 +818,109 @@ button svg,
 .text-gray-400 { color: #9ca3af !important; }
 .text-gray-500 { color: #6b7280 !important; }
 .flex-shrink-0 { flex-shrink: 0 !important; }
+
+/* Layout & Grid Utilities */
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .md\:flex-row { flex-direction: row; }
+  .md\:items-center { align-items: center; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.flex-1 { flex: 1 1 0%; }
+
+.gap-1 { gap: 0.25rem; }
+.gap-1\.5, .gap-1-5 { gap: 0.375rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-2\.5, .gap-2-5 { gap: 0.625rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-1\.5, .mb-1-5 { margin-bottom: 0.375rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-2\.5, .mb-2-5 { margin-bottom: 0.625rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-3\.5, .mb-3-5 { margin-bottom: 0.875rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-5 { margin-bottom: 1.25rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+
+.p-2 { padding: 0.5rem; }
+.p-2\.5, .p-2-5 { padding: 0.625rem; }
+.p-3 { padding: 0.75rem; }
+.p-3\.5, .p-3-5 { padding: 0.875rem; }
+.p-4 { padding: 1rem; }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.py-1\.5, .py-1-5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+.rounded-md { border-radius: 6px; }
+.rounded-lg { border-radius: 8px; }
+.rounded-xl { border-radius: 12px; }
+.rounded-full { border-radius: 9999px; }
+
+.border { border: 1px solid var(--vp-c-divider); }
+.border-b { border-bottom: 1px solid var(--vp-c-divider); }
+.border-t { border-top: 1px solid var(--vp-c-divider); }
+
+.w-full { width: 100%; }
+.w-auto { width: auto; }
+.block { display: block; }
+.inline-block { display: inline-block; }
+.hidden { display: none; }
+@media (min-width: 640px) {
+  .sm\:inline { display: inline; }
+}
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-normal { font-weight: 400; }
+.uppercase { text-transform: uppercase; }
+.tracking-wider { letter-spacing: 0.05em; }
+
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-base { font-size: 1rem; line-height: 1.5rem; }
+
+.bg-emerald-500\/10, .bg-emerald-subtle { background-color: rgba(16, 185, 129, 0.12); }
+.border-emerald-500\/30, .border-emerald-subtle { border-color: rgba(16, 185, 129, 0.3); }
+.bg-rose-500\/10, .bg-rose-subtle { background-color: rgba(244, 63, 94, 0.12); }
+.border-rose-500\/30, .border-rose-subtle { border-color: rgba(244, 63, 94, 0.3); }
+.bg-blue-600\/10, .bg-blue-subtle { background-color: rgba(37, 99, 235, 0.12); }
+
 
 
 

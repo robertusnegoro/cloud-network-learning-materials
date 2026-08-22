@@ -227,11 +227,11 @@ function copyExport() {
           AWS VPC Compliance Check
         </label>
         <div class="mt-1">
-          <span v-if="isAwsValidVpc" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-md">
+          <span v-if="isAwsValidVpc" class="compliance-badge valid">
             <svg width="14" height="14" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             Valid AWS Subnet (/16 - /28)
           </span>
-          <span v-else class="inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 bg-rose-500/10 border border-rose-500/30 px-3 py-1.5 rounded-md">
+          <span v-else class="compliance-badge invalid">
             <svg width="14" height="14" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             Di luar batas AWS VPC (/16 - /28)
           </span>
@@ -444,4 +444,35 @@ function copyExport() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.compliance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+.compliance-badge.valid {
+  color: #10b981;
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.compliance-badge.invalid {
+  color: #f43f5e;
+  background-color: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+.compliance-badge svg {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  flex-shrink: 0;
+  display: inline-block;
+}
+</style>
+
 

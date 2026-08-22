@@ -3,7 +3,7 @@ title: "Lab 01: Enterprise IPAM & Multi-Tier VPC with Secondary RFC 6598 CIDRs"
 description: "Panduan hands-on arsitektur tingkat SME untuk deployment AWS IPAM pool hierarchy, dynamic VPC provisioning, multi-tier subnetting, dan secondary RFC 6598 CIDR untuk Kubernetes EKS."
 ---
 
-# 🌐 Lab 01: Enterprise IPAM & Multi-Tier VPC with Secondary RFC 6598 CIDRs
+# Lab 01: Enterprise IPAM & Multi-Tier VPC with Secondary RFC 6598 CIDRs
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="aws" text="AWS IPAM & VPC" /> <BadgeLabel type="lab" text="Hands-on IaC Blueprint" />
 
@@ -11,7 +11,7 @@ Dalam lab skala enterprise ini, Anda akan merancang dan mengimplementasikan fond
 
 ---
 
-## 🏗️ Arsitektur Topology Lab
+## Arsitektur Topology Lab
 
 ```mermaid
 graph TD

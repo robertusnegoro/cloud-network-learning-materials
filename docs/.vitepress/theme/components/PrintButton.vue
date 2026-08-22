@@ -9,16 +9,17 @@ const handlePrint = () => {
 <template>
   <div class="print-actions-bar no-print">
     <button @click="handlePrint" class="print-btn" title="Cetak halaman atau simpan sebagai PDF">
-      <svg class="print-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg class="print-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="6 9 6 2 18 2 18 9"></polyline>
         <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
         <rect x="6" y="14" width="12" height="8"></rect>
       </svg>
-      <span>🖨️ Cetak / Simpan PDF (A4 Ready)</span>
+      <span>Cetak / Simpan PDF (A4 Ready)</span>
     </button>
-    <span class="print-tip">💡 Tips: Pilih <strong>"Save as PDF"</strong> dengan orientasi <strong>Portrait / Landscape</strong> dan margin <strong>Default</strong>.</span>
+    <span class="print-tip">Tips: Pilih <strong>"Save as PDF"</strong> dengan orientasi <strong>Portrait / Landscape</strong> dan margin <strong>Default</strong>.</span>
   </div>
 </template>
+
 
 <style scoped>
 .print-actions-bar {

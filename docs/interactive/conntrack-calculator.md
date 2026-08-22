@@ -3,7 +3,7 @@ title: "Security Group Conntrack & NAT Gateway Port Calculator"
 description: "Simulator interaktif kalkulasi kapasitas connection tracking Nitro Card, saturasi port SNAT NAT Gateway, dan mitigasi ErrorPortAllocation."
 ---
 
-# 🛡️ Security Group Conntrack & NAT Port Calculator
+# Security Group Conntrack & NAT Port Calculator
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="aws" text="Nitro Underlay & Hyperplane" />
 
@@ -17,7 +17,7 @@ Kalkulator ini dirancang untuk mendiagnosa dan memprediksi batas saturasi pelaca
 
 ---
 
-## 📖 Mekanika Stateful Conntrack & NAT Port Allocation
+## Mekanika Stateful Conntrack & NAT Port Allocation
 
 ### 1. Hard Limits Conntrack pada AWS Nitro
 Setiap instance EC2 Nitro memiliki alokasi memori khusus pada Nitro Card untuk melacak *state* koneksi (5-tuple: Protocol, Src IP, Src Port, Dst IP, Dst Port). Jika kuota ini habis:
@@ -32,3 +32,4 @@ Setiap instance EC2 Nitro memiliki alokasi memori khusus pada Nitro Card untuk m
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
 Gunakan pola **Untracked Security Group Rules** untuk flow TCP volume masif: izinkan inbound port `443` dari CIDR `0.0.0.0/0` DAN outbound port `443` ke `0.0.0.0/0` di dalam Security Group yang sama. Nitro akan secara otomatis menganggap koneksi ini *Untracked* sehingga tidak mengonsumsi kuota tabel conntrack sama sekali.
 :::
+

@@ -3,7 +3,7 @@ title: "Lab 02: TGW Hub & Central GWLB with Appliance Mode Enabled"
 description: "Panduan hands-on arsitektur tingkat SME untuk deployment AWS Transit Gateway 4-domain routing, Gateway Load Balancer, dan TGW Appliance Mode untuk inspeksi simetris firewall."
 ---
 
-# 🛡️ Lab 02: TGW Hub & Central GWLB with Appliance Mode Enabled
+# Lab 02: TGW Hub & Central GWLB with Appliance Mode Enabled
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="aws" text="TGW & GWLB Appliance Mode" /> <BadgeLabel type="lab" text="Hands-on IaC Blueprint" />
 
@@ -11,7 +11,7 @@ Dalam lab skala enterprise ini, Anda akan merancang dan mengonfigurasi arsitektu
 
 ---
 
-## 🏗️ Arsitektur Topology Lab
+## Arsitektur Topology Lab
 
 ```mermaid
 graph TD

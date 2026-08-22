@@ -1,12 +1,11 @@
 ---
-title: "📑 SME Quick Reference & Printable Cheat Sheets"
+title: "SME Quick Reference & Printable Cheat Sheets"
 description: "Lembar contekan satu halaman cetak (Printable A4) untuk Principal/SME Network Engineer: Dekode Desimal TCP Flag, 13-Step BGP Best Path, Kamus AWS BGP Community, dan Matriks Rekomendasi MTU/MSS Clamping."
 ---
 
-# 📑 SME Quick Reference & Printable Cheat Sheets
+# SME Quick Reference & Printable Cheat Sheets
 
 <div class="hero-badge">
-  <span>⚡</span>
   <span>SME Production Field Reference • RFC & AWS Enterprise Standard</span>
 </div>
 
@@ -19,11 +18,11 @@ Halaman ini dirancang sebagai **referensi cepat satu halaman** (Printable / PDF 
 <div class="grid-2 no-print">
   <div class="stat-box">
     <div class="stat-label">Navigasi Cepat</div>
-    <div class="text-sm flex flex-col gap-1 mt-1">
-      <a href="#1-tabel-dekode-desimal-flag-tcp-vpc-flow-logs-wireshark" class="text-blue-500 hover:underline">🔢 1. Dekode Desimal Flag TCP (VPC Flow Logs)</a>
-      <a href="#2-matriks-ringkas-13-step-bgp-best-path-selection" class="text-blue-500 hover:underline">🔄 2. Matriks 13-Step BGP Best Path Selection</a>
-      <a href="#3-kamus-aws-bgp-community-tags-direct-connect-vpn" class="text-blue-500 hover:underline">🏷️ 3. Kamus AWS BGP Community Tags</a>
-      <a href="#4-matriks-mtu-mismatch-rekomendasi-mss-clamping-per-tipe-link" class="text-blue-500 hover:underline">📦 4. Matriks MTU Mismatch & Rekomendasi MSS</a>
+    <div class="text-sm flex flex-col gap-1 mt-1 font-medium">
+      <a href="#1-tabel-dekode-desimal-flag-tcp-vpc-flow-logs-wireshark" class="text-blue-500 hover:underline">1. Dekode Desimal Flag TCP (VPC Flow Logs)</a>
+      <a href="#2-matriks-ringkas-13-step-bgp-best-path-selection" class="text-blue-500 hover:underline">2. Matriks 13-Step BGP Best Path Selection</a>
+      <a href="#3-kamus-aws-bgp-community-tags-direct-connect-vpn" class="text-blue-500 hover:underline">3. Kamus AWS BGP Community Tags</a>
+      <a href="#4-matriks-mtu-mismatch-rekomendasi-mss-clamping-per-tipe-link" class="text-blue-500 hover:underline">4. Matriks MTU Mismatch & Rekomendasi MSS</a>
     </div>
   </div>
   <div class="stat-box">
@@ -145,9 +144,9 @@ AWS secara default mengalokasikan nilai **BGP Local Preference = 100** untuk rut
 
 | Community Tag | Nilai Local-Pref AWS | Level Prioritas | Urutan Pemilihan Rute oleh AWS | Skenario Implementasi |
 | :---: | :---: | :---: | :---: | :--- |
-| **`7224:9300`** | **`90`** | 🔥 **HIGH** | **Pilihan Utama (Primary Path)** | Pasang pada link Direct Connect utama (Active Link). |
-| **`7224:9200`** | **`80`** | ⚡ **MEDIUM** | **Pilihan Kedua (Secondary)** | Pasang pada link Direct Connect redundan di data center sekunder. |
-| **`7224:9100`** | **`70`** | 🛡️ **LOW** | **Pilihan Terakhir (Backup / DR)** | Pasang pada link Site-to-Site IPsec VPN atau link DR berkecepatan rendah. |
+| **`7224:9300`** | **`90`** | **HIGH** | **Pilihan Utama (Primary Path)** | Pasang pada link Direct Connect utama (Active Link). |
+| **`7224:9200`** | **`80`** | **MEDIUM** | **Pilihan Kedua (Secondary)** | Pasang pada link Direct Connect redundan di data center sekunder. |
+| **`7224:9100`** | **`70`** | **LOW** | **Pilihan Terakhir (Backup / DR)** | Pasang pada link Site-to-Site IPsec VPN atau link DR berkecepatan rendah. |
 
 > [!IMPORTANT]
 > **Aturan Egress AWS (Cloud ke On-Premises):**
@@ -349,7 +348,7 @@ Jika terdapat rute statis menuju **Transit Gateway** dan rute statis menuju **VP
 ---
 
 <div class="p-4 bg-[var(--vp-c-bg-soft)] rounded-xl border border-[var(--vp-c-divider)] mt-8">
-  <h3 class="text-sm font-bold text-blue-400 mb-2">💡 Ringkasan Praktis Troubleshooting Lapangan</h3>
+  <h3 class="text-sm font-bold text-blue-400 mb-2">Ringkasan Praktis Troubleshooting Lapangan</h3>
   <ul class="text-xs text-[var(--vp-c-text-2)] space-y-2 pl-4 list-disc">
     <li><strong>Koneksi HTTP cepat, tapi file transfer / SSL Handshake freeze:</strong> 99% disebabkan oleh <em>MTU mismatch + ICMP blocked</em> (PMTUD Black Hole). Solusi instan: set MSS clamping ke <code>1360</code>.</li>
     <li><strong>Traffic dari AWS selalu lewat jalur sekunder (VPN):</strong> Periksa apakah On-Premises router lupa mengirim BGP Community <code>7224:9300</code> pada Direct Connect primary link.</li>

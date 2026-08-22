@@ -8,6 +8,13 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   markdown: {
+    languageAlias: {
+      cisco: 'sh',
+      cedar: 'json',
+      juniper: 'sh',
+      arista: 'sh',
+      router: 'sh'
+    },
     config: (md) => {
       const defaultFence = md.renderer.rules.fence!
       md.renderer.rules.fence = (tokens, idx, options, env, self) => {
@@ -68,18 +75,18 @@ export default defineConfig({
           { text: 'Lab 07: Central Ingress/Egress Inspection Firewall', link: '/labs/07-centralized-ingress-egress-firewall' }
         ]
       },
-      { text: '📑 SME Reference', link: '/reference/cheat-sheet' }
+      { text: 'SME Reference', link: '/reference/cheat-sheet' }
     ],
     sidebar: [
       {
-        text: '🌟 Getting Started',
+        text: 'Getting Started',
         items: [
           { text: 'Executive Overview & 34-Module Roadmap', link: '/' },
-          { text: '📑 SME Quick Reference & Cheat Sheets', link: '/reference/cheat-sheet' }
+          { text: 'SME Quick Reference & Cheat Sheets', link: '/reference/cheat-sheet' }
         ]
       },
       {
-        text: '🛠️ Interactive Simulators & Tools',
+        text: 'Interactive Simulators & Tools',
         collapsed: false,
         items: [
           { text: 'CIDR & IPAM Hierarchy Allocator', link: '/interactive/cidr-calculator' },
@@ -93,7 +100,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '🏗️ Hands-On Terraform IaC Blueprints',
+        text: 'Hands-On Terraform IaC Blueprints',
         collapsed: false,
         items: [
           { text: 'Lab 01: Enterprise IPAM & Multi-Tier VPC', link: '/labs/01-enterprise-ipam-vpc' },
@@ -106,7 +113,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '📚 Part 1: Advanced Network Protocols & Theory',
+        text: 'Part 1: Advanced Network Protocols & Theory',
         collapsed: false,
         items: [
           { text: '01. Subnetting, VLSM & Enterprise IPAM', link: '/modules/01-subnetting-vlsm-ipam' },
@@ -116,7 +123,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '☁️ Part 2: AWS Hardware Underlay & VPC Core',
+        text: 'Part 2: AWS Hardware Underlay & VPC Core',
         collapsed: false,
         items: [
           { text: '05. AWS Underlay: Nitro, ENA Express & Hyperplane', link: '/modules/05-aws-underlay-hyperplane' },
@@ -125,7 +132,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '🚦 Part 3: VPC Routing Mechanics & Edge Gateways',
+        text: 'Part 3: VPC Routing Mechanics & Edge Gateways',
         collapsed: false,
         items: [
           { text: '08. Route Tables, LPM & Ingress Edge Routing', link: '/modules/08-route-tables-lpm-ingress' },
@@ -135,7 +142,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '🔒 Part 4: Private Connectivity & PrivateLink',
+        text: 'Part 4: Private Connectivity & PrivateLink',
         collapsed: false,
         items: [
           { text: '12. Gateway VPC Endpoints (S3 & DynamoDB)', link: '/modules/12-gateway-vpc-endpoints' },
@@ -144,7 +151,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '⚡ Part 5: Hybrid Interconnect & Direct Connect',
+        text: 'Part 5: Hybrid Interconnect & Direct Connect',
         collapsed: false,
         items: [
           { text: '15. AWS Direct Connect (Dedicated, Hosted, MACsec)', link: '/modules/15-direct-connect-macsec' },
@@ -155,7 +162,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '🌐 Part 6: Enterprise WAN & Cloud WAN',
+        text: 'Part 6: Enterprise WAN & Cloud WAN',
         collapsed: false,
         items: [
           { text: '20. AWS Transit Gateway (TGW) Core Routing', link: '/modules/20-transit-gateway-core-routing' },
@@ -164,7 +171,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '🚀 Part 7: Application Networking, DNS & Edge',
+        text: 'Part 7: Application Networking, DNS & Edge',
         collapsed: false,
         items: [
           { text: '23. Elastic Load Balancing (ALB, NLB, mTLS & Proxy Protocol)', link: '/modules/23-load-balancing-alb-nlb-mtls' },
@@ -174,7 +181,7 @@ export default defineConfig({
         ]
       },
       {
-        text: '🛡️ Part 8: Security, Observability & War Rooms',
+        text: 'Part 8: Security, Observability & War Rooms',
         collapsed: false,
         items: [
           { text: '27. Security Groups vs NACLs & Conntrack Semantics', link: '/modules/27-security-groups-nacls-conntrack' },

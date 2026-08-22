@@ -42,7 +42,7 @@ const nodes: Record<string, TopologyNode> = {
     mtu: '9001 Bytes',
     limits: 'Line-rate evaluation tanpa latency CPU',
     haModel: 'High Availability di level hardware rack',
-    inspectCli: 'aws ec2 describe-network-interfaces --network-interface-ids eni-xxx',
+    inspectCli: 'aws ec2 describe-network-interfaces --network-interface-ids eni-0123456789abcdef0',
     description: 'Hardware controller yang mengevaluasi aturan Security Group secara stateful dan merutekan traffic ke VPC Route Table.'
   },
   tgw_hub: {
@@ -98,122 +98,111 @@ const nodes: Record<string, TopologyNode> = {
     limits: 'Hingga 100 Gbps dedicated circuits',
     haModel: 'Global Multi-Region Association',
     inspectCli: 'aws directconnect describe-direct-connect-gateways',
-    description: 'Menjembatani Transit VIF fisik ke banyak Transit Gateway di seluruh dunia dengan BGP Dynamic Routing.'
+    description: 'Global gateway terkelola yang menghubungkan Transit Gateway dan Virtual Private Gateway ke private/transit virtual interface.'
   },
   onprem_core: {
     id: 'onprem_core',
-    label: 'On-Premises Core Router',
-    type: 'Enterprise Data Center Demarcation',
-    underlay: 'Cisco ASR 9000 / Juniper MX Series',
-    mtu: '1500 / 9001 Bytes',
-    limits: 'Physical Line-Rate',
-    haModel: 'Dual-Chassis Active/Standby HSRP/VRRP',
-    inspectCli: 'show ip bgp summary && show ip bgp neighbors 169.254.240.1 routes',
-    description: 'Router inti data center perusahaan yang menjalankan BGP eBGP peering, BFD sub-second failover, dan MACsec L2 encryption.'
-  },
-  priv_nat_gw: {
-    id: 'priv_nat_gw',
-    label: 'AWS Private NAT Gateway (RFC 6598)',
-    type: 'Overlapping IP Resolver',
-    underlay: 'AWS Hyperplane Private Pool',
-    mtu: '1500 Bytes',
-    limits: '100 Gbps tanpa Internet Gateway',
-    haModel: 'Multi-AZ Deployment',
-    inspectCli: 'aws ec2 describe-nat-gateways --filter Name=connectivity-type,Values=private',
-    description: 'Melakukan translasi 1:1 bi-directional SNAT ke alokasi CGNAT (100.64.0.0/10) untuk menghubungkan partner finansial yang memiliki IP bentrok.'
-  },
-  cloud_wan_cne: {
-    id: 'cloud_wan_cne',
-    label: 'AWS Cloud WAN Core Network Edge (CNE)',
-    type: 'Global SD-WAN Mesh',
-    underlay: 'AWS Global Mesh Backbone',
-    mtu: '8500 Bytes',
-    limits: 'Multi-terabit Global Mesh',
-    haModel: 'Global Built-in Redundancy',
-    inspectCli: 'aws networkmanager get-core-network-policy',
-    description: 'Orkestrasi routing deklaratif global multi-region berdasarkan JSON policy documents dan isolated segments.'
+    label: 'On-Premises Core Router & DC',
+    type: 'Enterprise DC Gateway',
+    underlay: 'Customer Edge BGP Router (AS 65001)',
+    mtu: '1500 Bytes (Clamped MSS 1460)',
+    limits: 'Physical Transceiver SFP+ / QSFP28',
+    haModel: 'Dual-CPE Active-Standby / ECMP BGP',
+    inspectCli: 'show ip bgp neighbors 169.254.250.1 routes (Cisco IOS-XE)',
+    description: 'Border router enterprise data center. Memproses BGP communities (7224:7300), IPsec encryption, dan terminasi 802.1Q VLAN.'
   }
 }
 
 const patterns: TrafficPattern[] = [
   {
-    id: 'egress_inspection',
-    title: '1. Centralized Egress to Internet via GWLB & NAT Gateway',
-    subtitle: 'Traffic keluar dari workload privat diinspeksi oleh Next-Gen Firewall sebelum melewati NAT Gateway ke Public Internet.',
-    nodes: ['ec2_spoke', 'eni_nitro', 'tgw_hub', 'gwlb_engine', 'palo_alto', 'nat_gw'],
-    flowDesc: 'EC2 ➔ Nitro SG ➔ TGW Spoke Route Table (0.0.0.0/0 -> Security VPC) ➔ GWLB GENEVE Encap (UDP 6081) ➔ Palo Alto L7 Inspection ➔ Central NAT Gateway ➔ Internet Gateway',
-    asymmetricRisk: 'Rendah. Pastikan default route di Spoke VPC mengarah ke TGW Attachment, dan Route Table TGW mengarahkan 0.0.0.0/0 ke Inspection Attachment.'
-  },
-  {
-    id: 'east_west_inspection',
-    title: '2. East-West Inter-VPC Inspection with TGW Appliance Mode',
-    subtitle: 'Traffic antar dua Spoke VPC (Prod ke Dev) yang wajib melewati firewall stateful terpusat dengan jaminan simetri multi-AZ.',
-    nodes: ['ec2_spoke', 'eni_nitro', 'tgw_hub', 'gwlb_engine', 'palo_alto'],
-    flowDesc: 'Spoke VPC A ➔ TGW Spoke RTB ➔ Forward ke Inspection VPC ➔ GWLB ➔ Palo Alto AZ-A ➔ TGW Inspection RTB ➔ Deliver ke Spoke VPC B',
-    asymmetricRisk: 'KRITIS! Wajib aktifkan TGW Appliance Mode pada attachment Inspection VPC agar paket return dari Spoke B selalu kembali ke firewall di AZ yang sama.'
+    id: 'east_west_gwlb',
+    title: '1. East-West Spoke-to-Spoke with Central GWLB Inspection',
+    subtitle: 'Traffic antar-VPC melintasi TGW dan diinspeksi secara simetris oleh cluster firewall GWLB.',
+    nodes: ['ec2_spoke', 'eni_nitro', 'tgw_hub', 'gwlb_engine', 'palo_alto', 'gwlb_engine', 'tgw_hub'],
+    flowDesc: 'Spoke VPC A ➔ Nitro SG ➔ TGW Attachment ➔ GWLB (GENEVE) ➔ Palo Alto ➔ Return via Appliance Mode ➔ Spoke VPC B',
+    asymmetricRisk: 'Wajib mengaktifkan Transit Gateway Appliance Mode pada Inspection VPC Attachment untuk mencegah drop session pada firewall multi-AZ.'
   },
   {
     id: 'hybrid_direct_connect',
-    title: '3. Hybrid Enterprise Backbone via Dedicated Direct Connect & DXGW',
-    subtitle: 'Konektivitas privat berkecepatan tinggi antara On-Premises Data Center dan Workload AWS via Transit VIF.',
-    nodes: ['onprem_core', 'dx_gateway', 'tgw_hub', 'eni_nitro', 'ec2_spoke'],
-    flowDesc: 'On-Prem Core Router ➔ Direct Connect Transit VIF (BGP 65000 -> 64512) ➔ Direct Connect Gateway ➔ AWS Transit Gateway ➔ Spoke VPC',
-    asymmetricRisk: 'Sedang. Pastikan BGP Community 7224:9300 disetel untuk primary link dan AS-Path Prepending disetel pada backup link.'
+    title: '2. Hybrid Cloud AWS-to-On-Premises via Direct Connect',
+    subtitle: 'Traffic dari Spoke VPC menuju Data Center lokal melalui Dedicated Transit VIF & MACsec.',
+    nodes: ['ec2_spoke', 'eni_nitro', 'tgw_hub', 'dx_gateway', 'onprem_core'],
+    flowDesc: 'Spoke EC2 ➔ TGW ➔ DXGW ➔ Dedicated 10G/100G Direct Connect Circuit ➔ Customer DC Core Router',
+    asymmetricRisk: 'Perbedaan MTU (9001 vs 1500) dapat memicu PMTUD Black Hole jika ICMP Type 3 Code 4 di-drop oleh on-prem firewall.'
   },
   {
-    id: 'financial_interconnect',
-    title: '4. Financial Partner Interconnect with Overlapping CIDRs (Arthajasa / BI-FAST)',
-    subtitle: 'Koneksi ke mitra perbankan dengan IP yang bentrok menggunakan Private NAT Gateway dan alokasi RFC 6598.',
-    nodes: ['ec2_spoke', 'priv_nat_gw', 'cloud_wan_cne', 'dx_gateway', 'onprem_core'],
-    flowDesc: 'Core Banking (10.0.5.20) ➔ AWS Private NAT GW (SNAT to 100.64.1.50) ➔ Cloud WAN Partner Segment ➔ Dedicated Circuit ➔ Bank Switch Core',
-    asymmetricRisk: 'Tinggi jika DNS tidak sinkron. Gunakan Virtual Alias IP statis pada Bank Partner dan Route 53 Private Hosted Zone.'
+    id: 'central_egress',
+    title: '3. Centralized Internet Egress via Inspection Hub',
+    subtitle: 'Semua outbound traffic Spoke VPC dipaksa melalui cluster Firewall L7 sebelum keluar via NAT GW.',
+    nodes: ['ec2_spoke', 'tgw_hub', 'gwlb_engine', 'palo_alto', 'nat_gw'],
+    flowDesc: 'Spoke EC2 ➔ TGW ➔ Inspection VPC (GWLB) ➔ Firewall IPS ➔ Egress Route Table ➔ Central NAT Gateway ➔ Internet Gateway',
+    asymmetricRisk: 'Monitor metrik ErrorPortAllocation pada NAT Gateway saat traffic concurrent flow melebihi 55.000 tuples per IP.'
   }
 ]
 
-const currentPatternId = ref(patterns[0].id)
-const selectedNodeId = ref('gwlb_engine')
+const currentPatternId = ref<string>(patterns[0].id)
+const selectedNodeId = ref<string>(patterns[0].nodes[0])
+const copyToast = ref('')
 
-const currentPattern = computed(() => patterns.find(p => p.id === currentPatternId.value) || patterns[0])
-const selectedNode = computed(() => nodes[selectedNodeId.value] || nodes.gwlb_engine)
+const currentPattern = computed(() => {
+  return patterns.find(p => p.id === currentPatternId.value) || patterns[0]
+})
+
+const selectedNode = computed(() => {
+  return nodes[selectedNodeId.value] || nodes['ec2_spoke']
+})
 
 function selectPattern(id: string) {
   currentPatternId.value = id
-  if (!currentPattern.value.nodes.includes(selectedNodeId.value)) {
-    selectedNodeId.value = currentPattern.value.nodes[0]
+  const p = patterns.find(item => item.id === id)
+  if (p && p.nodes.length > 0) {
+    selectedNodeId.value = p.nodes[0]
   }
 }
 
 function selectNode(id: string) {
   selectedNodeId.value = id
 }
+
+function copyCli() {
+  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+    navigator.clipboard.writeText(selectedNode.value.inspectCli)
+    copyToast.value = 'Perintah Tersalin!'
+    setTimeout(() => { copyToast.value = '' }, 2500)
+  }
+}
 </script>
 
 <template>
   <div class="interactive-card">
+    <!-- Header -->
     <div class="interactive-card-header">
       <div class="interactive-title">
-        <span>🗺️</span>
-        <span>Interactive Enterprise Network Topology Explorer</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 3a9 9 0 0 0-9 9m18 0a9 9 0 0 0-9-9m0 18a9 9 0 0 0 9-9M3 12a9 9 0 0 0 9 9"/>
+        </svg>
+        <span>Enterprise Cloud Network Topology & Underlay Node Explorer</span>
       </div>
-      <div class="flex gap-2">
-        <span class="badge-sme">SME Architecture Canvas</span>
+      <div class="flex items-center gap-2">
+        <span class="badge-sme">SME Architecture</span>
         <span class="badge-aws">Multi-Tier Hub-and-Spoke</span>
       </div>
     </div>
 
-    <p class="text-sm text-[var(--vp-c-text-2)] mb-4">
-      Pilih pola arsitektur enterprise di bawah ini untuk melihat jalur aliran paket (*packet traversal path*), rincian teknologi underlay di setiap node, batas MTU/Throughput, dan perintah inspeksi AWS CLI.
+    <p class="interactive-desc">
+      Pilih pola arsitektur enterprise di bawah ini untuk melihat jalur aliran paket (<em>packet traversal path</em>), rincian teknologi underlay di setiap node, batas MTU/Throughput, dan perintah inspeksi AWS CLI.
     </p>
 
     <!-- Pattern Selector Tabs -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-6">
       <button
         v-for="p in patterns"
         :key="p.id"
         :class="[
-          'p-3 rounded-lg border text-left transition-all',
+          'p-3.5 rounded-xl border text-left transition-all',
           currentPatternId === p.id
-            ? 'bg-blue-500/10 border-blue-500 ring-1 ring-blue-500 shadow-sm'
+            ? 'bg-blue-600/10 border-blue-600 ring-1 ring-blue-600 shadow-sm'
             : 'bg-[var(--vp-c-bg-alt)] border-[var(--vp-c-divider)] hover:border-blue-400 opacity-80'
         ]"
         @click="selectPattern(p.id)"
@@ -224,49 +213,50 @@ function selectNode(id: string) {
     </div>
 
     <!-- Active Topology Flow Bar -->
-    <div class="bg-[var(--vp-c-bg-alt)] p-4 rounded-lg border border-[var(--vp-c-divider)] mb-6">
-      <div class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-3)] mb-2 flex justify-between">
+    <div class="bg-[var(--vp-c-bg-alt)] p-4 rounded-xl border border-[var(--vp-c-divider)] mb-6">
+      <div class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-3)] mb-2.5 flex justify-between items-center">
         <span>Active Packet Journey Path</span>
-        <span class="text-blue-400 font-mono">{{ currentPattern.nodes.length }} Hops</span>
+        <span class="text-blue-500 font-mono font-bold">{{ currentPattern.nodes.length }} Hops</span>
       </div>
 
       <!-- Node Chain -->
       <div class="flex flex-wrap items-center gap-2 py-2">
-        <template v-for="(nodeKey, idx) in currentPattern.nodes" :key="nodeKey">
+        <template v-for="(nodeKey, idx) in currentPattern.nodes" :key="idx">
           <button
             :class="[
               'px-3 py-2 rounded-lg border text-xs font-semibold transition-all flex items-center gap-1.5',
               selectedNodeId === nodeKey
-                ? 'bg-blue-500 text-white border-blue-500 shadow-md ring-2 ring-blue-400/50'
-                : 'bg-[var(--vp-c-bg-mute)] text-[var(--vp-c-text-1)] border-[var(--vp-c-divider)] hover:border-blue-400'
+                ? 'bg-blue-600 text-white border-blue-600 shadow-md ring-2 ring-blue-500/50'
+                : 'bg-[var(--vp-c-bg)] text-[var(--vp-c-text-1)] border-[var(--vp-c-divider)] hover:border-blue-400'
             ]"
             @click="selectNode(nodeKey)"
           >
             <span class="w-2 h-2 rounded-full" :class="selectedNodeId === nodeKey ? 'bg-white' : 'bg-blue-400'"></span>
-            <span>{{ nodes[nodeKey].label.split('(')[0] }}</span>
+            <span>{{ nodes[nodeKey]?.label?.split('(')[0] || nodeKey }}</span>
           </button>
-          <span v-if="idx < currentPattern.nodes.length - 1" class="text-gray-500 font-bold text-xs">➔</span>
+          <span v-if="idx < currentPattern.nodes.length - 1" class="text-gray-400 font-bold text-xs">➔</span>
         </template>
       </div>
 
-      <div class="mt-3 pt-3 border-t border-[var(--vp-c-divider)] text-xs text-[var(--vp-c-text-2)]">
-        <span class="font-bold text-[var(--vp-c-text-1)]">Flow Sequence:</span> {{ currentPattern.flowDesc }}
+      <div class="mt-3 pt-3 border-t border-[var(--vp-c-divider)] text-xs text-[var(--vp-c-text-2)] leading-relaxed">
+        <strong class="text-[var(--vp-c-text-1)]">Flow Sequence:</strong> {{ currentPattern.flowDesc }}
       </div>
-      <div class="mt-1 text-xs text-amber-400">
-        <span class="font-bold">⚠️ Asymmetric Risk Assessment:</span> {{ currentPattern.asymmetricRisk }}
+      <div class="mt-1.5 text-xs text-amber-400 leading-relaxed flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span><strong>Asymmetric Risk Assessment:</strong> {{ currentPattern.asymmetricRisk }}</span>
       </div>
     </div>
 
     <!-- Node Deep Inspector -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <!-- Left: Node Specifications -->
-      <div class="bg-[var(--vp-c-bg-alt)] p-4 rounded-lg border border-[var(--vp-c-divider)] space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-[var(--vp-c-divider)]">
+      <div class="bg-[var(--vp-c-bg-alt)] p-4 rounded-xl border border-[var(--vp-c-divider)] space-y-3">
+        <div class="flex items-center justify-between pb-2.5 border-b border-[var(--vp-c-divider)]">
           <div>
-            <span class="text-[10px] uppercase font-bold text-blue-400 block">{{ selectedNode.type }}</span>
+            <span class="text-[10px] uppercase font-bold text-blue-500 block font-mono">{{ selectedNode.type }}</span>
             <h4 class="text-sm font-bold text-[var(--vp-c-text-1)]">{{ selectedNode.label }}</h4>
           </div>
-          <span class="badge-aws">{{ selectedNode.mtu }}</span>
+          <span class="badge-aws font-mono text-[11px]">{{ selectedNode.mtu }}</span>
         </div>
 
         <p class="text-xs text-[var(--vp-c-text-2)] leading-relaxed">
@@ -294,33 +284,40 @@ function selectNode(id: string) {
       <div class="terminal-window flex flex-col justify-between">
         <div>
           <div class="terminal-header">
-            <div class="flex gap-1.5">
+            <div class="terminal-dots">
               <div class="terminal-dot dot-red"></div>
               <div class="terminal-dot dot-yellow"></div>
               <div class="terminal-dot dot-green"></div>
             </div>
-            <span class="text-xs text-gray-400 font-mono">SME Live Diagnostic & Telemetry Inspection</span>
+            <span class="terminal-title">SME Diagnostic & Telemetry Inspection</span>
           </div>
           <div class="terminal-body font-mono text-xs text-gray-300 space-y-3">
             <div>
-              <div class="text-gray-500 text-[11px] mb-1"># Command untuk memeriksa state node ini via AWS CLI / OS:</div>
-              <div class="text-amber-400 bg-gray-900 p-2 rounded border border-gray-800 break-all select-all">
+              <div class="text-gray-400 text-[11px] mb-1.5 flex items-center justify-between">
+                <span># Command untuk memeriksa state node ini via AWS CLI / OS:</span>
+                <button @click="copyCli" class="text-blue-400 hover:text-blue-300 text-[10px] underline font-sans">
+                  {{ copyToast || 'Salin Command' }}
+                </button>
+              </div>
+              <div class="text-amber-400 bg-gray-900/90 p-2.5 rounded-lg border border-gray-800 break-all select-all leading-relaxed">
                 $ {{ selectedNode.inspectCli }}
               </div>
             </div>
 
             <div>
-              <div class="text-cyan-400 font-bold mb-1">▼ Protocol Specifications:</div>
-              <div class="text-gray-300 text-[11px] space-y-1 bg-gray-900/60 p-2 rounded">
+              <div class="text-cyan-400 font-bold mb-1 flex items-center gap-1.5">
+                <span>▼</span> Protocol Specifications:
+              </div>
+              <div class="text-gray-300 text-[11px] space-y-1 bg-gray-900/60 p-2.5 rounded-lg border border-gray-800/80">
                 <div>• MTU Capability: <span class="text-emerald-400">{{ selectedNode.mtu }}</span></div>
                 <div>• Architecture Domain: <span class="text-blue-400">{{ selectedNode.underlay }}</span></div>
-                <div>• Resiliency: <span class="text-purple-400">{{ selectedNode.haModel }}</span></div>
+                <div>• Resiliency Model: <span class="text-purple-400">{{ selectedNode.haModel }}</span></div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="p-3 bg-gray-950 border-t border-gray-800 text-[11px] font-mono text-gray-400">
+        <div class="p-3 bg-gray-950/80 border-t border-gray-800 text-[11px] font-mono text-gray-400">
           Tip: Klik pada node mana saja di rantai flow di atas untuk membedah spesifikasi teknisnya.
         </div>
       </div>

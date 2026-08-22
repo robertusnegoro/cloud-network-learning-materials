@@ -3,7 +3,7 @@ title: Interactive CIDR & IPAM Hierarchy Allocator
 description: Kalkulator subnetting biner, pembagian VLSM enterprise, serta visualisasi 5 reserved IP pada AWS VPC.
 ---
 
-# 🧮 Interactive CIDR & AWS IPAM Allocator
+# Interactive CIDR & AWS IPAM Allocator
 
 <BadgeLabel type="sme" text="Enterprise IPAM" /> <BadgeLabel type="aws" text="AWS VPC Engine" />
 
@@ -14,7 +14,7 @@ Di level **Senior Cloud Network Engineer / SME**, perencanaan *address space* IP
 
 <CidrCalculator />
 
-## 📐 Ringkasan Aturan Reservasi IP pada AWS VPC Subnet
+## Ringkasan Aturan Reservasi IP pada AWS VPC Subnet
 
 Pada setiap subnet yang dibuat di dalam AWS VPC, **5 IP address** pertama dan terakhir secara otomatis di-reserve oleh AWS dan **tidak dapat dialokasikan ke Elastic Network Interface (ENI)**:
 
@@ -31,3 +31,4 @@ Kapasitas host yang dapat digunakan pada subnet AWS adalah:
 $$\text{Usable Hosts} = 2^{(32 - \text{prefix})} - 5$$
 Contoh pada subnet `/24`: $2^{(32-24)} - 5 = 256 - 5 = 251 \text{ host usable}$.
 :::
+

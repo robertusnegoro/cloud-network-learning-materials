@@ -3,7 +3,7 @@ title: "Lab 05: Enterprise Hybrid Direct Connect with Accelerated VPN Backup & B
 description: "Panduan hands-on komprehensif implementasi Direct Connect Gateway, Transit VIF, BFD sub-second link convergence, dan Accelerated Site-to-Site VPN backup."
 ---
 
-# ⚡ Lab 05: Enterprise Hybrid Direct Connect with Accelerated VPN Backup & BFD Sub-Second Failover
+# Lab 05: Enterprise Hybrid Direct Connect with Accelerated VPN Backup & BFD Sub-Second Failover
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 5880 (BFD) / RFC 4271 (BGP-4) / RFC 4301 (IPsec)" /> <BadgeLabel type="aws" text="DXGW, TGW & Accelerated VPN" />
 
@@ -13,7 +13,7 @@ Lab ini memandu Anda membangun arsitektur interkoneksi hibrida standar industri:
 
 ---
 
-## 🏗️ Topologi Arsitektur Lab
+## Topologi Arsitektur Lab
 
 ```mermaid
 graph TD

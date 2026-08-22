@@ -3,7 +3,7 @@ title: RFC 4271 & AWS BGP 13-Step Decision Simulator
 description: Simulator pemilihan jalur BGP (Best Path Election) dengan konfigurasi atribut Weight, Local-Pref, AS-Path, MED, dan BGP Community.
 ---
 
-# 🔄 BGP 13-Step Decision & Community Simulator
+# BGP 13-Step Decision & Community Simulator
 
 <BadgeLabel type="rfc" text="RFC 4271" /> <BadgeLabel type="aws" text="AWS Direct Connect BGP" />
 
@@ -11,7 +11,7 @@ Algoritma **BGP Best Path Selection** adalah tulang punggung *routing policy* en
 
 <BgpSimulator />
 
-## 📋 Urutan Hierarki Keputusan BGP (Best Path Algorithm)
+## Urutan Hierarki Keputusan BGP (Best Path Algorithm)
 
 1. **Weight** *(Tertinggi menang)*: Atribut proprietary lokal (Cisco/AWS). Tidak di-advertise ke router tetangga.
 2. **Local Preference (`LOCAL_PREF`)** *(Tertinggi menang)*: Atribut well-known discretionary yang di-advertise ke seluruh router internal dalam satu Autonomous System (AS). Default: `100`.
@@ -25,7 +25,7 @@ Algoritma **BGP Best Path Selection** adalah tulang punggung *routing policy* en
 10. **BGP Router ID** *(Terendah menang)*: IP Router ID tetangga yang terkecil.
 11. **Neighbor IP Address** *(Terendah menang)*: Tie-breaker terakhir jika BGP peer memiliki multiple session.
 
-## 🏷️ AWS Direct Connect BGP Communities
+## AWS Direct Connect BGP Communities
 
 AWS menyediakan *standard BGP community tags* untuk mengontrol *scope* dan preferensi *route advertisement* melalui Direct Connect:
 
@@ -37,3 +37,4 @@ AWS menyediakan *standard BGP community tags* untuk mengontrol *scope* dan prefe
 | **`7224:9100`** | **Local Preference LOW (70)**: Memberikan sinyal ke AWS untuk memprioritaskan link lain sebagai primary. |
 | **`7224:9200`** | **Local Preference MEDIUM (80)**: Nilai prioritas menengah. |
 | **`7224:9300`** | **Local Preference HIGH (90)**: Memberikan sinyal ke AWS untuk menjadikan jalur ini sebagai Best Path utama. |
+

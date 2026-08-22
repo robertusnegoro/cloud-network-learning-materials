@@ -3,7 +3,7 @@ title: "Lab 04: Financial Partner Interconnect with Private NAT Gateway & Overla
 description: "Panduan hands-on arsitektur tingkat SME untuk deployment AWS Private NAT Gateway, Carrier-Grade NAT (RFC 6598), dan isolasi PCI-DSS untuk interkoneksi perbankan dengan overlapping CIDR."
 ---
 
-# 🏦 Lab 04: Financial Partner Interconnect with Private NAT Gateway & Overlapping CIDRs
+# Lab 04: Financial Partner Interconnect with Private NAT Gateway & Overlapping CIDRs
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="aws" text="Private NAT GW & CGNAT" /> <BadgeLabel type="lab" text="Hands-on IaC Blueprint" />
 
@@ -11,7 +11,7 @@ Dalam lab skala enterprise perbankan ini, Anda akan merancang dan mengimplementa
 
 ---
 
-## 🏗️ Arsitektur Topology Lab
+## Arsitektur Topology Lab
 
 ```mermaid
 graph LR

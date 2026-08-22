@@ -1,99 +1,3 @@
-<template>
-  <div class="dx-calc-container p-6 bg-[var(--vp-c-bg-soft)] rounded-xl border border-[var(--vp-c-divider)] my-6">
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <h3 class="text-lg font-bold text-[var(--vp-c-text-1)] flex items-center gap-2">
-          ⚡ AWS Direct Connect (DX) BGP Community & Path Policy Generator
-        </h3>
-        <p class="text-xs text-[var(--vp-c-text-2)] mt-1">
-          Kalkulator interaktif penentuan BGP Communities (Local Preference & Scope) dan AS-Path Prepending untuk kontrol multi-homed Direct Connect.
-        </p>
-      </div>
-      <span class="px-2.5 py-1 text-xs font-semibold rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
-        RFC 4271 / AWS DX BGP
-      </span>
-    </div>
-
-    <!-- Controls Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <!-- Local Preference -->
-      <div class="p-3 bg-[var(--vp-c-bg-alt)] rounded-lg border border-[var(--vp-c-divider)]">
-        <label class="block text-xs font-semibold text-[var(--vp-c-text-2)] mb-2">
-          Local Preference Community (AWS Ingress Preference)
-        </label>
-        <select v-model="selectedLocalPref" class="w-full text-xs p-2 rounded bg-[var(--vp-c-bg)] border border-[var(--vp-c-divider)] text-[var(--vp-c-text-1)]">
-          <option value="7224:7300">7224:7300 (High - Primary Path)</option>
-          <option value="7224:7200">7224:7200 (Medium - Secondary Path)</option>
-          <option value="7224:7100">7224:7100 (Low - Backup Path)</option>
-          <option value="none">Tanpa Community (AWS Default)</option>
-        </select>
-        <p class="text-[10px] text-[var(--vp-c-text-3)] mt-2">
-          Mengontrol bobot rute masuk ke AWS dari on-premise saat memiliki redundant DX.
-        </p>
-      </div>
-
-      <!-- Scope Community -->
-      <div class="p-3 bg-[var(--vp-c-bg-alt)] rounded-lg border border-[var(--vp-c-divider)]">
-        <label class="block text-xs font-semibold text-[var(--vp-c-text-2)] mb-2">
-          Scope Community (Geographic Advertisement)
-        </label>
-        <select v-model="selectedScope" class="w-full text-xs p-2 rounded bg-[var(--vp-c-bg)] border border-[var(--vp-c-divider)] text-[var(--vp-c-text-1)]">
-          <option value="7224:9100">7224:9100 (Local AWS Region Only)</option>
-          <option value="7224:9200">7224:9200 (Continental AWS Regions - e.g. APAC)</option>
-          <option value="7224:9300">7224:9300 (Global - All AWS Regions)</option>
-          <option value="none">Tanpa Scope (Default Global Advertisement)</option>
-        </select>
-        <p class="text-[10px] text-[var(--vp-c-text-3)] mt-2">
-          Membatasi jangkauan propagasi prefix rute Anda di seluruh backbone AWS.
-        </p>
-      </div>
-
-      <!-- AS-Path Prepending & MED -->
-      <div class="p-3 bg-[var(--vp-c-bg-alt)] rounded-lg border border-[var(--vp-c-divider)]">
-        <label class="block text-xs font-semibold text-[var(--vp-c-text-2)] mb-1">
-          AS-Path Prepending Count: <span class="font-bold text-blue-400">{{ prependCount }}x</span>
-        </label>
-        <input type="range" min="0" max="5" v-model.number="prependCount" class="w-full mb-2" />
-        
-        <label class="block text-xs font-semibold text-[var(--vp-c-text-2)] mb-1">
-          Router Vendor:
-        </label>
-        <select v-model="routerVendor" class="w-full text-xs p-1.5 rounded bg-[var(--vp-c-bg)] border border-[var(--vp-c-divider)] text-[var(--vp-c-text-1)]">
-          <option value="cisco">Cisco IOS-XE / ASR</option>
-          <option value="juniper">Juniper JunOS (MX/SRX)</option>
-          <option value="arista">Arista EOS</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Active Communities Summary Card -->
-    <div class="p-4 bg-blue-950/20 border border-blue-500/30 rounded-lg mb-6 flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <span class="text-xs uppercase tracking-wider text-blue-400 font-bold">Applied BGP Communities:</span>
-        <div class="flex items-center gap-2 mt-1">
-          <span v-for="c in activeCommunities" :key="c" class="px-2 py-0.5 text-xs font-mono font-bold bg-blue-500/30 text-blue-300 rounded border border-blue-400/40">
-            {{ c }}
-          </span>
-          <span v-if="activeCommunities.length === 0" class="text-xs text-gray-400 italic">No specific communities applied</span>
-        </div>
-      </div>
-      <div class="text-right">
-        <span class="text-xs text-[var(--vp-c-text-2)] block">AWS Path Priority Status:</span>
-        <span class="text-xs font-bold font-mono" :class="priorityColor">{{ priorityText }}</span>
-      </div>
-    </div>
-
-    <!-- Generated Router Config Code Block -->
-    <div class="bg-[var(--vp-c-bg)] rounded-lg border border-[var(--vp-c-divider)] overflow-hidden">
-      <div class="flex items-center justify-between px-4 py-2 bg-[var(--vp-c-bg-alt)] border-b border-[var(--vp-c-divider)] text-xs text-[var(--vp-c-text-2)]">
-        <span class="font-mono font-semibold text-[var(--vp-c-text-1)]">Generated Production Router Configuration</span>
-        <span class="uppercase font-bold text-emerald-400">{{ routerVendor }}</span>
-      </div>
-      <pre class="p-4 text-xs font-mono text-[var(--vp-c-text-1)] overflow-x-auto leading-relaxed">{{ generatedConfig }}</pre>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
@@ -101,6 +5,7 @@ const selectedLocalPref = ref('7224:7300')
 const selectedScope = ref('7224:9100')
 const prependCount = ref(0)
 const routerVendor = ref<'cisco' | 'juniper' | 'arista'>('cisco')
+const copyToast = ref('')
 
 const activeCommunities = computed(() => {
   const list: string[] = []
@@ -188,4 +93,120 @@ router bgp ${myAsn}
  neighbor 169.254.250.1 send-community standard
  neighbor 169.254.250.1 route-map RM_OUT_AWS_DX out`
 })
+
+function copyConfig() {
+  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+    navigator.clipboard.writeText(generatedConfig.value)
+    copyToast.value = 'Config Tersalin!'
+    setTimeout(() => { copyToast.value = '' }, 2500)
+  }
+}
 </script>
+
+<template>
+  <div class="interactive-card">
+    <!-- Header -->
+    <div class="interactive-card-header">
+      <div class="interactive-title">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        <span>AWS Direct Connect (DX) BGP Community & Path Policy Generator</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="badge-sme">SME Standard</span>
+        <span class="badge-aws">Direct Connect BGP</span>
+      </div>
+    </div>
+
+    <p class="interactive-desc">
+      Kalkulator interaktif penentuan BGP Communities (Local Preference & Scope) dan AS-Path Prepending untuk kontrol multi-homed Direct Connect.
+    </p>
+
+    <!-- Controls Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <!-- Local Preference -->
+      <div class="p-3.5 bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)]">
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-2)] mb-2">
+          Local Preference Community
+        </label>
+        <select v-model="selectedLocalPref" class="ui-input !py-1.5 text-xs font-mono">
+          <option value="7224:7300">7224:7300 (High - Primary Path)</option>
+          <option value="7224:7200">7224:7200 (Medium - Secondary Path)</option>
+          <option value="7224:7100">7224:7100 (Low - Backup Path)</option>
+          <option value="none">Tanpa Community (AWS Default)</option>
+        </select>
+        <p class="text-[11px] text-[var(--vp-c-text-3)] mt-2 leading-relaxed">
+          Mengontrol bobot rute masuk ke AWS dari on-premise saat memiliki redundant DX.
+        </p>
+      </div>
+
+      <!-- Scope Community -->
+      <div class="p-3.5 bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)]">
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-2)] mb-2">
+          Scope Community (Geographic)
+        </label>
+        <select v-model="selectedScope" class="ui-input !py-1.5 text-xs font-mono">
+          <option value="7224:9100">7224:9100 (Local AWS Region Only)</option>
+          <option value="7224:9200">7224:9200 (Continental AWS Regions - e.g. APAC)</option>
+          <option value="7224:9300">7224:9300 (Global - All AWS Regions)</option>
+          <option value="none">Tanpa Scope (Default Global Advertisement)</option>
+        </select>
+        <p class="text-[11px] text-[var(--vp-c-text-3)] mt-2 leading-relaxed">
+          Membatasi jangkauan propagasi prefix rute Anda di seluruh backbone AWS.
+        </p>
+      </div>
+
+      <!-- AS-Path Prepending & MED -->
+      <div class="p-3.5 bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)]">
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-2)] mb-1 flex justify-between">
+          <span>AS-Path Prepending</span>
+          <span class="font-mono text-blue-400 font-bold">{{ prependCount }}x</span>
+        </label>
+        <input type="range" min="0" max="5" v-model.number="prependCount" class="w-full mb-2" />
+        
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-2)] mb-1">
+          Router Vendor:
+        </label>
+        <select v-model="routerVendor" class="ui-input !py-1.5 text-xs">
+          <option value="cisco">Cisco IOS-XE / ASR</option>
+          <option value="juniper">Juniper JunOS (MX/SRX)</option>
+          <option value="arista">Arista EOS</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Active Communities Summary Card -->
+    <div class="p-4 bg-[var(--vp-c-bg-alt)] border border-[var(--vp-c-divider)] rounded-xl mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <span class="text-xs uppercase tracking-wider text-blue-400 font-bold">Applied BGP Communities:</span>
+        <div class="flex items-center gap-2 mt-1.5">
+          <span v-for="c in activeCommunities" :key="c" class="px-2.5 py-1 text-xs font-mono font-bold bg-blue-500/20 text-blue-300 rounded-md border border-blue-400/40">
+            {{ c }}
+          </span>
+          <span v-if="activeCommunities.length === 0" class="text-xs text-[var(--vp-c-text-3)] italic">No specific communities applied</span>
+        </div>
+      </div>
+      <div class="text-right">
+        <span class="text-xs text-[var(--vp-c-text-2)] block">AWS Path Priority Status:</span>
+        <span class="text-xs font-bold font-mono" :class="priorityColor">{{ priorityText }}</span>
+      </div>
+    </div>
+
+    <!-- Generated Router Config Code Block -->
+    <div class="bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)] overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-2.5 bg-[var(--vp-c-bg-soft)] border-b border-[var(--vp-c-divider)] text-xs text-[var(--vp-c-text-2)]">
+        <span class="font-mono font-bold text-[var(--vp-c-text-1)]">Generated Router Configuration</span>
+        <div class="flex items-center gap-2">
+          <span class="uppercase font-bold text-emerald-400 font-mono text-[11px]">{{ routerVendor }}</span>
+          <button @click="copyConfig" class="ui-button ui-button-sm">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            {{ copyToast || 'Salin Config' }}
+          </button>
+        </div>
+      </div>
+      <pre class="p-4 text-xs font-mono text-[var(--vp-c-text-1)] overflow-x-auto leading-relaxed bg-[var(--vp-c-bg)]">{{ generatedConfig }}</pre>
+    </div>
+  </div>
+</template>
+

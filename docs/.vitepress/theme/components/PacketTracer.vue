@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 
 interface Hop {
   nodeName: string
@@ -99,54 +99,54 @@ const scenarios: Scenario[] = [
       {
         nodeName: 'Direct Connect Gateway & Transit VIF',
         nodeType: 'DXGW',
-        title: 'Step 6: Transit VIF Encapsulation & 802.1AE MACsec Encryption',
-        action: 'Packet diarahkan ke Direct Connect Gateway melalui Transit VIF (BGP Peering 169.254.240.0/30). Enkripsi MACsec diterapkan di physical line.',
-        l2: '802.1Q VLAN Tag 100 + IEEE 802.1AE MACsec Frame',
+        title: 'Step 6: Dedicated Fiber 802.1Q Egress & MACsec Encryption',
+        action: 'DXGW menerima paket yang telah diinspeksi, menambahkan 802.1Q VLAN Tag, mengenkripsi frame via IEEE 802.1AE MACsec, dan mentransmisikannya ke fiber optik on-premises.',
+        l2: '802.1Q Tag (VLAN 400) + MACsec 128/256-bit GCM-AES',
         l3Src: '10.10.1.50',
         l3Dst: '192.168.10.100',
         l4: 'TCP SYN [Port 49152 ➔ 3306]',
         mtu: 1500,
         ttl: 62,
-        deepExplanation: 'MTU di-clamp menjadi 1500 (atau 9001 jika Jumbo Frames diaktifkan di DX connection). MACsec mengenkripsi payload di layer L2 antara AWS Router dan Customer Router.'
+        deepExplanation: 'Direct Connect Transit VIF mengenkapsulasi paket dengan VLAN ID. Jika MSS Clamping aktif, MSS disesuaikan ke 1460 bytes untuk mencegah PMTUD black hole.'
       },
       {
-        nodeName: 'On-Premises Core Router (192.168.10.1)',
+        nodeName: 'On-Premises Core Database Server',
         nodeType: 'ONPREM',
-        title: 'Step 7: De-encapsulation & Final Delivery ke Database Server',
-        action: 'Customer Core Router menerima packet, melakukan de-enkapsulasi VLAN & MACsec, lalu melakukan forwarding lokal ke Database Server (192.168.10.100).',
-        l2: 'Router Interface MAC ➔ DB Server NIC MAC',
-        l3Src: '10.10.1.50',
-        l3Dst: '192.168.10.100',
-        l4: 'TCP SYN [Port 49152 ➔ 3306]',
+        title: 'Step 7: Ingestion di On-Premises Kernel & TCP SYN-ACK Reply',
+        action: 'Database server on-premises menerima TCP SYN, mengalokasikan socket connection di kernel Linux, dan mengirimkan paket balasan TCP SYN-ACK kembali ke 10.10.1.50.',
+        l2: 'Database Server NIC MAC ➔ On-Prem Core Switch MAC',
+        l3Src: '192.168.10.100',
+        l3Dst: '10.10.1.50',
+        l4: 'TCP SYN-ACK [Seq=0, Ack=1, Port 3306 ➔ 49152]',
         mtu: 1500,
-        ttl: 61,
-        deepExplanation: 'Database server menerima TCP SYN asli dari 10.10.1.50 tanpa ada SNAT yang merusak identitas source IP, memungkinkan audit logging murni.'
+        ttl: 64,
+        deepExplanation: 'Return path mengikuti route table simetris via Transit VIF ➔ TGW Appliance Mode ➔ GWLB ➔ Spoke EC2 tanpa session drop.'
       }
     ]
   },
   {
-    id: 'financial-partner-nat',
-    title: '2. Interbank Financial Interconnect (Overlapping CIDR with Private NAT GW)',
-    description: 'Koneksi ke partner perbankan/switching network (Arthajasa/BI-FAST) yang menggunakan overlapping IP range yang sama persis (10.0.0.0/16) melalui Private NAT Gateway.',
+    id: 'private-nat-partner',
+    title: '2. Private NAT Gateway CGNAT (100.64.0.0/10) Interconnect',
+    description: 'Penanganan overlapping IP antara VPC AWS (10.0.0.0/16) dengan Switching Network Partner Perbankan (10.0.0.0/16) melalui Private NAT Gateway CGNAT.',
     hops: [
       {
-        nodeName: 'Payment Microservice (10.0.5.20)',
+        nodeName: 'Fintech Transaction EC2 (10.0.1.25)',
         nodeType: 'EC2',
-        title: 'Step 1: Payment Request ke Virtual Alias Bank Partner (100.64.10.50)',
-        action: 'Microservice ingin memproses transaksi ISO 8583 ke Bank Partner. Karena IP asli Bank adalah 10.0.5.20 (konflik IP), microservice mengakses virtual IP (100.64.10.50).',
-        l2: 'EC2 MAC ➔ VPC Router MAC',
-        l3Src: '10.0.5.20',
-        l3Dst: '100.64.10.50 (Virtual Partner Alias IP)',
-        l4: 'TCP SYN [Port 52100 ➔ 8583 (ISO-8583)]',
-        mtu: 1500,
+        title: 'Step 1: Kirim Transaksi ke Virtual Partner IP (100.64.10.50)',
+        action: 'Aplikasi fintech memanggil endpoint switching bank di alamat CGNAT non-overlapping (100.64.10.50:8583).',
+        l2: 'EC2 ENI MAC ➔ Private NAT GW ENI MAC',
+        l3Src: '10.0.1.25',
+        l3Dst: '100.64.10.50',
+        l4: 'TCP SYN [Port 18450 ➔ 8583 (ISO 8583)]',
+        mtu: 9001,
         ttl: 64,
-        deepExplanation: 'Menggunakan shared carrier space (RFC 6598 / CGNAT 100.64.0.0/10) untuk menghindari konflik penomoran RFC 1918 internal perusahaan.'
+        deepExplanation: 'Aplikasi tidak mengetahui IP overlapping partner secara langsung, melainkan mengirim paket ke CGNAT pool yang dialokasikan oleh tim Enterprise Network.'
       },
       {
-        nodeName: 'AWS Private NAT Gateway (100.64.1.100)',
+        nodeName: 'AWS Private NAT Gateway (Hyperplane SNAT)',
         nodeType: 'PRIVATE_NAT',
-        title: 'Step 2: Source NAT (SNAT) Translation di AWS Hyperplane Engine',
-        action: 'Private NAT Gateway mentranslasikan source IP AWS (10.0.5.20) menjadi assigned non-overlapping IP (100.64.1.100) sebelum dikirim ke leased line partner.',
+        title: 'Step 2: Source IP Translation ke CGNAT Elastic IP Pool (100.64.1.100)',
+        action: 'Private NAT Gateway mentranslasikan source IP 10.0.1.25 menjadi assigned private IPv4 100.64.1.100 untuk mencegah collision di sisi partner.',
         l2: 'Private NAT GW MAC ➔ TGW Attachment MAC',
         l3Src: '100.64.1.100 (Translated SNAT)',
         l3Dst: '100.64.10.50',
@@ -174,6 +174,8 @@ const scenarios: Scenario[] = [
 
 const currentScenarioId = ref(scenarios[0].id)
 const currentHopIndex = ref(0)
+const isPlaying = ref(false)
+let playTimer: any = null
 
 const activeScenario = computed(() => {
   return scenarios.find(s => s.id === currentScenarioId.value) || scenarios[0]
@@ -186,11 +188,14 @@ const currentHop = computed(() => {
 function setScenario(id: string) {
   currentScenarioId.value = id
   currentHopIndex.value = 0
+  stopPlay()
 }
 
 function nextHop() {
   if (currentHopIndex.value < activeScenario.value.hops.length - 1) {
     currentHopIndex.value++
+  } else {
+    stopPlay()
   }
 }
 
@@ -203,44 +208,87 @@ function prevHop() {
 function selectHop(idx: number) {
   currentHopIndex.value = idx
 }
+
+function togglePlay() {
+  if (isPlaying.value) {
+    stopPlay()
+  } else {
+    isPlaying.value = true
+    if (currentHopIndex.value >= activeScenario.value.hops.length - 1) {
+      currentHopIndex.value = 0
+    }
+    playTimer = setInterval(() => {
+      if (currentHopIndex.value < activeScenario.value.hops.length - 1) {
+        currentHopIndex.value++
+      } else {
+        stopPlay()
+      }
+    }, 2200)
+  }
+}
+
+function stopPlay() {
+  isPlaying.value = false
+  if (playTimer) {
+    clearInterval(playTimer)
+    playTimer = null
+  }
+}
+
+onUnmounted(() => {
+  stopPlay()
+})
 </script>
 
 <template>
   <div class="interactive-card">
+    <!-- Header -->
     <div class="interactive-card-header">
       <div class="interactive-title">
-        <span>📦</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
         <span>Interactive Deep Packet Flow & Encapsulation Tracer</span>
       </div>
-      <div class="flex gap-2">
+      <div class="flex items-center gap-2">
         <span class="badge-sme">SME Protocol Engine</span>
         <span class="badge-rfc">GENEVE / VXLAN</span>
       </div>
     </div>
 
-    <p class="text-sm text-[var(--vp-c-text-2)] mb-4">
+    <p class="interactive-desc">
       Telusuri perjalanan tiap paket data, transformasi header L2/L3/L4, penambahan enkapsulasi overlay (GENEVE TLV 0x0108 / MACsec), dan decrement TTL di tiap hop infrastruktur AWS.
     </p>
 
-    <!-- Scenario Selector -->
-    <div class="flex flex-wrap gap-2 mb-6">
-      <button
-        v-for="s in scenarios"
-        :key="s.id"
-        :class="[
-          'text-xs font-semibold px-3 py-2 rounded-lg border transition-all',
-          currentScenarioId === s.id
-            ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
-            : 'bg-[var(--vp-c-bg-alt)] text-[var(--vp-c-text-2)] border-[var(--vp-c-divider)] hover:border-blue-400'
-        ]"
-        @click="setScenario(s.id)"
-      >
-        {{ s.title.split(':')[0] }}
+    <!-- Scenario Selector & Playback Control -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+      <div class="flex flex-wrap gap-2">
+        <button
+          v-for="s in scenarios"
+          :key="s.id"
+          :class="[
+            'text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all',
+            currentScenarioId === s.id
+              ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+              : 'bg-[var(--vp-c-bg-alt)] text-[var(--vp-c-text-2)] border-[var(--vp-c-divider)] hover:border-blue-400'
+          ]"
+          @click="setScenario(s.id)"
+        >
+          {{ s.title.split(':')[0] }}
+        </button>
+      </div>
+
+      <button class="ui-button ui-button-secondary ui-button-sm" @click="togglePlay">
+        <svg v-if="!isPlaying" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg v-else class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        {{ isPlaying ? 'Pause Flow' : 'Auto Play Flow' }}
       </button>
     </div>
 
-    <div class="bg-[var(--vp-c-bg-alt)] p-3 rounded-lg border border-[var(--vp-c-divider)] mb-6 text-xs text-[var(--vp-c-text-2)]">
-      <strong>Skenario Aktif:</strong> {{ activeScenario.description }}
+    <div class="bg-[var(--vp-c-bg-alt)] p-3 rounded-xl border border-[var(--vp-c-divider)] mb-6 text-xs text-[var(--vp-c-text-2)] leading-relaxed">
+      <strong class="text-[var(--vp-c-text-1)]">Skenario Aktif:</strong> {{ activeScenario.description }}
     </div>
 
     <!-- Visual Hop Timeline -->
@@ -249,23 +297,23 @@ function selectHop(idx: number) {
         <template v-for="(hop, idx) in activeScenario.hops" :key="idx">
           <div
             :class="[
-              'flex-1 p-2.5 rounded-lg border cursor-pointer transition-all text-center',
+              'flex-1 p-2.5 rounded-xl border cursor-pointer transition-all text-center',
               currentHopIndex === idx
-                ? 'bg-blue-500/10 border-blue-500 shadow-md ring-1 ring-blue-500'
+                ? 'bg-blue-600/10 border-blue-600 shadow-md ring-1 ring-blue-600'
                 : idx < currentHopIndex
-                ? 'bg-emerald-500/5 border-emerald-500/40 opacity-80'
+                ? 'bg-emerald-500/10 border-emerald-500/40 opacity-80'
                 : 'bg-[var(--vp-c-bg-alt)] border-[var(--vp-c-divider)] opacity-60'
             ]"
             @click="selectHop(idx)"
           >
-            <div class="text-[10px] font-bold uppercase tracking-wider mb-1" :class="currentHopIndex === idx ? 'text-blue-400' : 'text-[var(--vp-c-text-3)]'">
+            <div class="text-[10px] font-bold uppercase tracking-wider mb-1" :class="currentHopIndex === idx ? 'text-blue-500' : 'text-[var(--vp-c-text-3)]'">
               Hop {{ idx + 1 }}
             </div>
             <div class="text-xs font-bold truncate text-[var(--vp-c-text-1)]">
               {{ hop.nodeName.split('(')[0] }}
             </div>
           </div>
-          <div v-if="idx < activeScenario.hops.length - 1" class="text-gray-500 font-bold">➔</div>
+          <div v-if="idx < activeScenario.hops.length - 1" class="text-gray-400 font-bold text-xs">➔</div>
         </template>
       </div>
     </div>
@@ -273,19 +321,22 @@ function selectHop(idx: number) {
     <!-- Current Hop Detail & Header Inspector -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
       <!-- Left: Hop Narrative -->
-      <div class="bg-[var(--vp-c-bg-alt)] p-4 rounded-lg border border-[var(--vp-c-divider)] flex flex-col justify-between">
+      <div class="bg-[var(--vp-c-bg-alt)] p-4 rounded-xl border border-[var(--vp-c-divider)] flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-blue-400">
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-500 font-mono">
               Hop {{ currentHopIndex + 1 }} of {{ activeScenario.hops.length }}
             </span>
             <span class="badge-aws">{{ currentHop.nodeType }}</span>
           </div>
           <h4 class="text-sm font-bold text-[var(--vp-c-text-1)] mb-2">{{ currentHop.title }}</h4>
-          <p class="text-xs text-[var(--vp-c-text-2)] mb-3 leading-relaxed">{{ currentHop.action }}</p>
+          <p class="text-xs text-[var(--vp-c-text-2)] mb-3.5 leading-relaxed">{{ currentHop.action }}</p>
 
-          <div class="p-3 bg-[var(--vp-c-bg-mute)] rounded border border-[var(--vp-c-divider)] text-xs text-[var(--vp-c-text-2)]">
-            <span class="font-bold text-amber-400 block mb-1">💡 Deep Architectural Mechanism:</span>
+          <div class="p-3 bg-[var(--vp-c-bg-soft)] rounded-lg border border-[var(--vp-c-divider)] text-xs text-[var(--vp-c-text-2)] leading-relaxed">
+            <span class="font-bold text-amber-400 block mb-1 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Deep Architectural Mechanism:
+            </span>
             {{ currentHop.deepExplanation }}
           </div>
         </div>
@@ -296,15 +347,15 @@ function selectHop(idx: number) {
             class="ui-button ui-button-secondary !py-1 !px-3 text-xs disabled:opacity-30"
             @click="prevHop"
           >
-            ◀ Previous Hop
+            ◀ Previous
           </button>
           <span class="text-xs text-[var(--vp-c-text-3)] font-mono">MTU: {{ currentHop.mtu }}B | TTL: {{ currentHop.ttl }}</span>
           <button
             :disabled="currentHopIndex === activeScenario.hops.length - 1"
-            class="ui-button !py-1 !px-3 text-xs disabled:opacity-30"
+            class="ui-button ui-button-secondary !py-1 !px-3 text-xs disabled:opacity-30"
             @click="nextHop"
           >
-            Next Hop ▶
+            Next ▶
           </button>
         </div>
       </div>
@@ -312,45 +363,58 @@ function selectHop(idx: number) {
       <!-- Right: Real-Time Packet Header Breakdown -->
       <div class="terminal-window">
         <div class="terminal-header">
-          <div class="flex gap-1.5">
+          <div class="terminal-dots">
             <div class="terminal-dot dot-red"></div>
             <div class="terminal-dot dot-yellow"></div>
             <div class="terminal-dot dot-green"></div>
           </div>
-          <span class="text-xs text-gray-400 font-mono">Packet Dissector & Frame Inspector</span>
+          <span class="terminal-title">RFC Protocol Header Dissector & Frame Inspector</span>
         </div>
         <div class="terminal-body space-y-3">
-          <!-- L2 Frame -->
+          <!-- Layer 2 Ethernet Frame -->
           <div class="text-xs font-mono">
-            <div class="text-purple-400 font-bold mb-0.5">▼ Layer 2 Ethernet Frame</div>
-            <div class="text-gray-300 ml-3 bg-gray-900/80 p-2 rounded border border-gray-800 text-[11px]">
+            <div class="text-purple-400 font-bold mb-1 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><span>▼</span> Layer 2 Ethernet II & 802.1Q</span>
+              <span class="text-[10px] text-gray-500 font-normal">EtherType: 0x0800</span>
+            </div>
+            <div class="text-gray-300 bg-gray-900/90 p-2.5 rounded-lg border border-gray-800 text-[11px] leading-relaxed">
               {{ currentHop.l2 }}
             </div>
           </div>
 
           <!-- Overlay Tunnel Header (if any) -->
           <div v-if="currentHop.overlay" class="text-xs font-mono">
-            <div class="text-yellow-400 font-bold mb-0.5">▼ Overlay Tunnel (GENEVE / VXLAN / MACsec)</div>
-            <div class="text-yellow-200/90 ml-3 bg-yellow-950/30 p-2 rounded border border-yellow-800/50 text-[11px]">
-              {{ currentHop.overlay }}
+            <div class="text-yellow-400 font-bold mb-1 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><span>▼</span> RFC 8926 GENEVE / VXLAN Overlay Tunnel</span>
+              <span class="text-[10px] text-yellow-500/80 font-normal">UDP Port 6081</span>
+            </div>
+            <div class="text-yellow-200/95 bg-yellow-950/30 p-2.5 rounded-lg border border-yellow-800/50 text-[11px] leading-relaxed">
+              <div>{{ currentHop.overlay }}</div>
+              <div class="mt-1 text-[10px] text-yellow-400/80">AWS Metadata: TLV Class 0x0108 contains Source ENI, VPC Endpoint ID, and Flow Hash Index.</div>
             </div>
           </div>
 
-          <!-- L3 IPv4 Packet -->
+          <!-- Layer 3 IPv4 Packet -->
           <div class="text-xs font-mono">
-            <div class="text-cyan-400 font-bold mb-0.5">▼ Layer 3 IPv4 Packet Header</div>
-            <div class="text-gray-300 ml-3 bg-gray-900/80 p-2 rounded border border-gray-800 text-[11px] grid grid-cols-2 gap-2">
+            <div class="text-cyan-400 font-bold mb-1 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><span>▼</span> RFC 791 IPv4 Header (20 Bytes)</span>
+              <span class="text-[10px] text-gray-500 font-normal">Proto: 6 (TCP) | DF: 1</span>
+            </div>
+            <div class="text-gray-300 bg-gray-900/90 p-2.5 rounded-lg border border-gray-800 text-[11px] grid grid-cols-2 gap-2">
               <div><span class="text-gray-500">Source IP:</span> <span class="text-emerald-400 font-bold">{{ currentHop.l3Src }}</span></div>
               <div><span class="text-gray-500">Dest IP:</span> <span class="text-rose-400 font-bold">{{ currentHop.l3Dst }}</span></div>
-              <div><span class="text-gray-500">TTL:</span> <span class="text-blue-300">{{ currentHop.ttl }}</span></div>
-              <div><span class="text-gray-500">MTU Cap:</span> <span class="text-amber-300">{{ currentHop.mtu }} bytes</span></div>
+              <div><span class="text-gray-500">TTL Remaining:</span> <span class="text-blue-300 font-bold">{{ currentHop.ttl }}</span></div>
+              <div><span class="text-gray-500">MTU Cap:</span> <span class="text-amber-300 font-bold">{{ currentHop.mtu }} bytes</span></div>
             </div>
           </div>
 
-          <!-- L4 TCP Segment -->
+          <!-- Layer 4 TCP Segment -->
           <div class="text-xs font-mono">
-            <div class="text-emerald-400 font-bold mb-0.5">▼ Layer 4 Transport Header</div>
-            <div class="text-gray-300 ml-3 bg-gray-900/80 p-2 rounded border border-gray-800 text-[11px]">
+            <div class="text-emerald-400 font-bold mb-1 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><span>▼</span> RFC 793 TCP Transport Segment</span>
+              <span class="text-[10px] text-gray-500 font-normal">State: ESTABLISHED/SYN</span>
+            </div>
+            <div class="text-gray-300 bg-gray-900/90 p-2.5 rounded-lg border border-gray-800 text-[11px] leading-relaxed">
               {{ currentHop.l4 }}
             </div>
           </div>

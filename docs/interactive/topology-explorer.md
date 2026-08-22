@@ -3,7 +3,7 @@ title: Interactive Enterprise Topology Explorer
 description: Visualisasikan pola arsitektur enterprise skala besar (North-South Egress, East-West TGW Appliance Mode, Hybrid Direct Connect, dan Financial Interconnect).
 ---
 
-# 🗺️ Interactive Enterprise Topology Explorer
+# Interactive Enterprise Topology Explorer
 
 <BadgeLabel type="sme" text="Enterprise Canvas" /> <BadgeLabel type="aws" text="Hub-and-Spoke Mesh" />
 
@@ -13,7 +13,7 @@ Gunakan explorer interaktif di bawah ini untuk membedah bagaimana paket data dia
 
 <TopologyExplorer />
 
-## 🏛️ Pola Desain Standar Enterprise
+## Pola Desain Standar Enterprise
 
 1. **Centralized Inspection & Egress Hub**:
    - Seluruh traffic keluar (*Egress*) dari Spoke VPC dipaksa melewati *Transit Gateway* menuju *Inspection VPC* yang berisi cluster *Gateway Load Balancer* dan *Palo Alto / Fortinet Next-Gen Firewalls*.
@@ -24,3 +24,4 @@ Gunakan explorer interaktif di bawah ini untuk membedah bagaimana paket data dia
    - Koneksi privat berkecepatan tinggi (10G/100G) dengan enkripsi *hardware-level IEEE 802.1AE MACsec* yang menghubungkan on-premises data center ke *Direct Connect Gateway (DXGW)* dan ribuan VPC via *Transit VIF*.
 4. **Financial Switching & Overlapping IP Interconnect**:
    - Mengintegrasikan sistem pembayaran dengan jaringan perbankan (Arthajasa ATM Bersama, Alto, Rintis Prima, BI-FAST) menggunakan *AWS Private NAT Gateway* untuk mengatasi konflik *Overlapping RFC 1918 CIDR* secara elegan tanpa *Re-IPing*.
+

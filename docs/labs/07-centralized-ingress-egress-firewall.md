@@ -3,7 +3,7 @@ title: "Lab 07: Centralized Ingress & Egress Inspection Architecture with AWS Ne
 description: "Panduan hands-on komprehensif implementasi Central Ingress DMZ (Public ALB + WAF), Central Egress Inspection (AWS Network Firewall Suricata IPS), dan TGW Appliance Mode."
 ---
 
-# 🛡️ Lab 07: Centralized Ingress & Egress Inspection Firewall
+# Lab 07: Centralized Ingress & Egress Inspection Firewall
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="Suricata IPS / RFC 793 (TCP State) / AWS Appliance Mode" /> <BadgeLabel type="aws" text="AWS Network Firewall & TGW Hub" />
 
@@ -15,7 +15,7 @@ Lab ini memandu Anda membangun arsitektur perimeter keamanan terpusat lengkap de
 
 ---
 
-## 🏗️ Topologi Arsitektur Lab
+## Topologi Arsitektur Lab
 
 ```mermaid
 graph TD

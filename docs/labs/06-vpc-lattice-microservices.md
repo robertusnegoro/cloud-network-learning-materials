@@ -3,7 +3,7 @@ title: "Lab 06: Zero-Trust Multi-Account Microservices with AWS VPC Lattice & IA
 description: "Panduan hands-on arsitektur interkoneksi microservices modern lintas akun tanpa VPC Peering atau TGW menggunakan AWS VPC Lattice Service Network, HTTPS Listeners, dan otentikasi IAM SigV4."
 ---
 
-# 🕸️ Lab 06: Zero-Trust Multi-Account Microservices with AWS VPC Lattice & IAM SigV4
+# Lab 06: Zero-Trust Multi-Account Microservices with AWS VPC Lattice & IAM SigV4
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 9110 (HTTP/2) / RFC 6598 / AWS SigV4" /> <BadgeLabel type="aws" text="AWS VPC Lattice & RAM Sharing" />
 
@@ -13,7 +13,7 @@ Dalam arsitektur *microservices* terdistribusi skala enterprise yang tersebar di
 
 ---
 
-## 🏗️ Topologi Arsitektur Lab
+## Topologi Arsitektur Lab
 
 ```mermaid
 graph TD

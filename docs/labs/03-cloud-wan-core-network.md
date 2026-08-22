@@ -3,7 +3,7 @@ title: "Lab 03: AWS Cloud WAN Global SD-WAN Mesh & Core Network Policy"
 description: "Panduan hands-on arsitektur tingkat SME untuk deployment AWS Cloud WAN multi-region backbone, declarative JSON Core Network Policy, segment routing, dan send-via NFG inspection."
 ---
 
-# 🌍 Lab 03: AWS Cloud WAN Global SD-WAN Mesh & Core Network Policy
+# Lab 03: AWS Cloud WAN Global SD-WAN Mesh & Core Network Policy
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="aws" text="Cloud WAN SD-WAN" /> <BadgeLabel type="lab" text="Hands-on IaC Blueprint" />
 
@@ -11,7 +11,7 @@ Dalam lab skala enterprise global ini, Anda akan merancang dan mengotomatisasi j
 
 ---
 
-## 🏗️ Arsitektur Topology Lab
+## Arsitektur Topology Lab
 
 ```mermaid
 graph LR

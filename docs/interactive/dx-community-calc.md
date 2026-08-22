@@ -3,7 +3,7 @@ title: "Direct Connect BGP Community Calculator"
 description: "Simulator interaktif penentuan BGP Communities (Local Preference & Scope) dan AS-Path Prepending untuk AWS Direct Connect."
 ---
 
-# ⚡ Direct Connect BGP Community & Path Metric Calculator
+# Direct Connect BGP Community & Path Metric Calculator
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="aws" text="AWS Direct Connect BGP" />
 
@@ -17,7 +17,7 @@ Simulator ini membantu Network SME merancang kebijakan BGP routing dua arah anta
 
 ---
 
-## 📖 Prinsip BGP Communities pada AWS Direct Connect
+## Prinsip BGP Communities pada AWS Direct Connect
 
 ### 1. Local Preference Communities (Mengontrol Ingress AWS)
 AWS Direct Connect mengevaluasi BGP Community dari customer router untuk menentukan rute masuk ke jaringan on-premise:
@@ -33,3 +33,4 @@ AWS Direct Connect mengevaluasi BGP Community dari customer router untuk menentu
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
 Selalu kombinasikan **Local Preference Communities (`7224:7300` & `7224:7200`)** dengan **Bidirectional Forwarding Detection (BFD)** interval `300ms x 3` untuk mencapai failover sub-second otomatis saat link fisik Direct Connect mengalami degradasi.
 :::
+

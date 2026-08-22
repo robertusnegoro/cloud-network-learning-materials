@@ -33,7 +33,7 @@ export default defineConfig({
     }
   },
   themeConfig: {
-    logo: '🌐',
+    logo: '/logo-network.svg',
     siteTitle: 'Cloud Network SME',
     nav: [
       { text: 'Home', link: '/' },

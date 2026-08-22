@@ -145,7 +145,7 @@ const simulationResult = computed(() => {
     <!-- Header -->
     <div class="interactive-card-header">
       <div class="interactive-title">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
           <path d="m10 15 5-3-5-3v6Z"/>
         </svg>
@@ -232,7 +232,7 @@ const simulationResult = computed(() => {
     <div class="bg-[var(--vp-c-bg-alt)] p-4 rounded-xl border border-[var(--vp-c-divider)] mb-6">
       <div class="flex items-center justify-between mb-3">
         <span class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-1)] flex items-center gap-1.5 font-mono">
-          <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <svg width="16" height="16" class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           LPM Radix Trie Match Inspector for {{ dstIp }}
         </span>
         <span v-if="lpmMatches.winningPrefix" class="badge-sme !bg-emerald-600 !text-white border-none text-[11px]">

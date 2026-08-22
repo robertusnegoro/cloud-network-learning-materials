@@ -621,12 +621,12 @@ onMounted(() => {
     <!-- Header -->
     <div class="interactive-card-header">
       <div class="interactive-title">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="w-5 h-5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
           <line x1="12" y1="9" x2="12" y2="13"/>
           <line x1="12" y1="17" x2="12.01" y2="17"/>
         </svg>
-        <span>SME Troubleshooting War Rooms: 10 Real-World Incident Drills</span>
+        <span>SME Troubleshooting War Rooms: 15 Real-World Incident Drills</span>
       </div>
       <div class="flex items-center gap-2">
         <span class="badge-sme">SME War Room</span>
@@ -740,7 +740,7 @@ onMounted(() => {
     <div class="mb-4 bg-[var(--vp-c-bg-alt)] p-3.5 rounded-xl border border-[var(--vp-c-divider)]">
       <div class="flex items-center justify-between mb-2">
         <span class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-2)] flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          <svg width="14" height="14" class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
           Interactive Diagnostic CLI Probe (Click or type custom command)
         </span>
         <span class="text-[11px] text-[var(--vp-c-text-3)] font-mono">Simulated Device Shell</span>
@@ -782,7 +782,7 @@ onMounted(() => {
     <!-- Diagnostic Question -->
     <div class="mb-4">
       <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2 flex items-center gap-1.5">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg width="16" height="16" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         Senior SME Diagnosis Question:
       </h4>
       <p class="text-sm font-bold text-[var(--vp-c-text-1)] mb-3">

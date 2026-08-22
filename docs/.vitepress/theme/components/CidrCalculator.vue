@@ -191,7 +191,7 @@ function copyExport() {
     <!-- Header -->
     <div class="interactive-card-header">
       <div class="interactive-title">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect width="18" height="18" x="3" y="3" rx="2" />
           <path d="M3 9h18M9 21V9" />
         </svg>
@@ -228,11 +228,11 @@ function copyExport() {
         </label>
         <div class="mt-1">
           <span v-if="isAwsValidVpc" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-md">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <svg width="14" height="14" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             Valid AWS Subnet (/16 - /28)
           </span>
           <span v-else class="inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 bg-rose-500/10 border border-rose-500/30 px-3 py-1.5 rounded-md">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg width="14" height="14" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             Di luar batas AWS VPC (/16 - /28)
           </span>
         </div>
@@ -263,7 +263,7 @@ function copyExport() {
     <div class="mb-6 bg-[var(--vp-c-bg-alt)] p-4 rounded-xl border border-[var(--vp-c-divider)]">
       <div class="flex items-center justify-between mb-2">
         <span class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-2)] flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="9" y2="15"/><line x1="15" y1="9" x2="15" y2="15"/></svg>
+          <svg width="14" height="14" class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="9" y2="15"/><line x1="15" y1="9" x2="15" y2="15"/></svg>
           32-Bit Interactive Bitboard (Click bit to toggle prefix)
         </span>
         <span class="text-xs font-mono text-blue-400 font-bold">Network: {{ prefix }} | Host: {{ 32 - prefix }} bits</span>
@@ -306,11 +306,11 @@ function copyExport() {
       </div>
     </div>
 
-    <!-- AWS 5 Reserved IPs Table -->
+    <!-- AWS Reserved IPs Table -->
     <div class="mb-6">
       <div class="flex items-center justify-between mb-2.5">
         <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-1)] flex items-center gap-2">
-          <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg width="16" height="16" class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           AWS VPC Reserved IP Allocations (5 IPs per Subnet)
         </h4>
         <span class="text-xs text-[var(--vp-c-text-3)]">AWS RFC Standard</span>
@@ -341,7 +341,7 @@ function copyExport() {
     <div class="mb-6 bg-[var(--vp-c-bg-alt)] p-4 rounded-xl border border-[var(--vp-c-divider)]">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
         <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-1)] flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+          <svg width="16" height="16" class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
           VLSM Subnet Partitioning Slicer
         </h4>
         <div class="flex items-center gap-2 text-xs">
@@ -382,7 +382,7 @@ function copyExport() {
     <!-- CIDR Overlap Tester -->
     <div class="mb-6 bg-[var(--vp-c-bg-alt)] p-4 rounded-xl border border-[var(--vp-c-divider)]">
       <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-1)] mb-2.5 flex items-center gap-1.5">
-        <svg class="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg width="16" height="16" class="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         CIDR Overlap & Routing Conflict Detector
       </h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
@@ -407,7 +407,7 @@ function copyExport() {
     <div class="bg-[var(--vp-c-bg-alt)] p-4 rounded-xl border border-[var(--vp-c-divider)]">
       <div class="flex items-center justify-between mb-3">
         <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--vp-c-text-1)] flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <svg width="16" height="16" class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           Export Production Blueprint (IaC / JSON)
         </h4>
         <div class="flex items-center gap-2">
@@ -435,7 +435,7 @@ function copyExport() {
             </button>
           </div>
           <button @click="copyExport" class="ui-button ui-button-sm">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <svg width="14" height="14" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             {{ copyToast || 'Salin Code' }}
           </button>
         </div>

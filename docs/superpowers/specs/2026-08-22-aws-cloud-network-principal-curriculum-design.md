@@ -706,6 +706,23 @@ Katalog 7 Hands-on Labs:
 6. `06-vpc-lattice-microservices`: Zero-Trust Multi-Account Microservices with VPC Lattice.
 7. `07-centralized-ingress-egress-firewall`: Centralized Ingress DMZ (ALB/NLB) + Egress Network Firewall.
 
+### 7.4. Standar Pembahasan Hands-on Labs & Use Cases (6-Point Step Blueprint)
+Untuk menjamin pemahaman konsep dan eksekusi teknis tingkat buku penerbit besar (O'Reilly / McGraw-Hill / Cisco Press), setiap langkah pada seluruh 7 Lab Guide (`docs/labs/*.md`) dan Case Study mendalam wajib mengikuti **6-Point Step Blueprint**:
+
+1. **Tujuan & Rasionil Arsitektur (*Architectural Intent*)**:
+   - Menjelaskan mengapa langkah tersebut dilakukan, prinsip desain yang melandasinya, dan peran komponen dalam topologi end-to-end.
+2. **Pemetaan Konsep AWS Console (*AWS Console Context & Parameter Mapping*)**:
+   - Menjelaskan letak menu/fitur pada AWS Management Console (e.g. *VPC Dashboard > Transit Gateway Attachments > Create Attachment*) dan pemetaan parameter kritis (dropdown, checkbox, value input).
+3. **Perintah AWS CLI Produksi (*Human-Readable Production AWS CLI*)**:
+   - Perintah AWS CLI yang diformat bersih per baris (`\`), tabel/penjelasan flag-flag penting, dan filter output menggunakan `--query` (JMESPath) untuk lingkungan otomasi.
+4. **Deklarasi Terraform IaC (*Declarative Blueprint*)**:
+   - Blok kode HCL padanan untuk provisioning deklaratif yang dapat diaudit.
+5. **Mekanika Underlay (*Under-the-Hood Mechanics*)**:
+   - Apa yang terjadi di balik layar pada level fisik/logis (Nitro Card ASIC, Hyperplane state tables, route table state machines, atau enkapsulasi Geneve/VXLAN).
+6. **Uji Verifikasi & Smoke Test (*Verification Runbook*)**:
+   - Perintah verifikasi deterministik (`aws ... describe-...`, `ping`, `curl`, `dig`, `traceroute`) dengan contoh output aktual (JSON/tabel) untuk memvalidasi keberhasilan langkah.
+
+
 ---
 
 ## 8. Format Standar SEV-1 Incident Post-Mortem (Modul 34)

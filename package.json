@@ -1,0 +1,34 @@
+{
+  "name": "cloud-network-learning-materials",
+  "version": "1.0.0",
+  "description": "SME & Senior Cloud Network Engineer Interactive Learning Materials (Theory to AWS Enterprise Scale)",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "keywords": [
+    "networking",
+    "aws",
+    "cloud-networking",
+    "bgp",
+    "direct-connect",
+    "transit-gateway",
+    "cloud-wan",
+    "gwlb",
+    "cidr"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "lucide-vue-next": "^0.475.0",
+    "mermaid": "^11.17.0",
+    "vitepress": "^1.6.3",
+    "vue": "^3.5.13"
+  },
+  "overrides": {
+    "esbuild": "^0.25.0",
+    "vite": "^6.4.3"
+  }
+}

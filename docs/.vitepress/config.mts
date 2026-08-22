@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  base: '/cloud-network-learning-materials/',
   title: 'Cloud Network Engineering Mastery',
   description: 'Materi Pembelajaran Komprehensif Teori Jaringan Lanjut & AWS Enterprise Cloud Networking untuk Level SME / Principal Cloud Network Engineer (O\'Reilly / McGraw-Hill Technical Standard)',
   lang: 'id-ID',
@@ -191,7 +192,7 @@ export default defineConfig({
       provider: 'local'
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com' }
+      { icon: 'github', link: 'https://github.com/robertusnegoro/cloud-network-learning-materials' }
     ],
     footer: {
       message: 'Advanced Cloud Network Engineering Mastery Portal • RFC Deep-Dive to AWS Super Enterprise Scale',

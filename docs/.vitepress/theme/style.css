@@ -109,6 +109,26 @@ h1, h2, h3, h4, h5, h6,
   border-bottom: 1px solid var(--vp-c-divider);
 }
 
+.vp-doc hr {
+  margin: 2.75rem 0;
+  border: none;
+  border-top: 1px solid var(--vp-c-divider);
+  opacity: 0.65;
+}
+
+.vp-doc hr + h2,
+.vp-doc hr + h3 {
+  margin-top: 1.5rem !important;
+}
+
+.vp-doc div[class*="rounded"] > h2:first-child,
+.vp-doc div[class*="rounded"] > h3:first-child,
+.vp-doc .custom-block > h2:first-child,
+.vp-doc .custom-block > h3:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
 .vp-doc h3 {
   font-size: 1.25rem;
   font-weight: 650;
@@ -316,6 +336,7 @@ table td {
   margin: 1.75rem 0;
   box-shadow: var(--sme-shadow-sm);
   overflow: hidden;
+  background: var(--vp-c-bg-alt);
 }
 
 .vp-doc div[class*="language-"] pre {
@@ -325,11 +346,18 @@ table td {
   padding: 1.15rem 1.25rem;
 }
 
-/* ASCII Flowcharts & Architecture Blueprints */
+/* ASCII Flowcharts & Architecture Blueprints (RFC Bitboards) */
 .vp-doc pre code {
   font-family: var(--vp-font-family-mono);
   line-height: 1.35;
   letter-spacing: 0;
+}
+
+.vp-doc div[class*="language-text"] pre,
+.vp-doc div[class*="language-ascii"] pre {
+  font-size: 0.825rem;
+  line-height: 1.38;
+  letter-spacing: -0.01em;
 }
 
 /* Modern Scrollbars & Prevent Layout Shift */

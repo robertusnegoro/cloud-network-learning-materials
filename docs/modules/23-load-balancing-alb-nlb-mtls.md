@@ -74,22 +74,19 @@ sequenceDiagram
 
 Ketika NLB beroperasi dalam mode Layer 4 TCP tanpa menghentikan paket atau saat target berada di belakang NAT, alamat *Source IP* asli klien harus disampaikan ke *backend target*. **Proxy Protocol v2** menyisipkan header biner 16-byte di awal stream TCP sebelum payload aplikasi:
 
-```
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       \x0D \x0A \x0D \x0A \x00 \x0D \x0A \x51 \x55 \x49 \x54 \x0A       | (12-byte Signature)
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  Ver (2) |Cmd | Family| Proto |            Length             | (4 bytes)
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                        Source IPv4 Address                    | (4 bytes)
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                     Destination IPv4 Address                  | (4 bytes)
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|          Source Port          |       Destination Port        | (4 bytes)
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                    Additional TLV Vectors (Optional)          | (Variable)
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```mermaid
+packet-beta
+0-95: "12-Byte Binary Signature (\x0D \x0A \x0D \x0A \x00 \x0D \x0A \x51 \x55 \x49 \x54 \x0A)"
+96-99: "Version (2)"
+100-103: "Command"
+104-107: "Family"
+108-111: "Transport Protocol"
+112-127: "Payload Length (16-bit)"
+128-159: "Source IPv4 Address (32-bit)"
+160-191: "Destination IPv4 Address (32-bit)"
+192-207: "Source Port (16-bit)"
+208-223: "Destination Port (16-bit)"
+224-255: "Additional TLV Vectors (Optional)"
 ```
 
 ---

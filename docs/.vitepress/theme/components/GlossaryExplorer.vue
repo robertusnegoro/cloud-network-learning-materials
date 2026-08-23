@@ -63,13 +63,13 @@ function copyTerm(term: TermDefinition) {
 </script>
 
 <template>
-  <div class="glossary-explorer my-7 rounded-2xl border border-[var(--vp-c-divider)] bg-[var(--vp-c-bg-soft)] p-5 sm:p-6 shadow-sm">
+  <div class="glossary-explorer">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--vp-c-divider)] pb-4 mb-5">
-      <div>
-        <h3 class="text-base sm:text-lg font-bold text-[var(--vp-c-text-1)] flex items-center gap-2 m-0">
-          <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500">
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="glossary-header">
+      <div class="glossary-title-group">
+        <h3 class="glossary-title">
+          <span class="glossary-icon-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
               <path d="M6 6h10"></path>
               <path d="M6 10h10"></path>
@@ -77,34 +77,34 @@ function copyTerm(term: TermDefinition) {
           </span>
           <span>Kamus Singkatan & Glosarium Protokol Jaringan (SME Reference)</span>
         </h3>
-        <p class="text-xs text-[var(--vp-c-text-2)] m-0 mt-1 leading-relaxed">
+        <p class="glossary-subtitle">
           Kamus komprehensif akronim RFC & AWS Enterprise Cloud Network dengan kepanjangan resmi dan deskripsi teknis.
         </p>
       </div>
 
-      <div class="text-xs font-mono px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 self-start md:self-auto font-bold shrink-0">
+      <div class="glossary-count-badge">
         {{ filteredTerms.length }} / {{ allTermsList.length }} Entri
       </div>
     </div>
 
     <!-- Controls -->
-    <div class="flex flex-col gap-3.5 mb-6">
-      <!-- Search Input -->
-      <div class="relative">
+    <div class="glossary-controls">
+      <!-- Search Input Container -->
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
         <input
           v-model="searchQuery"
           type="text"
           placeholder="Cari singkatan, protokol, RFC atau kata kunci (misal: VLSM, PMTUD, BGP, MTU, Geneve, Nitro)..."
-          class="w-full rounded-xl border border-[var(--vp-c-divider)] bg-[var(--vp-c-bg)] px-3.5 py-2.5 pl-10 pr-10 text-sm text-[var(--vp-c-text-1)] placeholder-[var(--vp-c-text-3)] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
+          class="search-input"
         />
-        <svg class="absolute left-3.5 top-3 h-4 w-4 text-[var(--vp-c-text-3)] pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
         <button
           v-if="searchQuery"
           @click="clearSearch"
-          class="absolute right-3 top-2.5 h-5 w-5 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-200 bg-slate-500/20 hover:bg-slate-500/30 text-xs transition-colors cursor-pointer"
+          class="clear-search-btn"
           title="Hapus pencarian"
         >
           ✕
@@ -112,23 +112,17 @@ function copyTerm(term: TermDefinition) {
       </div>
 
       <!-- Category Filter Tabs -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+      <div class="category-tabs-wrapper">
         <button
           v-for="cat in categories"
           :key="cat.id"
           @click="selectedCategory = cat.id"
-          :class="[
-            'whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer',
-            selectedCategory === cat.id
-              ? 'bg-blue-600 text-white shadow-sm font-bold'
-              : 'bg-[var(--vp-c-bg)] text-[var(--vp-c-text-2)] hover:bg-[var(--vp-c-bg-mute)] hover:text-[var(--vp-c-text-1)] border border-[var(--vp-c-divider)]'
-          ]"
+          :class="['category-tab-btn', { 'is-active': selectedCategory === cat.id }]"
         >
           <span>{{ cat.label }}</span>
           <span
             v-if="categoryCounts[cat.id]"
-            class="text-[10px] px-1.5 py-0.2 rounded-full"
-            :class="selectedCategory === cat.id ? 'bg-white/20 text-white' : 'bg-slate-500/10 text-slate-500 dark:text-slate-400'"
+            class="tab-count-pill"
           >
             {{ categoryCounts[cat.id] }}
           </span>
@@ -137,47 +131,47 @@ function copyTerm(term: TermDefinition) {
     </div>
 
     <!-- Terms Grid -->
-    <div v-if="filteredTerms.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div v-if="filteredTerms.length > 0" class="terms-grid">
       <div
         v-for="term in filteredTerms"
         :key="term.abbr"
-        class="flex flex-col justify-between rounded-xl border border-[var(--vp-c-divider)] bg-[var(--vp-c-bg)] p-4 transition-all duration-150 hover:border-blue-500/50 hover:shadow-md"
+        class="term-card"
       >
-        <div>
+        <div class="term-card-body">
           <!-- Row 1: Badges (Abbr on left, RFC on right) -->
-          <div class="flex items-center justify-between gap-2 mb-2">
-            <span class="font-mono text-xs font-black px-2 py-0.5 rounded bg-[var(--vp-c-brand-soft)] text-[var(--vp-c-brand-1)] border border-[var(--vp-c-brand-1)]/20 shrink-0">
+          <div class="term-badges-row">
+            <span class="abbr-badge">
               {{ term.abbr }}
             </span>
-            <span v-if="term.rfc" class="shrink-0 text-[10.5px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-medium">
+            <span v-if="term.rfc" class="rfc-badge">
               {{ term.rfc }}
             </span>
           </div>
 
           <!-- Row 2: Full Title & Category Subtitle -->
-          <div class="mb-2">
-            <div class="font-bold text-sm text-[var(--vp-c-text-1)] leading-snug">
+          <div class="term-title-group">
+            <div class="term-full-title">
               {{ term.full }}
             </div>
-            <div class="text-[11px] text-[var(--vp-c-text-3)] font-medium mt-0.5">
+            <div class="term-category-label">
               {{ term.categoryLabel }}
             </div>
           </div>
 
           <!-- Row 3: Technical Description -->
-          <p class="text-xs text-[var(--vp-c-text-2)] leading-relaxed mb-3">
+          <p class="term-desc">
             {{ term.desc }}
           </p>
         </div>
 
         <!-- Row 4: Actions Footer -->
-        <div class="flex items-center justify-between pt-2.5 border-t border-[var(--vp-c-divider)] text-xs">
+        <div class="term-card-footer">
           <button
             @click="copyTerm(term)"
-            class="flex items-center gap-1.5 text-[var(--vp-c-text-3)] hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors cursor-pointer"
+            class="copy-term-btn"
             title="Salin definisi ke clipboard"
           >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
             </svg>
@@ -187,7 +181,7 @@ function copyTerm(term: TermDefinition) {
           <a
             v-if="term.moduleLink"
             :href="withBase(term.moduleLink)"
-            class="text-blue-600 dark:text-blue-400 hover:underline font-semibold flex items-center gap-1 transition-colors"
+            class="module-link"
           >
             <span>Buka Modul</span>
             <span>→</span>
@@ -197,10 +191,384 @@ function copyTerm(term: TermDefinition) {
     </div>
 
     <!-- Empty State -->
-    <div v-else class="text-center py-12 rounded-xl bg-[var(--vp-c-bg)] border border-[var(--vp-c-divider)]">
-      <div class="text-3xl mb-2">🔍</div>
-      <div class="text-sm font-semibold text-[var(--vp-c-text-1)]">Tidak ada singkatan yang cocok dengan "{{ searchQuery }}"</div>
-      <div class="text-xs text-[var(--vp-c-text-3)] mt-1">Coba gunakan kata kunci pencarian yang berbeda atau pilih tab "Semua".</div>
+    <div v-else class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">Tidak ada singkatan yang cocok dengan "{{ searchQuery }}"</div>
+      <div class="empty-subtitle">Coba gunakan kata kunci pencarian yang berbeda atau pilih tab "Semua".</div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.glossary-explorer {
+  margin: 1.75rem 0;
+  border-radius: 1rem;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  padding: 1.5rem;
+  box-shadow: var(--sme-shadow-sm);
+}
+
+.glossary-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .glossary-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.glossary-title-group {
+  flex: 1;
+}
+
+.glossary-title {
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: var(--vp-c-text-1);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.glossary-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 0.5rem;
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.glossary-subtitle {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-2);
+  margin: 0.35rem 0 0 0;
+  line-height: 1.5;
+}
+
+.glossary-count-badge {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.dark .glossary-count-badge {
+  color: #60a5fa;
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+@media (min-width: 768px) {
+  .glossary-count-badge {
+    align-self: center;
+  }
+}
+
+.glossary-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--vp-c-text-3);
+  pointer-events: none;
+  width: 16px;
+  height: 16px;
+}
+
+.search-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  padding: 0.65rem 2.5rem 0.65rem 2.4rem;
+  font-size: 0.875rem;
+  color: var(--vp-c-text-1);
+  transition: all 0.15s ease;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.search-input:focus {
+  border-color: var(--sme-brand-primary);
+  box-shadow: 0 0 0 3px var(--sme-brand-subtle);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--vp-c-text-3);
+  background: var(--vp-c-bg-mute);
+  font-size: 0.7rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.clear-search-btn:hover {
+  background: var(--vp-c-divider);
+  color: var(--vp-c-text-1);
+}
+
+.category-tabs-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scrollbar-width: thin;
+}
+
+.category-tab-btn {
+  white-space: nowrap;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.775rem;
+  font-weight: 550;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-2);
+}
+
+.category-tab-btn:hover {
+  background: var(--vp-c-bg-mute);
+  color: var(--vp-c-text-1);
+  border-color: var(--sme-brand-primary);
+}
+
+.category-tab-btn.is-active {
+  background: var(--sme-brand-primary);
+  color: #ffffff;
+  border-color: var(--sme-brand-primary);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.tab-count-pill {
+  font-size: 0.675rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.category-tab-btn.is-active .tab-count-pill {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.dark .category-tab-btn:not(.is-active) .tab-count-pill {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--vp-c-text-2);
+}
+
+.terms-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .terms-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.term-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 0.75rem;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  padding: 1.15rem;
+  transition: all 0.15s ease;
+}
+
+.term-card:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: var(--sme-shadow-md);
+  transform: translateY(-1px);
+}
+
+.term-card-body {
+  flex: 1;
+}
+
+.term-badges-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.abbr-badge {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.375rem;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  flex-shrink: 0;
+}
+
+.rfc-badge {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.375rem;
+  background: rgba(168, 85, 247, 0.12);
+  color: #9333ea;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  flex-shrink: 0;
+}
+
+.dark .rfc-badge {
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.3);
+}
+
+.term-title-group {
+  margin-bottom: 0.55rem;
+}
+
+.term-full-title {
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  line-height: 1.35;
+}
+
+.term-category-label {
+  font-size: 0.725rem;
+  font-weight: 550;
+  color: var(--vp-c-text-3);
+  margin-top: 0.15rem;
+}
+
+.term-desc {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+  margin: 0 0 0.85rem 0;
+}
+
+.term-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--vp-c-divider);
+  font-size: 0.775rem;
+}
+
+.copy-term-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--vp-c-text-3);
+  font-weight: 550;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.copy-term-btn:hover {
+  color: var(--sme-brand-primary);
+  background: var(--vp-c-bg-mute);
+}
+
+.module-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--sme-brand-primary);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.module-link:hover {
+  text-decoration: underline;
+  background: var(--vp-c-bg-mute);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border-radius: 0.75rem;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.empty-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-title {
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+}
+
+.empty-subtitle {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-3);
+  margin-top: 0.3rem;
+}
+</style>

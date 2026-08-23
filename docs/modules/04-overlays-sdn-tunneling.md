@@ -36,14 +36,12 @@ Gunakan simulator interaktif di bawah ini untuk menelusuri bagaimana frame L2, p
 #### A. VXLAN Header (RFC 7348) - 8 Byte Fixed Header
 VXLAN beroperasi di atas **UDP Port 4789**. Overhead total adalah **50 Byte** ($14\text{B Ethernet} + 20\text{B IP} + 8\text{B UDP} + 8\text{B VXLAN}$).
 
-```
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|R|R|R|R|I|R|R|R|            Reserved (24-bit)                  |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                VXLAN Network Identifier (VNI - 24b)   |Reserved|
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```mermaid
+packet-beta
+0-7: "Flags (I-Flag = Bit 4)"
+8-31: "Reserved (24-bit)"
+32-55: "VXLAN Network Identifier (VNI - 24-bit)"
+56-63: "Reserved (8-bit)"
 ```
 - **I-Flag (Bit 4)**: Wajib diset bernilai 1 untuk menandakan VNI valid.
 - **24-bit VNI**: Menyediakan $2^{24} = 16,777,216$ segmen virtual terisolasi (menggantikan limit 4,096 VLAN ID).
@@ -51,16 +49,17 @@ VXLAN beroperasi di atas **UDP Port 4789**. Overhead total adalah **50 Byte** ($
 #### B. GENEVE Header (RFC 8926) - Variable Length Header
 GENEVE beroperasi di atas **UDP Port 6081**. Protokol ini menjadi standar modern pada AWS Gateway Load Balancer karena mendukung penyisipan metadata dinamis melalui opsi *Type-Length-Value (TLV)*:
 
-```
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|Ver|  Opt Len  |O|C|    Rsvd   |          Protocol Type        |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|             Virtual Network Identifier (VNI - 24b)    |Reserved|
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                    Variable TLV Options Data                  |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```mermaid
+packet-beta
+0-1: "Ver"
+2-7: "Opt Len"
+8: "O"
+9: "C"
+10-15: "Rsvd"
+16-31: "Protocol Type (0x6558)"
+32-55: "Virtual Network Identifier (VNI - 24b)"
+56-63: "Reserved"
+64-95: "Variable TLV Options Data"
 ```
 
 ### 1.2 Suite IPsec: IKEv2 & Encapsulating Security Payload (ESP)

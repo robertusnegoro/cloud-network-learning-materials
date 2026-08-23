@@ -21,16 +21,21 @@ Aktifkan ekstensi **EDNS0 (RFC 6891)** dengan ukuran buffer UDP 1232–1400 byte
 
 Header DNS standar memiliki ukuran fixed 12-byte:
 
-```
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|          Identification (16-bit)              |QR| Opcode |AA|TC|RD|RA| Z | RCODE |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|          Question Count (QDCOUNT)             |          Answer Count (ANCOUNT)       |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|        Authority Count (NSCOUNT)              |        Additional Count (ARCOUNT)     |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```mermaid
+packet-beta
+0-15: "Identification (16-bit)"
+16: "QR"
+17-20: "Opcode (4-bit)"
+21: "AA"
+22: "TC"
+23: "RD"
+24: "RA"
+25-27: "Zero (3-bit)"
+28-31: "RCODE (4-bit)"
+32-47: "Question Count (QDCOUNT - 16b)"
+48-63: "Answer Count (ANCOUNT - 16b)"
+64-79: "Authority Count (NSCOUNT - 16b)"
+80-95: "Additional Count (ARCOUNT - 16b)"
 ```
 
 - **Flag `TC` (Truncation)**: Jika respons DNS melebihi 512 byte (pada UDP murni) atau melebihi EDNS0 buffer, server mengaktifkan bit `TC=1`. Klien yang menerima flag ini diwajibkan membuka koneksi **TCP Port 53** untuk mengulang query.

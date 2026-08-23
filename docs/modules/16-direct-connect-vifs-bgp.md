@@ -82,21 +82,23 @@ Mengatur seberapa jauh AWS meng-advertise prefix publik on-premises Anda ke dala
 ### C. BFD (Bidirectional Forwarding Detection - RFC 5880)
 Secara default, BGP Keepalive timer adalah **30 detik** dan Hold timer adalah **90 detik**. Jika kabel optik di jalur perantara putus tanpa mematikan interface CE (Silent Link Failure), BGP membutuhkan hingga 90 detik untuk mendeteksi kegagalan rute, memicu pemadaman transaksi (*downtime*).
 
-```
-BFD Packet Anatomy (RFC 5880):
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|Vers |  Diag   |Sta|P|F|C|A|D|M|  Detect Mult  |    Length     |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                       My Discriminator                        |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                      Your Discriminator                       |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                    Desired Min Tx Interval                    |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                   Required Min Rx Interval                    |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```mermaid
+packet-beta
+0-2: "Vers"
+3-7: "Diag"
+8-9: "Sta"
+10: "P"
+11: "F"
+12: "C"
+13: "A"
+14: "D"
+15: "M"
+16-23: "Detect Mult"
+24-31: "Length"
+32-63: "My Discriminator (32-bit)"
+64-95: "Your Discriminator (32-bit)"
+96-127: "Desired Min Tx Interval (32-bit)"
+128-159: "Required Min Rx Interval (32-bit)"
 ```
 
 - **Tx/Rx Interval Minimum AWS**: **300 ms**

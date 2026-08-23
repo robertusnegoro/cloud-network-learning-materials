@@ -208,38 +208,38 @@ onUnmounted(() => {
           ></div>
 
           <!-- Card Header -->
-          <div class="flex items-center justify-between gap-2 border-b border-[var(--vp-c-divider)] pb-2 mb-2">
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="font-mono text-xs font-black px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shrink-0">
+          <div class="popover-header">
+            <div class="header-badge-group">
+              <span class="abbr-badge">
                 {{ displayAbbr }}
               </span>
-              <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-500/10 text-slate-500 dark:text-slate-400 truncate">
+              <span class="category-pill">
                 {{ displayCategoryLabel }}
               </span>
             </div>
-            <span v-if="displayRfc" class="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 shrink-0 font-medium">
+            <span v-if="displayRfc" class="rfc-badge">
               {{ displayRfc }}
             </span>
           </div>
 
           <!-- Term Full Name Extension -->
-          <div class="font-bold text-[13.5px] text-[var(--vp-c-text-1)] leading-snug mb-1.5">
+          <div class="term-full-title">
             {{ displayFull }}
           </div>
 
           <!-- Brief Technical Description -->
-          <p class="text-[12.5px] text-[var(--vp-c-text-2)] leading-relaxed mb-3">
+          <p class="term-description">
             {{ displayDesc }}
           </p>
 
           <!-- Interactive Actions Footer -->
-          <div class="flex items-center justify-between pt-2 border-t border-[var(--vp-c-divider)] text-xs">
+          <div class="popover-footer">
             <button
               @click="copyDefinition"
-              class="flex items-center gap-1 text-[var(--vp-c-text-3)] hover:text-blue-500 dark:hover:text-blue-400 font-medium transition-colors cursor-pointer"
+              class="copy-btn"
               title="Salin definisi ke clipboard"
             >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
@@ -249,7 +249,7 @@ onUnmounted(() => {
             <a
               v-if="displayModuleLink"
               :href="withBase(displayModuleLink)"
-              class="text-blue-600 dark:text-blue-400 hover:underline font-semibold flex items-center gap-0.5 transition-colors"
+              class="detail-link"
             >
               <span>Modul Detail</span>
               <span>→</span>
@@ -280,11 +280,10 @@ onUnmounted(() => {
   position: fixed;
   width: 320px;
   max-width: calc(100vw - 32px);
-  background: var(--vp-c-bg);
-  background-color: var(--vp-c-bg-soft);
+  background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
   border-radius: 0.75rem;
-  padding: 0.85rem 0.95rem;
+  padding: 0.95rem 1rem;
   box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.18), 0 4px 12px -2px rgba(0, 0, 0, 0.1);
   pointer-events: auto;
   user-select: text;
@@ -295,6 +294,126 @@ onUnmounted(() => {
   background: rgba(15, 23, 42, 0.96);
   border-color: rgba(59, 130, 246, 0.3);
   box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.65rem;
+  margin-bottom: 0.65rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.header-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.abbr-badge {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.375rem;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  flex-shrink: 0;
+}
+
+.category-pill {
+  font-size: 0.675rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.375rem;
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--vp-c-text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rfc-badge {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.675rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.375rem;
+  background: rgba(168, 85, 247, 0.12);
+  color: #9333ea;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  flex-shrink: 0;
+}
+
+.dark .rfc-badge {
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.3);
+}
+
+.term-full-title {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--vp-c-text-1);
+  line-height: 1.35;
+  margin-bottom: 0.45rem;
+}
+
+.term-description {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+}
+
+.popover-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--vp-c-divider);
+  font-size: 0.775rem;
+}
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--vp-c-text-3);
+  font-weight: 550;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  color: var(--sme-brand-primary);
+  background: var(--vp-c-bg-mute);
+}
+
+.detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--sme-brand-primary);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.detail-link:hover {
+  text-decoration: underline;
+  background: var(--vp-c-bg-mute);
 }
 
 .term-arrow {

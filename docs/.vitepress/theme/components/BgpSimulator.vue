@@ -341,89 +341,91 @@ const electionSteps = computed(() => {
     </div>
 
     <!-- Route Candidate Cards -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+    <div class="route-cards-grid">
       <div
         v-for="route in routes"
         :key="route.id"
         :class="[
-          'p-4 rounded-xl border transition-all duration-200',
+          'route-card',
           electionSteps.ecmpRoutes.some(r => r.id === route.id)
-            ? 'border-emerald-500 bg-emerald-500/5 shadow-md shadow-emerald-500/10'
+            ? 'is-ecmp-card'
             : electionSteps.bestRoute.id === route.id
-            ? 'border-blue-500 bg-blue-500/5 shadow-md shadow-blue-500/10'
-            : 'border-[var(--vp-c-divider)] bg-[var(--vp-c-bg-alt)] opacity-85'
+            ? 'is-best-card'
+            : 'is-candidate-card'
         ]"
       >
-        <div class="flex items-center justify-between mb-3 pb-2 border-b border-[var(--vp-c-divider)]">
-          <span class="text-xs font-bold text-[var(--vp-c-text-1)] truncate">{{ route.name.split(':')[0] }}</span>
-          <span v-if="electionSteps.bestRoute.id === route.id && electionSteps.ecmpRoutes.length === 0" class="badge-sme !bg-blue-600 !text-white border-none">
+        <div class="route-card-header">
+          <span class="route-id-label">{{ route.name.split(':')[0] }}</span>
+          <span v-if="electionSteps.bestRoute.id === route.id && electionSteps.ecmpRoutes.length === 0" class="badge-status is-best">
             ★ BEST PATH
           </span>
-          <span v-else-if="electionSteps.ecmpRoutes.some(r => r.id === route.id)" class="badge-sme !bg-emerald-600 !text-white border-none">
+          <span v-else-if="electionSteps.ecmpRoutes.some(r => r.id === route.id)" class="badge-status is-ecmp">
             ⚡ ECMP ACTIVE
           </span>
-          <span v-else class="text-[10px] text-[var(--vp-c-text-3)] uppercase font-semibold">Candidate</span>
+          <span v-else class="badge-status is-candidate">
+            CANDIDATE
+          </span>
         </div>
 
-        <div class="space-y-2.5 text-xs">
-          <div>
-            <span class="text-[var(--vp-c-text-3)] block mb-0.5 text-[10px] uppercase font-bold">Route Description:</span>
-            <span class="text-[var(--vp-c-text-1)] font-medium text-[11px] block">{{ route.name.split(':')[1] }}</span>
+        <div class="route-card-body">
+          <div class="route-desc-group">
+            <span class="route-desc-label">ROUTE DESCRIPTION:</span>
+            <span class="route-desc-text">{{ route.name.split(':')[1] }}</span>
           </div>
 
-          <div class="grid grid-cols-2 gap-2 pt-1">
-            <div>
-              <label class="block text-[10px] uppercase font-bold text-[var(--vp-c-text-2)] mb-1">Weight (AWS/Cisco)</label>
-              <input v-model.number="route.weight" type="number" class="ui-input !py-1 text-xs font-mono" />
+          <div class="bgp-fields-row">
+            <div class="bgp-field-col">
+              <label class="bgp-field-label">Weight (AWS/Cisco)</label>
+              <input v-model.number="route.weight" type="number" class="bgp-field-input" />
             </div>
-            <div>
-              <label class="block text-[10px] uppercase font-bold text-[var(--vp-c-text-2)] mb-1">Local Preference</label>
-              <input v-model.number="route.localPref" type="number" class="ui-input !py-1 text-xs font-mono" />
+            <div class="bgp-field-col">
+              <label class="bgp-field-label">Local Preference</label>
+              <input v-model.number="route.localPref" type="number" class="bgp-field-input" />
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-[10px] uppercase font-bold text-[var(--vp-c-text-2)] mb-1">MED (Metric)</label>
-              <input v-model.number="route.med" type="number" class="ui-input !py-1 text-xs font-mono" />
+          <div class="bgp-fields-row">
+            <div class="bgp-field-col">
+              <label class="bgp-field-label">MED (Metric)</label>
+              <input v-model.number="route.med" type="number" class="bgp-field-input" />
             </div>
-            <div>
-              <label class="block text-[10px] uppercase font-bold text-[var(--vp-c-text-2)] mb-1">Origin Code</label>
-              <select v-model="route.origin" class="ui-input !py-1 text-xs">
+            <div class="bgp-field-col">
+              <label class="bgp-field-label">Origin Code</label>
+              <select v-model="route.origin" class="bgp-field-select">
                 <option value="IGP">IGP (i)</option>
                 <option value="EGP">EGP (e)</option>
-                <option value="Incomplete">Incomplete (?)</option>
+                <option value="Incomplete">Incompl (?)</option>
               </select>
             </div>
           </div>
 
-          <div>
-            <div class="flex justify-between items-center mb-1">
-              <label class="text-[10px] uppercase font-bold text-[var(--vp-c-text-2)]">AS-Path ({{ route.asPath.length }} hops)</label>
-              <div class="flex gap-1">
+          <div class="as-path-field-group">
+            <div class="as-path-header">
+              <label class="bgp-field-label">AS-Path ({{ route.asPath.length }} hops)</label>
+              <div class="as-path-actions">
                 <button
-                  class="text-[10px] bg-[var(--vp-c-bg-mute)] hover:bg-[var(--vp-c-divider)] px-2 py-0.5 rounded font-mono"
+                  class="bgp-mini-btn"
                   @click="route.asPath.push(route.neighborAs)"
                 >
                   + Prepend
                 </button>
                 <button
                   :disabled="route.asPath.length <= 1"
-                  class="text-[10px] bg-[var(--vp-c-bg-mute)] hover:bg-[var(--vp-c-divider)] px-2 py-0.5 rounded font-mono disabled:opacity-30"
+                  class="bgp-mini-btn"
                   @click="route.asPath.pop()"
                 >
                   - Pop
                 </button>
               </div>
             </div>
-            <div class="font-mono text-[11px] bg-[var(--vp-c-bg)] p-1.5 rounded-lg border border-[var(--vp-c-divider)] text-amber-400">
+            <div class="as-path-display">
               [{{ route.asPath.join(' ') }}]
             </div>
           </div>
 
-          <div>
-            <label class="block text-[10px] uppercase font-bold text-[var(--vp-c-text-2)] mb-1">AWS DX Community</label>
-            <input v-model="route.community" type="text" class="ui-input !py-1 text-[11px] font-mono" />
+          <div class="community-field-group">
+            <label class="bgp-field-label">AWS DX Community</label>
+            <input v-model="route.community" type="text" class="bgp-field-input" />
           </div>
         </div>
       </div>
@@ -472,6 +474,224 @@ const electionSteps = computed(() => {
 </template>
 
 <style scoped>
+.route-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .route-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.route-card {
+  padding: 1.15rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-alt);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.route-card.is-best-card {
+  border-color: rgba(59, 130, 246, 0.6);
+  background: rgba(59, 130, 246, 0.04);
+  box-shadow: 0 4px 16px -2px rgba(59, 130, 246, 0.15);
+}
+
+.dark .route-card.is-best-card {
+  background: rgba(30, 58, 138, 0.15);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.route-card.is-ecmp-card {
+  border-color: rgba(16, 185, 129, 0.6);
+  background: rgba(16, 185, 129, 0.04);
+  box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.15);
+}
+
+.route-card.is-candidate-card {
+  opacity: 0.9;
+}
+
+.route-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.route-id-label {
+  font-size: 0.85rem;
+  font-weight: 750;
+  color: var(--vp-c-text-1);
+}
+
+.badge-status {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.675rem;
+  font-weight: 750;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.badge-status.is-best {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+}
+
+.badge-status.is-ecmp {
+  background: #059669;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35);
+}
+
+.badge-status.is-candidate {
+  background: rgba(148, 163, 184, 0.15);
+  color: var(--vp-c-text-3);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.route-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.route-desc-group {
+  margin-bottom: 0.15rem;
+}
+
+.route-desc-label {
+  font-size: 0.65rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--vp-c-text-3);
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.route-desc-text {
+  font-size: 0.775rem;
+  font-weight: 550;
+  color: var(--vp-c-text-1);
+  line-height: 1.4;
+  display: block;
+}
+
+.bgp-fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.bgp-field-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.bgp-field-label {
+  font-size: 0.675rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--vp-c-text-2);
+  margin-bottom: 0.3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bgp-field-input,
+.bgp-field-select {
+  width: 100%;
+  padding: 0.35rem 0.55rem;
+  border-radius: 0.45rem;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.8rem;
+  outline: none;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.bgp-field-input:focus,
+.bgp-field-select:focus {
+  border-color: var(--sme-brand-primary);
+  box-shadow: 0 0 0 2px var(--sme-brand-subtle);
+}
+
+.as-path-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.as-path-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.bgp-mini-btn {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.675rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-mute);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.bgp-mini-btn:hover:not(:disabled) {
+  background: var(--sme-brand-primary);
+  color: #ffffff;
+  border-color: var(--sme-brand-primary);
+}
+
+.bgp-mini-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.as-path-display {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.775rem;
+  font-weight: 600;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.45rem;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  color: #d97706;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.dark .as-path-display {
+  color: #fbbf24;
+}
+
+.community-field-group {
+  display: flex;
+  flex-direction: column;
+}
+
 .terminal-body {
   max-height: 420px;
   overflow-y: auto;

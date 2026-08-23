@@ -19,24 +19,26 @@ Modul ini mengupas tuntas protokol TCP dari level bit header dan *Finite State M
 
 TCP header standar tanpa *options* memiliki panjang 20 byte (160 bit), tersusun dalam 5 baris 32-bit:
 
-```
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|          Source Port          |       Destination Port        |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                        Sequence Number                        |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                    Acknowledgment Number                      |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  Data |           |C|E|U|A|P|R|S|F|                               |
-| Offset| Reserved  |W|C|R|C|S|S|Y|I|            Window             |
-| (4b)  |   (4b)    |R|E|G|K|H|T|N|N|                               |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|           Checksum            |        Urgent Pointer         |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                    Options (Variable 0 - 40B)                 |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+```mermaid
+packet-beta
+0-15: "Source Port (16-bit)"
+16-31: "Destination Port (16-bit)"
+32-63: "Sequence Number (32-bit)"
+64-95: "Acknowledgment Number (32-bit)"
+96-99: "Data Offset"
+100-103: "Reserved"
+104: "CWR"
+105: "ECE"
+106: "URG"
+107: "ACK"
+108: "PSH"
+109: "RST"
+110: "SYN"
+111: "FIN"
+112-127: "Window Size (16-bit)"
+128-143: "TCP Checksum (16-bit)"
+144-159: "Urgent Pointer (16-bit)"
+160-191: "Options (Variable 0 - 40 Bytes)"
 ```
 
 #### Bedah Flag Kontrol Kritis:

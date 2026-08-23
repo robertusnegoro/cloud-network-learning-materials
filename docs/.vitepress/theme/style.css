@@ -213,6 +213,38 @@ table td {
   background-color: var(--sme-brand-subtle);
 }
 
+/* Responsive Table Wrapper & Isolation */
+.table-responsive-wrapper,
+.overflow-x-auto {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.25rem 0;
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+}
+
+.table-responsive-wrapper table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  .vp-doc table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 /* Custom Callout Containers (SME Tip / Warning / Info) */
 .vp-doc .custom-block {
   border-radius: 12px;
@@ -548,6 +580,9 @@ input[type="range"]:active::-webkit-slider-thumb {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 76px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .stat-label {
@@ -557,16 +592,22 @@ input[type="range"]:active::-webkit-slider-thumb {
   letter-spacing: 0.06em;
   font-weight: 600;
   margin-bottom: 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-value {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   font-family: var(--vp-font-family-mono);
   color: var(--vp-c-text-1);
   display: flex;
   align-items: baseline;
   gap: 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ==========================================================================
@@ -574,32 +615,63 @@ input[type="range"]:active::-webkit-slider-thumb {
    ========================================================================== */
 .bit-matrix-board {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.65rem;
   margin: 1rem 0;
+}
+
+@container widget-container (max-width: 768px) {
+  .bit-matrix-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+}
+
+@container widget-container (max-width: 440px) {
+  .bit-matrix-board {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .bit-matrix-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .bit-matrix-board {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
 }
 
 .bit-octet-box {
   background: var(--vp-c-bg-alt);
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
-  padding: 0.5rem;
+  padding: 0.6rem;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .bit-octet-label {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--vp-c-text-3);
-  margin-bottom: 0.35rem;
+  color: var(--vp-c-text-2);
+  margin-bottom: 0.4rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .bit-cells-row {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 2px;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 3px;
 }
 
 .bit-cell {
@@ -613,6 +685,8 @@ input[type="range"]:active::-webkit-slider-thumb {
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
+  position: relative;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .bit-cell.network-bit {
@@ -628,9 +702,8 @@ input[type="range"]:active::-webkit-slider-thumb {
 }
 
 .bit-cell:hover {
-  transform: scale(1.18);
-  z-index: 10;
-  box-shadow: 0 0 8px currentColor;
+  filter: brightness(1.25);
+  border-color: #ffffff;
 }
 
 /* Subnet Memory Allocation Bar */
@@ -747,6 +820,7 @@ div[class*="language-mermaid"],
   font-family: var(--vp-font-family-base) !important;
   text-rendering: optimizeLegibility;
   shape-rendering: geometricPrecision;
+  overflow: visible !important;
 }
 
 .mermaid-diagram-card .is-natural svg {
@@ -756,12 +830,46 @@ div[class*="language-mermaid"],
   font-family: var(--vp-font-family-base) !important;
   text-rendering: optimizeLegibility;
   shape-rendering: geometricPrecision;
+  overflow: visible !important;
 }
 
-/* Ensure SVG text has high contrast and comfortable font size */
-.mermaid-diagram-card svg text {
+/* Ensure multiline text and foreignObjects in SVG are never clipped by VitePress paragraph styles */
+.mermaid-diagram-card svg foreignObject,
+.mermaid svg foreignObject,
+.vp-doc .mermaid-diagram-card svg foreignObject,
+.vp-doc .mermaid svg foreignObject {
+  overflow: visible !important;
+}
+
+.mermaid-diagram-card svg foreignObject div,
+.mermaid-diagram-card svg foreignObject p,
+.mermaid-diagram-card svg foreignObject span,
+.mermaid svg foreignObject div,
+.mermaid svg foreignObject p,
+.mermaid svg foreignObject span,
+.vp-doc .mermaid-diagram-card svg foreignObject div,
+.vp-doc .mermaid-diagram-card svg foreignObject p,
+.vp-doc .mermaid-diagram-card svg foreignObject span,
+.vp-doc .mermaid svg foreignObject div,
+.vp-doc .mermaid svg foreignObject p,
+.vp-doc .mermaid svg foreignObject span {
+  font-family: var(--vp-font-family-base) !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure SVG text and tspans have high contrast and comfortable line rendering */
+.mermaid-diagram-card svg text,
+.mermaid svg text {
   font-family: var(--vp-font-family-base) !important;
   font-weight: 600;
+}
+
+.mermaid-diagram-card svg tspan,
+.mermaid svg tspan {
+  font-family: var(--vp-font-family-base) !important;
 }
 
 .mermaid-diagram-card:hover {

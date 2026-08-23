@@ -315,22 +315,22 @@ function copyExport() {
         </h4>
         <span class="text-xs text-[var(--vp-c-text-3)]">AWS RFC Standard</span>
       </div>
-      <div class="overflow-x-auto border border-[var(--vp-c-divider)] rounded-xl">
+      <div class="table-responsive-wrapper overflow-x-auto border border-[var(--vp-c-divider)] rounded-xl">
         <table class="w-full text-left text-xs border-collapse">
           <thead>
             <tr class="bg-[var(--vp-c-bg-alt)] border-b border-[var(--vp-c-divider)]">
-              <th class="p-2.5 font-bold text-[var(--vp-c-text-1)]">Reserved IP</th>
-              <th class="p-2.5 font-bold text-[var(--vp-c-text-1)]">Offset</th>
-              <th class="p-2.5 font-bold text-[var(--vp-c-text-1)]">Role / Peruntukan</th>
-              <th class="p-2.5 font-bold text-[var(--vp-c-text-1)]">Penjelasan Arsitektural AWS Underlay</th>
+              <th class="p-2.5 font-bold text-[var(--vp-c-text-1)] whitespace-nowrap">Reserved IP</th>
+              <th class="p-2.5 font-bold text-[var(--vp-c-text-1)] whitespace-nowrap">Offset</th>
+              <th class="p-2.5 font-bold text-[var(--vp-c-text-1)] whitespace-nowrap">Role / Peruntukan</th>
+              <th class="p-2.5 font-bold text-[var(--vp-c-text-1)] min-w-[240px]">Penjelasan Arsitektural AWS Underlay</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, idx) in awsReservedIps" :key="idx" class="border-b border-[var(--vp-c-divider)] hover:bg-[var(--vp-c-bg-mute)]">
-              <td class="p-2.5 font-mono font-bold text-amber-400">{{ item.ip }}</td>
-              <td class="p-2.5 font-mono text-[var(--vp-c-text-3)]">{{ item.offset }}</td>
-              <td class="p-2.5 font-semibold text-[var(--vp-c-text-1)]">{{ item.role }}</td>
-              <td class="p-2.5 text-[var(--vp-c-text-2)]">{{ item.desc }}</td>
+              <td class="p-2.5 font-mono font-bold text-amber-400 whitespace-nowrap">{{ item.ip }}</td>
+              <td class="p-2.5 font-mono text-[var(--vp-c-text-3)] whitespace-nowrap">{{ item.offset }}</td>
+              <td class="p-2.5 font-semibold text-[var(--vp-c-text-1)] whitespace-nowrap">{{ item.role }}</td>
+              <td class="p-2.5 text-[var(--vp-c-text-2)] leading-relaxed">{{ item.desc }}</td>
             </tr>
           </tbody>
         </table>
@@ -354,22 +354,22 @@ function copyExport() {
         </div>
       </div>
 
-      <div v-if="splitSubnets.length > 0" class="overflow-x-auto max-h-60 overflow-y-auto border border-[var(--vp-c-divider)] rounded-lg">
+      <div v-if="splitSubnets.length > 0" class="table-responsive-wrapper overflow-x-auto max-h-60 overflow-y-auto border border-[var(--vp-c-divider)] rounded-lg">
         <table class="w-full text-left text-xs border-collapse font-mono">
           <thead>
             <tr class="bg-[var(--vp-c-bg-soft)] border-b border-[var(--vp-c-divider)] text-[var(--vp-c-text-1)]">
-              <th class="p-2.5">CIDR Subnet</th>
-              <th class="p-2.5">Usable Range (AWS)</th>
-              <th class="p-2.5">Usable Hosts</th>
-              <th class="p-2.5">Broadcast</th>
+              <th class="p-2.5 whitespace-nowrap">CIDR Subnet</th>
+              <th class="p-2.5 whitespace-nowrap">Usable Range (AWS)</th>
+              <th class="p-2.5 whitespace-nowrap">Usable Hosts</th>
+              <th class="p-2.5 whitespace-nowrap">Broadcast</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(sub, i) in splitSubnets" :key="i" class="border-b border-[var(--vp-c-divider)] hover:bg-[var(--vp-c-bg-soft)]">
-              <td class="p-2.5 font-bold text-blue-400">{{ sub.cidr }}</td>
-              <td class="p-2.5 text-[var(--vp-c-text-2)]">{{ sub.range }}</td>
-              <td class="p-2.5 font-bold text-emerald-400">{{ sub.awsUsable }}</td>
-              <td class="p-2.5 text-[var(--vp-c-text-3)]">{{ sub.broadcast }}</td>
+              <td class="p-2.5 font-bold text-blue-400 whitespace-nowrap">{{ sub.cidr }}</td>
+              <td class="p-2.5 text-[var(--vp-c-text-2)] whitespace-nowrap">{{ sub.range }}</td>
+              <td class="p-2.5 font-bold text-emerald-400 whitespace-nowrap">{{ sub.awsUsable }}</td>
+              <td class="p-2.5 text-[var(--vp-c-text-3)] whitespace-nowrap">{{ sub.broadcast }}</td>
             </tr>
           </tbody>
         </table>
@@ -472,6 +472,21 @@ function copyExport() {
   max-height: 14px !important;
   flex-shrink: 0;
   display: inline-block;
+}
+
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive-wrapper table {
+  min-width: 520px;
+}
+
+.table-responsive-wrapper th,
+.table-responsive-wrapper td {
+  padding: 10px 14px;
 }
 </style>
 

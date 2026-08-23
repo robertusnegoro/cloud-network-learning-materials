@@ -273,22 +273,24 @@ const simulationResult = computed(() => {
           <span>VPC Spoke Route Table (rtb-0123)</span>
           <span class="text-[10px] text-blue-400 font-mono font-bold">Local VPC</span>
         </div>
-        <table class="w-full text-left text-xs border-collapse font-mono">
-          <thead>
-            <tr class="bg-[var(--vp-c-bg)] border-b border-[var(--vp-c-divider)] text-[var(--vp-c-text-2)] text-[11px]">
-              <th class="p-2.5">Destination Prefix</th>
-              <th class="p-2.5">Target</th>
-              <th class="p-2.5">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(r, i) in vpcRoutes" :key="i" class="border-b border-[var(--vp-c-divider)]">
-              <td class="p-2.5 text-blue-400 font-bold">{{ r.prefix }}</td>
-              <td class="p-2.5 text-[var(--vp-c-text-1)]">{{ r.target }}</td>
-              <td class="p-2.5 text-[var(--vp-c-text-3)] text-[11px]">{{ r.status }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse font-mono">
+            <thead>
+              <tr class="bg-[var(--vp-c-bg)] border-b border-[var(--vp-c-divider)] text-[var(--vp-c-text-2)] text-[11px]">
+                <th class="p-2.5 whitespace-nowrap">Destination Prefix</th>
+                <th class="p-2.5 whitespace-nowrap">Target</th>
+                <th class="p-2.5 whitespace-nowrap">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(r, i) in vpcRoutes" :key="i" class="border-b border-[var(--vp-c-divider)]">
+                <td class="p-2.5 text-blue-400 font-bold whitespace-nowrap">{{ r.prefix }}</td>
+                <td class="p-2.5 text-[var(--vp-c-text-1)] whitespace-nowrap">{{ r.target }}</td>
+                <td class="p-2.5 text-[var(--vp-c-text-3)] text-[11px] whitespace-nowrap">{{ r.status }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- TGW Route Table -->
@@ -297,24 +299,26 @@ const simulationResult = computed(() => {
           <span>TGW Core Route Table (tgw-rtb-0abc)</span>
           <span class="text-[10px] text-purple-400 font-mono font-bold">TGW Fabric</span>
         </div>
-        <table class="w-full text-left text-xs border-collapse font-mono">
-          <thead>
-            <tr class="bg-[var(--vp-c-bg)] border-b border-[var(--vp-c-divider)] text-[var(--vp-c-text-2)] text-[11px]">
-              <th class="p-2.5">Destination Prefix</th>
-              <th class="p-2.5">Next Hop</th>
-              <th class="p-2.5">BGP Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(r, i) in tgwRoutes" :key="i" class="border-b border-[var(--vp-c-divider)]">
-              <td class="p-2.5 text-purple-400 font-bold">{{ r.prefix }}</td>
-              <td class="p-2.5 text-[var(--vp-c-text-1)]">{{ r.target }}</td>
-              <td class="p-2.5 text-[11px]" :class="r.status.includes('Active') ? 'text-emerald-400 font-bold' : 'text-[var(--vp-c-text-3)]'">
-                {{ r.status }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse font-mono">
+            <thead>
+              <tr class="bg-[var(--vp-c-bg)] border-b border-[var(--vp-c-divider)] text-[var(--vp-c-text-2)] text-[11px]">
+                <th class="p-2.5 whitespace-nowrap">Destination Prefix</th>
+                <th class="p-2.5 whitespace-nowrap">Next Hop</th>
+                <th class="p-2.5 whitespace-nowrap">BGP Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(r, i) in tgwRoutes" :key="i" class="border-b border-[var(--vp-c-divider)]">
+                <td class="p-2.5 text-purple-400 font-bold whitespace-nowrap">{{ r.prefix }}</td>
+                <td class="p-2.5 text-[var(--vp-c-text-1)] whitespace-nowrap">{{ r.target }}</td>
+                <td class="p-2.5 text-[11px] whitespace-nowrap" :class="r.status.includes('Active') ? 'text-emerald-400 font-bold' : 'text-[var(--vp-c-text-3)]'">
+                  {{ r.status }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 

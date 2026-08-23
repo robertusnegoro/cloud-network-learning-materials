@@ -248,14 +248,16 @@ async function renderDiagram() {
 
     const injectedStyle = isDarkMode
       ? `<style>
-          #${id} .messageText, #${id} text.messageText { fill: #f8fafc !important; stroke: none !important; font-size: 13.5px !important; font-weight: 550 !important; }
+          #${id} foreignObject { overflow: visible !important; }
+          #${id} foreignObject div, #${id} foreignObject p, #${id} foreignObject span { font-family: Inter, system-ui, sans-serif !important; font-size: 13px !important; line-height: 1.35 !important; margin: 0 !important; padding: 0 !important; color: #f8fafc !important; fill: #f8fafc !important; }
+          #${id} .messageText, #${id} text.messageText { fill: #f8fafc !important; stroke: none !important; font-size: 13px !important; font-weight: 550 !important; }
           #${id} .messageLine0, #${id} .messageLine1, #${id} line.messageLine0, #${id} line.messageLine1 { stroke: #94a3b8 !important; stroke-width: 2px !important; }
           #${id} rect.actor, #${id} .actor rect, #${id} g.actor rect { fill: #1e293b !important; stroke: #38bdf8 !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
-          #${id} text.actor, #${id} .actor text, #${id} g.actor text, #${id} g.actor text tspan { fill: #f8fafc !important; font-weight: 600 !important; font-size: 13.5px !important; }
+          #${id} text.actor, #${id} .actor text, #${id} g.actor text, #${id} g.actor text tspan { fill: #f8fafc !important; font-weight: 600 !important; font-size: 13px !important; }
           #${id} rect.note, #${id} .note rect, #${id} g.note rect { fill: #2e2305 !important; stroke: #d97706 !important; stroke-width: 1.5px !important; rx: 6px !important; ry: 6px !important; }
           #${id} .noteText, #${id} .noteText tspan, #${id} text.noteText { fill: #fef08a !important; font-size: 12.5px !important; font-weight: 500 !important; }
           #${id} .node rect, #${id} .node circle, #${id} .node polygon { fill: #1e293b !important; stroke: #38bdf8 !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
-          #${id} .node .label text, #${id} .node text, #${id} .node span { fill: #ffffff !important; color: #ffffff !important; font-weight: 600 !important; font-size: 13.5px !important; }
+          #${id} .node .label text, #${id} .node text, #${id} .node span, #${id} .node p { fill: #ffffff !important; color: #ffffff !important; font-weight: 600 !important; font-size: 13px !important; }
           #${id} .cluster rect { fill: #0f172a !important; stroke: #3b82f6 !important; stroke-width: 1.75px !important; rx: 10px !important; ry: 10px !important; }
           #${id} .cluster text, #${id} .cluster span { fill: #93c5fd !important; color: #93c5fd !important; font-weight: 700 !important; font-size: 14px !important; }
           #${id} .edgePath .path { stroke: #94a3b8 !important; stroke-width: 2px !important; }
@@ -267,14 +269,16 @@ async function renderDiagram() {
           #${id} .loopText tspan { fill: #93c5fd !important; font-weight: 600 !important; }
         </style>`
       : `<style>
-          #${id} .messageText, #${id} text.messageText { fill: #0f172a !important; stroke: none !important; font-size: 13.5px !important; font-weight: 550 !important; }
+          #${id} foreignObject { overflow: visible !important; }
+          #${id} foreignObject div, #${id} foreignObject p, #${id} foreignObject span { font-family: Inter, system-ui, sans-serif !important; font-size: 13px !important; line-height: 1.35 !important; margin: 0 !important; padding: 0 !important; color: #0f172a !important; fill: #0f172a !important; }
+          #${id} .messageText, #${id} text.messageText { fill: #0f172a !important; stroke: none !important; font-size: 13px !important; font-weight: 550 !important; }
           #${id} .messageLine0, #${id} .messageLine1, #${id} line.messageLine0, #${id} line.messageLine1 { stroke: #334155 !important; stroke-width: 2px !important; }
           #${id} rect.actor, #${id} .actor rect, #${id} g.actor rect { fill: #eff6ff !important; stroke: #2563eb !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
-          #${id} text.actor, #${id} .actor text, #${id} g.actor text, #${id} g.actor text tspan { fill: #0f172a !important; font-weight: 600 !important; font-size: 13.5px !important; }
+          #${id} text.actor, #${id} .actor text, #${id} g.actor text, #${id} g.actor text tspan { fill: #0f172a !important; font-weight: 600 !important; font-size: 13px !important; }
           #${id} rect.note, #${id} .note rect, #${id} g.note rect { fill: #fef3c7 !important; stroke: #f59e0b !important; stroke-width: 1.5px !important; rx: 6px !important; ry: 6px !important; }
           #${id} .noteText, #${id} .noteText tspan, #${id} text.noteText { fill: #78350f !important; font-size: 12.5px !important; font-weight: 500 !important; }
           #${id} .node rect, #${id} .node circle, #${id} .node polygon { fill: #ffffff !important; stroke: #2563eb !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
-          #${id} .node .label text, #${id} .node text, #${id} .node span { fill: #0f172a !important; color: #0f172a !important; font-weight: 600 !important; font-size: 13.5px !important; }
+          #${id} .node .label text, #${id} .node text, #${id} .node span, #${id} .node p { fill: #0f172a !important; color: #0f172a !important; font-weight: 600 !important; font-size: 13px !important; }
           #${id} .cluster rect { fill: #f8fafc !important; stroke: #94a3b8 !important; stroke-width: 1.75px !important; rx: 10px !important; ry: 10px !important; }
           #${id} .cluster text, #${id} .cluster span { fill: #1e40af !important; color: #1e40af !important; font-weight: 750 !important; font-size: 14px !important; }
           #${id} .edgePath .path { stroke: #334155 !important; stroke-width: 2px !important; }
@@ -734,6 +738,27 @@ watch(isDark, () => {
   ry: 8px;
 }
 
+:deep(.mermaid-svg-container svg foreignObject),
+:deep(.fullscreen-svg-target svg foreignObject) {
+  overflow: visible !important;
+}
+
+:deep(.mermaid-svg-container svg foreignObject div),
+:deep(.fullscreen-svg-target svg foreignObject div),
+:deep(.mermaid-svg-container svg foreignObject p),
+:deep(.fullscreen-svg-target svg foreignObject p),
+:deep(.mermaid-svg-container svg foreignObject span),
+:deep(.fullscreen-svg-target svg foreignObject span) {
+  font-family: var(--vp-font-family-base) !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  fill: #0f172a !important;
+  color: #0f172a !important;
+  overflow: visible !important;
+}
+
 :deep(.mermaid-svg-container svg .node text),
 :deep(.mermaid-svg-container svg .label text),
 :deep(.mermaid-svg-container svg text),
@@ -741,7 +766,7 @@ watch(isDark, () => {
 :deep(.fullscreen-svg-target svg .label text),
 :deep(.fullscreen-svg-target svg text) {
   font-family: var(--vp-font-family-base) !important;
-  font-size: 13.5px !important;
+  font-size: 13px !important;
   font-weight: 600 !important;
   fill: #0f172a !important;
 }
@@ -823,6 +848,16 @@ watch(isDark, () => {
   fill: #1e293b !important;
   stroke: #38bdf8 !important;
   stroke-width: 2px !important;
+}
+
+.dark :deep(.mermaid-svg-container svg foreignObject div),
+.dark :deep(.fullscreen-svg-target svg foreignObject div),
+.dark :deep(.mermaid-svg-container svg foreignObject p),
+.dark :deep(.fullscreen-svg-target svg foreignObject p),
+.dark :deep(.mermaid-svg-container svg foreignObject span),
+.dark :deep(.fullscreen-svg-target svg foreignObject span) {
+  fill: #f8fafc !important;
+  color: #f8fafc !important;
 }
 
 .dark :deep(.mermaid-svg-container svg .node text),

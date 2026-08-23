@@ -471,3 +471,11 @@ const electionSteps = computed(() => {
   </div>
 </template>
 
+<style scoped>
+.terminal-body {
+  max-height: 420px;
+  overflow-y: auto;
+}
+</style>
+
+

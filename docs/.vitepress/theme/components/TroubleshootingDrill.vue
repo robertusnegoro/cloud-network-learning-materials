@@ -822,3 +822,11 @@ onMounted(() => {
   </div>
 </template>
 
+<style scoped>
+.terminal-body {
+  max-height: 380px;
+  overflow-y: auto;
+}
+</style>
+
+

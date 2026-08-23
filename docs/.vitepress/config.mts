@@ -3,11 +3,12 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   base: '/cloud-network-learning-materials/',
   title: 'Cloud Network Engineering Mastery',
-  description: 'Materi Pembelajaran Komprehensif Teori Jaringan Lanjut & AWS Enterprise Cloud Networking untuk Level SME / Principal Cloud Network Engineer (O\'Reilly / McGraw-Hill Technical Standard)',
+  description: 'Materi Pembelajaran Komprehensif Teori Jaringan Lanjut & AWS Enterprise Cloud Networking untuk Level SME / Principal Cloud Network Engineer',
   lang: 'id-ID',
   cleanUrls: true,
   lastUpdated: true,
   markdown: {
+    math: true,
     languageAlias: {
       cisco: 'sh',
       cedar: 'json',

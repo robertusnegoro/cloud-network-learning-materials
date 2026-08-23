@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { withBase } from 'vitepress'
 import { getTerm, type TermDefinition } from '../data/terms'
 
 const props = defineProps<{
@@ -28,39 +29,45 @@ const copied = ref(false)
 const triggerRef = ref<HTMLElement | null>(null)
 const popoverRef = ref<HTMLElement | null>(null)
 
-// Unique ID for ARIA connection and CSS anchor positioning
+// Unique ID for ARIA connection
 const uniqueId = computed(() => `term-${displayAbbr.value.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${Math.random().toString(36).substring(2, 7)}`)
 
-// Floating positions for universal browser fallback
+// Floating position and arrow alignment
 const popoverStyle = ref<Record<string, string>>({})
-const placement = ref<'top' | 'bottom'>('top')
+const arrowStyle = ref<Record<string, string>>({})
+const placement = ref<'top' | 'bottom'>('bottom')
 let hideTimeout: ReturnType<typeof setTimeout> | null = null
 
 function updatePosition() {
   if (typeof window === 'undefined' || !triggerRef.value) return
   
   const triggerRect = triggerRef.value.getBoundingClientRect()
-  const popoverWidth = 320
-  const popoverHeight = 180
   const viewportWidth = window.innerWidth
   const viewportHeight = window.innerHeight
 
-  // Horizontal position (center aligned, clamped to viewport)
+  const popoverEl = popoverRef.value
+  const popoverWidth = popoverEl ? popoverEl.offsetWidth : 320
+  const popoverHeight = popoverEl ? popoverEl.offsetHeight : 180
+
+  // Calculate clamped horizontal position
   let left = triggerRect.left + (triggerRect.width / 2) - (popoverWidth / 2)
   if (left < 16) left = 16
   if (left + popoverWidth > viewportWidth - 16) {
     left = viewportWidth - popoverWidth - 16
   }
 
-  // Vertical position (prefer top, flip to bottom if top overflows)
-  const spaceAbove = triggerRect.top
+  // Calculate arrow offset relative to the popover
+  const triggerCenter = triggerRect.left + (triggerRect.width / 2)
+  const arrowLeft = Math.max(16, Math.min(popoverWidth - 16, triggerCenter - left))
+
+  // Vertical placement logic (default bottom; flip to top only if space below is too small)
   const spaceBelow = viewportHeight - triggerRect.bottom
+  const spaceAbove = triggerRect.top
 
   let top = 0
-  if (spaceAbove >= popoverHeight + 12 || spaceAbove > spaceBelow) {
+  if (spaceBelow < popoverHeight + 16 && spaceAbove > popoverHeight + 16) {
     placement.value = 'top'
     top = triggerRect.top - popoverHeight - 8
-    if (top < 8) top = 8
   } else {
     placement.value = 'bottom'
     top = triggerRect.bottom + 8
@@ -68,10 +75,14 @@ function updatePosition() {
 
   popoverStyle.value = {
     position: 'fixed',
-    left: `${left}px`,
-    top: `${top}px`,
-    width: `${popoverWidth}px`,
-    zIndex: '999'
+    left: `${Math.round(left)}px`,
+    top: `${Math.round(top)}px`,
+    width: `${Math.min(popoverWidth, viewportWidth - 32)}px`,
+    zIndex: '9999'
+  }
+
+  arrowStyle.value = {
+    left: `${Math.round(arrowLeft)}px`
   }
 }
 
@@ -90,7 +101,7 @@ function scheduleHide() {
   if (hideTimeout) clearTimeout(hideTimeout)
   hideTimeout = setTimeout(() => {
     isOpen.value = false
-  }, 220)
+  }, 200)
 }
 
 function togglePopover(event: MouseEvent | KeyboardEvent) {
@@ -155,11 +166,11 @@ onUnmounted(() => {
 
 <template>
   <span class="network-term-wrapper inline">
-    <!-- Interactive Semantic Trigger -->
+    <!-- Interactive Semantic Trigger (Blends naturally in prose) -->
     <abbr
       ref="triggerRef"
       :id="`trigger-${uniqueId}`"
-      class="network-term-trigger cursor-help font-semibold text-[var(--vp-c-brand-1)] transition-all duration-150 inline-flex items-center gap-0.5 rounded px-1 py-0.2 hover:bg-[var(--vp-c-brand-soft)] hover:text-[var(--vp-c-brand-2)] select-text"
+      class="network-term-trigger cursor-help font-semibold text-[var(--vp-c-brand-1)] transition-colors duration-150 rounded px-1 py-0.5 select-text"
       tabindex="0"
       role="button"
       :aria-expanded="isOpen"
@@ -173,10 +184,9 @@ onUnmounted(() => {
       @keydown="onKeydown"
     >
       <slot>{{ displayAbbr }}</slot>
-      <span class="term-badge-dot inline-block w-1.5 h-1.5 rounded-full bg-[var(--vp-c-brand-1)]/60 -mt-2 ml-0.5" aria-hidden="true"></span>
     </abbr>
 
-    <!-- Teleported/Fixed Floating Popover Card -->
+    <!-- Teleported Floating Popover Card -->
     <Teleport to="body">
       <transition name="term-pop">
         <div
@@ -185,43 +195,51 @@ onUnmounted(() => {
           ref="popoverRef"
           role="tooltip"
           class="network-term-card no-print"
+          :class="`placement-${placement}`"
           :style="popoverStyle"
           @mouseenter="showPopover"
           @mouseleave="scheduleHide"
         >
+          <!-- Arrow Indicator -->
+          <div
+            class="term-arrow"
+            :class="placement === 'top' ? 'arrow-bottom' : 'arrow-top'"
+            :style="arrowStyle"
+          ></div>
+
           <!-- Card Header -->
           <div class="flex items-center justify-between gap-2 border-b border-[var(--vp-c-divider)] pb-2 mb-2">
-            <div class="flex items-center gap-1.5">
-              <span class="font-mono text-xs font-black px-1.5 py-0.5 rounded bg-[var(--vp-c-brand-soft)] text-[var(--vp-c-brand-1)] border border-[var(--vp-c-brand-1)]/20">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="font-mono text-xs font-black px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shrink-0">
                 {{ displayAbbr }}
               </span>
-              <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-500/10 text-slate-400">
+              <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-500/10 text-slate-500 dark:text-slate-400 truncate">
                 {{ displayCategoryLabel }}
               </span>
             </div>
-            <span v-if="displayRfc" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <span v-if="displayRfc" class="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 shrink-0 font-medium">
               {{ displayRfc }}
             </span>
           </div>
 
           <!-- Term Full Name Extension -->
-          <div class="font-bold text-sm text-[var(--vp-c-text-1)] leading-snug mb-1.5">
+          <div class="font-bold text-[13.5px] text-[var(--vp-c-text-1)] leading-snug mb-1.5">
             {{ displayFull }}
           </div>
 
           <!-- Brief Technical Description -->
-          <p class="text-xs text-[var(--vp-c-text-2)] leading-relaxed mb-3">
+          <p class="text-[12.5px] text-[var(--vp-c-text-2)] leading-relaxed mb-3">
             {{ displayDesc }}
           </p>
 
           <!-- Interactive Actions Footer -->
-          <div class="flex items-center justify-between pt-2 border-t border-[var(--vp-c-divider)] text-[11px]">
+          <div class="flex items-center justify-between pt-2 border-t border-[var(--vp-c-divider)] text-xs">
             <button
               @click="copyDefinition"
-              class="flex items-center gap-1 text-[var(--vp-c-text-3)] hover:text-[var(--vp-c-brand-1)] font-medium transition-colors"
+              class="flex items-center gap-1 text-[var(--vp-c-text-3)] hover:text-blue-500 dark:hover:text-blue-400 font-medium transition-colors cursor-pointer"
               title="Salin definisi ke clipboard"
             >
-              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
@@ -230,8 +248,8 @@ onUnmounted(() => {
 
             <a
               v-if="displayModuleLink"
-              :href="displayModuleLink"
-              class="text-[var(--vp-c-brand-1)] hover:underline font-semibold flex items-center gap-0.5"
+              :href="withBase(displayModuleLink)"
+              class="text-blue-600 dark:text-blue-400 hover:underline font-semibold flex items-center gap-0.5 transition-colors"
             >
               <span>Modul Detail</span>
               <span>→</span>
@@ -248,35 +266,76 @@ onUnmounted(() => {
   text-decoration: underline dotted var(--vp-c-brand-1);
   text-underline-offset: 3px;
   text-decoration-thickness: 1.5px;
+  cursor: help;
+}
+
+.network-term-trigger:hover,
+.network-term-trigger:focus-visible {
+  background-color: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-2);
+  outline: none;
 }
 
 .network-term-card {
-  background: rgba(var(--vp-c-bg-rgb, 255, 255, 255), 0.92);
+  position: fixed;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  background: var(--vp-c-bg);
   background-color: var(--vp-c-bg-soft);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--vp-c-divider);
   border-radius: 0.75rem;
-  padding: 0.85rem;
-  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.25), 0 4px 12px -2px rgba(0, 0, 0, 0.15);
+  padding: 0.85rem 0.95rem;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.18), 0 4px 12px -2px rgba(0, 0, 0, 0.1);
   pointer-events: auto;
   user-select: text;
+  z-index: 9999;
 }
 
 .dark .network-term-card {
-  background: rgba(22, 27, 34, 0.94);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: rgba(15, 23, 42, 0.96);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.term-arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  border-left: 1px solid var(--vp-c-divider);
+  border-top: 1px solid var(--vp-c-divider);
+  transform: translateX(-50%) rotate(45deg);
+  pointer-events: none;
+}
+
+.dark .term-arrow {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.arrow-top {
+  top: -5px;
+}
+
+.arrow-bottom {
+  bottom: -5px;
+  border-left: none;
+  border-top: none;
+  border-right: 1px solid var(--vp-c-divider);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.dark .arrow-bottom {
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .term-pop-enter-active,
 .term-pop-leave-active {
-  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.15s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .term-pop-enter-from,
 .term-pop-leave-to {
   opacity: 0;
-  transform: translateY(4px) scale(0.97);
+  transform: translateY(3px) scale(0.98);
 }
 </style>

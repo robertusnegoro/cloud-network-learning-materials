@@ -53,7 +53,7 @@ graph LR
 ## 📂 Lokasi Kode Sumber Terraform
 
 Repositori ini menyertakan kode Terraform lengkap yang siap di-deploy:
-👉 [labs/04-financial-partner-private-nat/](file:///Users/robertusnegoro/workingdir/repo/cloud-network-learning-materials/labs/04-financial-partner-private-nat/)
+👉 [labs/04-financial-partner-private-nat/](https://github.com/robertusnegoro/cloud-network-learning-materials/tree/main/labs/04-financial-partner-private-nat/)
 
 ```bash
 cd labs/04-financial-partner-private-nat

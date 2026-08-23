@@ -1,6 +1,6 @@
 ---
 title: "Modul 34: 15 Principal SEV-1 Troubleshooting War Rooms"
-description: "Kompilasi 15 insiden produksi jaringan kritis tingkat SEV-1 O'Reilly-standard lengkap dengan 7-section RCA post-mortem, query Athena VPC Flow Logs, perintah triage CLI, dan perbaikan permanen Terraform."
+description: "Kompilasi 15 insiden produksi jaringan kritis tingkat SEV-1 lengkap dengan 7-section RCA post-mortem, query Athena VPC Flow Logs, perintah triage CLI, dan perbaikan permanen Terraform."
 ---
 
 # Modul 34: 15 Principal SEV-1 Troubleshooting War Rooms

@@ -51,7 +51,7 @@ graph TD
 ## 📂 Lokasi Kode Sumber Terraform
 
 Repositori ini menyertakan kode Terraform lengkap yang siap di-deploy:
-👉 [labs/01-enterprise-ipam-vpc/](file:///Users/robertusnegoro/workingdir/repo/cloud-network-learning-materials/labs/01-enterprise-ipam-vpc/)
+👉 [labs/01-enterprise-ipam-vpc/](https://github.com/robertusnegoro/cloud-network-learning-materials/tree/main/labs/01-enterprise-ipam-vpc/)
 
 ```bash
 cd labs/01-enterprise-ipam-vpc

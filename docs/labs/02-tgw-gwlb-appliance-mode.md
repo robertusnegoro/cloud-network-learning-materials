@@ -64,7 +64,7 @@ graph TD
 ## 📂 Lokasi Kode Sumber Terraform
 
 Repositori ini menyertakan blueprint Terraform siap pakai:
-👉 [labs/02-tgw-gwlb-appliance-mode/](file:///Users/robertusnegoro/workingdir/repo/cloud-network-learning-materials/labs/02-tgw-gwlb-appliance-mode/)
+👉 [labs/02-tgw-gwlb-appliance-mode/](https://github.com/robertusnegoro/cloud-network-learning-materials/tree/main/labs/02-tgw-gwlb-appliance-mode/)
 
 ```bash
 cd labs/02-tgw-gwlb-appliance-mode

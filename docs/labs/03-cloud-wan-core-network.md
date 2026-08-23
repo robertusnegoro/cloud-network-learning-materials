@@ -50,7 +50,7 @@ graph LR
 ## 📂 Lokasi Kode Sumber Terraform
 
 Repositori ini menyertakan kode Terraform lengkap yang siap di-deploy:
-👉 [labs/03-cloud-wan-core-network/](file:///Users/robertusnegoro/workingdir/repo/cloud-network-learning-materials/labs/03-cloud-wan-core-network/)
+👉 [labs/03-cloud-wan-core-network/](https://github.com/robertusnegoro/cloud-network-learning-materials/tree/main/labs/03-cloud-wan-core-network/)
 
 ```bash
 cd labs/03-cloud-wan-core-network

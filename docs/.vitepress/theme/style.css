@@ -298,13 +298,7 @@ html, body, .terminal-body, .scroll-panel {
 /* ==========================================================================
    2. Performance & Core Web Vitals Optimization
    ========================================================================== */
-.vp-doc h2,
-.vp-doc h3,
-.vp-doc .mermaid-diagram-card,
-.vp-doc .cheat-card {
-  content-visibility: auto;
-  contain-intrinsic-block-size: auto 320px;
-}
+
 
 /* Hardware-composited smooth transitions */
 .interactive-card,
@@ -747,8 +741,17 @@ div[class*="language-mermaid"],
 }
 
 .mermaid svg,
-.mermaid-diagram-card svg {
+.mermaid-diagram-card .is-fit svg {
   max-width: 100%;
+  height: auto;
+  font-family: var(--vp-font-family-base) !important;
+  text-rendering: optimizeLegibility;
+  shape-rendering: geometricPrecision;
+}
+
+.mermaid-diagram-card .is-natural svg {
+  max-width: none !important;
+  width: auto !important;
   height: auto;
   font-family: var(--vp-font-family-base) !important;
   text-rendering: optimizeLegibility;
@@ -758,7 +761,7 @@ div[class*="language-mermaid"],
 /* Ensure SVG text has high contrast and comfortable font size */
 .mermaid-diagram-card svg text {
   font-family: var(--vp-font-family-base) !important;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .mermaid-diagram-card:hover {

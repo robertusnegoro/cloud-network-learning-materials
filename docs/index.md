@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "Cloud Network Engineering Mastery"
   text: "Teori Protokol Jaringan Lanjut & AWS Enterprise Cloud Backbone"
-  tagline: "Kurikulum Komprehensif Level SME / Principal Cloud Network Engineer: Dari Matematika Biner Subnetting & RFC Deep-Dive hingga Arsitektur Perbankan Global Multi-Region (O'Reilly / McGraw-Hill Technical Standard)."
+  tagline: "Kurikulum komprehensif level Principal & SME: Dari fundamental RFC dan hardware underlay Nitro, hingga orkestrasi enterprise cloud backbone skala global."
   image:
     src: /logo-network.svg
     alt: Cloud Network Engineering
@@ -24,28 +24,28 @@ hero:
 
 features:
   - title: "Part 1: Protocol Theory & Underlay Physics"
-    details: "Matematika biner subnetting, supernetting, VLSM, IPv6 architecture, TCP windowing, PMTUD, BGP 13-step election, BFD sub-second failover, dan GENEVE/VXLAN encapsulation."
+    details: "Subnetting biner, supernetting, VLSM, IPv6, TCP windowing, PMTUD, BGP 13-step best path selection, BFD sub-second failover, dan GENEVE/VXLAN encapsulation."
   - title: "Part 2: Hardware Underlay & VPC Core"
-    details: "Nitro System, ENA Express (SRD), Hyperplane flow state machines, ENI in-depth, EFA untuk AI/HPC clusters, Prefix Delegation, IPv6 dual-stack/IPv6-only VPC, dan RAM Subnet Sharing."
+    details: "Nitro System, ENA Express (SRD), Hyperplane flow state machine, ENI deep-dive, EFA untuk AI/HPC clusters, Prefix Delegation, IPv6-only VPC, dan RAM Subnet Sharing."
   - title: "Part 3: VPC Routing & Edge Gateways"
-    details: "Longest Prefix Match (LPM) priority engine, Ingress Edge Route Tables, IGW/EIGW stateless NAT mechanics, Public & Private NAT Gateways, dan VPC Peering direct underlay mesh."
+    details: "Longest Prefix Match (LPM) priority engine, Ingress Edge Route Tables, IGW/EIGW stateless NAT mechanics, Public & Private NAT Gateways, dan VPC Peering underlay mesh."
   - title: "Part 4: Private Connectivity & PrivateLink"
-    details: "Gateway VPC Endpoints (S3 & DynamoDB), AWS PrivateLink Hyperplane ENIs, Cross-Account Endpoint Services, dan Gateway Load Balancer (GWLB) 1-Arm/2-Arm inline inspection."
+    details: "Gateway VPC Endpoints (S3 & DynamoDB), AWS PrivateLink Hyperplane ENIs, Cross-Account Endpoint Services, dan GWLB inline inspection (1-Arm / 2-Arm)."
   - title: "Part 5: Hybrid Interconnect & Direct Connect"
-    details: "Dedicated & Hosted Direct Connect, LAG, IEEE 802.1AE MACsec 10G/100G encryption, Private/Transit/Public VIFs, Direct Connect Gateway, Accelerated VPN, dan Client VPN/Verified Access (ZTNA)."
+    details: "Dedicated & Hosted Direct Connect, LAG, IEEE 802.1AE MACsec 10G/100G encryption, Private/Transit/Public VIFs, Direct Connect Gateway, Accelerated VPN, dan Client VPN / Verified Access (ZTNA)."
   - title: "Part 6: Enterprise WAN & Cloud WAN"
-    details: "Transit Gateway Core Routing, Appliance Mode symmetric hashing, Multicast IGMPv2, TGW Connect GRE/BGP, dan AWS Cloud WAN Global Backbone dengan deklaratif Core Network JSON Policy."
+    details: "Transit Gateway Core Routing, Appliance Mode symmetric hashing, Multicast IGMPv2, TGW Connect GRE/BGP, dan AWS Cloud WAN Global Backbone berbasis Core Network Policy."
   - title: "Part 7: Application Networking & Edge"
     details: "ALB vs NLB, mTLS, Proxy Protocol v2, Route 53 Resolver Inbound/Outbound Endpoints & DNS Firewall, CloudFront Anycast Edge, Global Accelerator, dan AWS VPC Lattice microservices mesh."
   - title: "Part 8: Security, Telemetry & War Rooms"
-    details: "Security Groups vs NACLs conntrack limits, AWS Network Firewall Suricata IPS, WAF & Shield Advanced DDoS, Custom Flow Logs, Reachability Analyzer, dan 15 SEV-1 Production Incident Post-Mortems."
+    details: "Security Groups vs NACLs conntrack limits, AWS Network Firewall Suricata IPS, WAF & Shield Advanced DDoS, Custom Flow Logs, Reachability Analyzer, dan 15 SEV-1 Incident Post-Mortems."
 ---
 
 <div class="mt-8 p-6 bg-[var(--vp-c-bg-soft)] rounded-xl border border-[var(--vp-c-divider)]">
 
 ## Peta Jalan Kurikulum Master (8-Part, 34-Module Roadmap)
 
-Kurikulum ini mengadopsi standar **7-Layer Deep Technical Architecture** bertaraf buku teknik internasional (O'Reilly / McGraw-Hill / Cisco Press), di mana setiap bab wajib memenuhi teori protokol standar RFC, arsitektur underlay AWS, analisis hard limits, diagram alur paket hop-by-hop, blueprint Terraform siap pakai, skenario kegagalan produksi (failure modes), dan framework tradeoff Principal Architect.
+Kurikulum ini dirancang dengan metodologi **7-Layer Deep Technical Architecture**: setiap modul menyajikan teori protokol standar RFC, rancang bangun underlay AWS, analisis batas performa (*hard limits*), alur paket *hop-by-hop*, blueprint Terraform siap pakai, skenario *failure modes* produksi, serta kerangka *tradeoff* arsitektur level Principal.
 
 ```mermaid
 graph TD
@@ -78,7 +78,7 @@ graph TD
     end
 
     subgraph Part8["Part 8: Security & War Rooms"]
-        M27["27. SG, NACL & Conntrack"] --> M28["28. Network Firewall"] --> M29["29. WAF & Shield"] --> M30["30. Flow Logs & Forensics"] --> M31["31. Multi-Account Backbone"] --> M32["32. Banking Interconnect"] --> M33["33. Multi-Cloud Mesh"] --> M34["34. 15 SEV-1 War Rooms"]
+        M27["27. SG, NACL & Conntrack"] --> M28["28. Network Firewall"] --> M29["29. WAF & Shield"] --> M30["30. Flow Logs & Forensics"] --> M31["31. Multi-Account Backbone"] --> M32["32. Partner Interconnect & NAT"] --> M33["33. Multi-Cloud Mesh"] --> M34["34. 15 SEV-1 War Rooms"]
     end
 
     M04 --> M05
@@ -94,13 +94,13 @@ graph TD
   <div class="p-4 bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)]">
     <h3 class="text-sm font-bold text-blue-400 mb-2">Standar Bahasa & Terminologi</h3>
     <p class="text-xs text-[var(--vp-c-text-2)] leading-relaxed">
-      Disampaikan dalam <strong>Bahasa Indonesia</strong> berstandar profesional, dengan terminologi teknis tetap 100% menggunakan istilah asli <strong>English</strong> (<em>subnet, route table, autonomous system, packet, handshake, payload, throughput, peering, advertisement, encapsulation</em>).
+      Disajikan dalam <strong>Bahasa Indonesia</strong> teknis profesional, dengan 100% terminologi industri menggunakan istilah asli <strong>English</strong> (<em>subnet, route table, autonomous system, packet, handshake, payload, throughput, peering, advertisement, encapsulation</em>).
     </p>
   </div>
   <div class="p-4 bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)]">
-    <h3 class="text-sm font-bold text-emerald-400 mb-2">Standar Kompetensi Akhir</h3>
+    <h3 class="text-sm font-bold text-emerald-400 mb-2">Kompetensi Inti</h3>
     <p class="text-xs text-[var(--vp-c-text-2)] leading-relaxed">
-      Menguasai perencanaan alokasi IP enterprise skala raksasa, mengonfigurasi interkoneksi Direct Connect + Cloud WAN dengan failover sub-second, menginspeksi traffic melalui Next-Gen Firewall, dan memecahkan insiden jaringan kritis secara mandiri.
+      Menguasai perancangan alokasi IP enterprise skala besar, konfigurasi Direct Connect & Cloud WAN dengan failover sub-second, inspeksi traffic tersentralisasi menggunakan Next-Gen Firewall, serta investigasi insiden jaringan kritis secara independen.
     </p>
   </div>
 </div>

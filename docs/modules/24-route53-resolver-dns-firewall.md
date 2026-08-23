@@ -194,7 +194,7 @@ sequenceDiagram
         Note over FW: Match Rule: Priority 100 (Action: BLOCK, Response: NODATA)
         FW-->>BaseDNS: Intercepted (Action = BLOCK)
         BaseDNS-->>EC2: DNS Response: NOERROR (ANCOUNT=0 / NODATA)
-        Note over EC2: Eksfiltrasi Gagal; Log dicatat di CloudWatch/S3
+        Note over EC2: Eksfiltrasi Gagal - Log dicatat di CloudWatch/S3
     else Domain Bersih
         FW->>BaseDNS: Allow Forwarding
         BaseDNS->>Attacker: Recursive Resolution

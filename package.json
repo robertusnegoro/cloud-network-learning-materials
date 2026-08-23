@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
-    "preview": "vitepress preview docs"
+    "preview": "vitepress preview docs",
+    "test:mermaid": "node scripts/validate-mermaid.mjs",
+    "test": "npm run test:mermaid && npm run build"
   },
   "keywords": [
     "networking",
@@ -22,6 +24,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "dompurify": "^3.2.4",
     "lucide-vue-next": "^0.475.0",
     "markdown-it-mathjax3": "^4.3.2",
     "mermaid": "^11.17.0",

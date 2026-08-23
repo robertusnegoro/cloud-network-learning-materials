@@ -40,7 +40,7 @@ Selalu aktifkan **BFD (Bidirectional Forwarding Detection)** dengan interval sub
 #### 2. Topologi Masalah (Incident Topology)
 ```mermaid
 graph LR
-    OnPremRouter["On-Premise Core Router (AS 65000)"] <==|"BGP Flapping (Degradasi Optik SFP)"| TelcoCarrier["Telco Carrier WAN (RFC 2439 Flap Dampening: SUPPRESSED)"]
+    OnPremRouter["On-Premise Core Router (AS 65000)"] <==>|"BGP Flapping (Degradasi Optik SFP)"| TelcoCarrier["Telco Carrier WAN (RFC 2439 Flap Dampening: SUPPRESSED)"]
     TelcoCarrier -.->|"Route Suppressed (60 Min Penalty)"| AWS_DXGW["AWS Direct Connect Gateway (AS 64512)"]
     AWS_DXGW --> AWS_TGW["AWS Transit Gateway"]
 ```

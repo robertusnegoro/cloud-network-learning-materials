@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate Mermaid Diagrams
+        run: npm run test:mermaid
+
       - name: Build VitePress site
         run: npm run build
 

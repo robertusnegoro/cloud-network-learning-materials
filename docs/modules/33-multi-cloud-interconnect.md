@@ -77,9 +77,9 @@ graph LR
         GCP_Router["GCP Cloud Router (AS 16550)"] --> GCP_VPC["Analytics VPC (10.30.0.0/16)"]
     end
 
-    AWS_DXGW <==|"AWS Direct Connect (VLAN 101)"| MCR
-    MCR <==|"Azure ExpressRoute (VLAN 202)"| Azure_ER
-    MCR <==|"GCP Interconnect (VLAN 303)"| GCP_Router
+    AWS_DXGW <==>|"AWS Direct Connect (VLAN 101)"| MCR
+    MCR <==>|"Azure ExpressRoute (VLAN 202)"| Azure_ER
+    MCR <==>|"GCP Interconnect (VLAN 303)"| GCP_Router
 ```
 
 ---

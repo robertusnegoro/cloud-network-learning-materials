@@ -129,6 +129,44 @@ h1, h2, h3, h4, h5, h6,
   padding-top: 0 !important;
 }
 
+/* Home Page Roadmap Container */
+.home-roadmap-container {
+  margin: 4.5rem auto 3.5rem auto !important;
+  padding: 2.25rem 2rem !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--vp-c-divider) !important;
+  background: var(--vp-c-bg-soft) !important;
+  box-shadow: var(--sme-shadow-sm) !important;
+  max-width: 1152px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 768px) {
+  .home-roadmap-container {
+    padding: 2.75rem 3rem !important;
+  }
+}
+
+.home-roadmap-container h2 {
+  font-size: 1.65rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  margin-bottom: 1.15rem !important;
+  padding-bottom: 0.75rem !important;
+  border-bottom: 1px solid var(--vp-c-divider) !important;
+  color: var(--vp-c-text-1) !important;
+}
+
+.home-roadmap-container p {
+  color: var(--vp-c-text-2) !important;
+  font-size: 1.05rem !important;
+  line-height: 1.8 !important;
+  margin-bottom: 1.75rem !important;
+}
+
 .vp-doc h3 {
   font-size: 1.25rem;
   font-weight: 650;

@@ -479,22 +479,35 @@ const electionSteps = computed(() => {
   grid-template-columns: 1fr;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-@media (min-width: 1024px) {
+@container widget-container (min-width: 580px) and (max-width: 879px) {
+  .route-cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+}
+
+@container widget-container (min-width: 880px) {
   .route-cards-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 .route-card {
-  padding: 1.15rem;
+  padding: 1.1rem;
   border-radius: 0.85rem;
   border: 1px solid var(--vp-c-divider);
   background: var(--vp-c-bg-alt);
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .route-card.is-best-card {
@@ -525,12 +538,17 @@ const electionSteps = computed(() => {
   padding-bottom: 0.65rem;
   margin-bottom: 0.75rem;
   border-bottom: 1px solid var(--vp-c-divider);
+  min-width: 0;
 }
 
 .route-id-label {
   font-size: 0.85rem;
   font-weight: 750;
   color: var(--vp-c-text-1);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .badge-status {
@@ -541,6 +559,7 @@ const electionSteps = computed(() => {
   border-radius: 9999px;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .badge-status.is-best {
@@ -565,10 +584,12 @@ const electionSteps = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .route-desc-group {
   margin-bottom: 0.15rem;
+  min-width: 0;
 }
 
 .route-desc-label {
@@ -587,17 +608,20 @@ const electionSteps = computed(() => {
   color: var(--vp-c-text-1);
   line-height: 1.4;
   display: block;
+  word-break: break-word;
 }
 
 .bgp-fields-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .bgp-field-col {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .bgp-field-label {
@@ -615,6 +639,8 @@ const electionSteps = computed(() => {
 .bgp-field-input,
 .bgp-field-select {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 0.35rem 0.55rem;
   border-radius: 0.45rem;
   border: 1px solid var(--vp-c-divider);
@@ -633,17 +659,23 @@ const electionSteps = computed(() => {
   box-shadow: 0 0 0 2px var(--sme-brand-subtle);
 }
 
+.as-path-field-group {
+  min-width: 0;
+}
+
 .as-path-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.3rem;
+  min-width: 0;
 }
 
 .as-path-actions {
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  flex-shrink: 0;
 }
 
 .bgp-mini-btn {
@@ -681,6 +713,9 @@ const electionSteps = computed(() => {
   color: #d97706;
   white-space: nowrap;
   overflow-x: auto;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .dark .as-path-display {
@@ -690,6 +725,7 @@ const electionSteps = computed(() => {
 .community-field-group {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .terminal-body {

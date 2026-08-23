@@ -41,7 +41,7 @@ features:
     details: "Security Groups vs NACLs conntrack limits, AWS Network Firewall Suricata IPS, WAF & Shield Advanced DDoS, Custom Flow Logs, Reachability Analyzer, dan 15 SEV-1 Incident Post-Mortems."
 ---
 
-<div class="mt-8 p-6 bg-[var(--vp-c-bg-soft)] rounded-xl border border-[var(--vp-c-divider)]">
+<div class="home-roadmap-container">
 
 ## Peta Jalan Kurikulum Master (8-Part, 34-Module Roadmap)
 

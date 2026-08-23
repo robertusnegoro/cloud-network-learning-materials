@@ -39,13 +39,6 @@ graph LR
 
     PrivNAT -->|"SNAT: Src IP 10.0.1.50 -> 100.64.0.5"| TGW
     DX -->|"Forwarded to Virtual Alias 100.64.10.50"| PartnerSwitch
-
-    classDef aws fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef nat fill:#1e1b4b,stroke:#f59e0b,stroke-width:2px,color:#fff;
-    classDef partner fill:#1e293b,stroke:#10b981,stroke-width:2px,color:#fff;
-    class CoreBankingVPC,PaymentApp,AppRT aws;
-    class CGNATPool,PrivNAT nat;
-    class HybridTransit,TGW,DX,BankPartner,PartnerSwitch partner;
 ```
 
 ---

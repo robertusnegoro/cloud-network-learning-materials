@@ -37,13 +37,6 @@ graph TD
         VPC --> PrimaryCIDR
         VPC --> SecondaryCIDR
     end
-
-    classDef ipam fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef vpc fill:#0f172a,stroke:#818cf8,stroke-width:2px,color:#fff;
-    classDef tier fill:#1e1b4b,stroke:#a78bfa,stroke-width:1px,color:#fff;
-    class IPAM,TopPool,JktPool ipam;
-    class VPC vpc;
-    class SubPublic,SubApp,SubDB,SubEKS tier;
 ```
 
 ---

@@ -50,13 +50,6 @@ graph TD
 
     RT_Spoke -->|"Default 0.0.0.0/0 -> Inspection Attach"| TGW_Attach
     RT_Inspect -->|"Propagated Spoke Routes"| WorkloadSpokes
-
-    classDef tgw fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef sec fill:#0f172a,stroke:#ef4444,stroke-width:2px,color:#fff;
-    classDef spoke fill:#1e1b4b,stroke:#a78bfa,stroke-width:1px,color:#fff;
-    class TGW,RT_Spoke,RT_Shared,RT_Inspect,RT_OnPrem tgw;
-    class InspectionVPC,TGW_Attach,GWLB,GWLB_EP,FW_Fleet sec;
-    class SpokeA,SpokeB spoke;
 ```
 
 ---

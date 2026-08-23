@@ -36,13 +36,6 @@ graph LR
     SegShared -.->|"Route Sharing"| SegDev
     SegProd <===>|"Send-Via (Dual-Hop Mode)"| SegSec
     SegSec <===>|"Inspected Traffic"| SegDev
-
-    classDef cne fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef seg fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#fff;
-    classDef sec fill:#1e1b4b,stroke:#ef4444,stroke-width:2px,color:#fff;
-    class CNE_JKT,CNE_SIN,CNE_FRA cne;
-    class SegProd,SegDev,SegShared seg;
-    class SegSec sec;
 ```
 
 ---

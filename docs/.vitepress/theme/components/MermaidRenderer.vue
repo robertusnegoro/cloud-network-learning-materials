@@ -243,48 +243,55 @@ async function renderDiagram() {
       }
     })
 
+    // Clean any hardcoded dark/incompatible styles from markdown definitions
+    const cleanCode = decoded
+      .replace(/^\s*classDef\s+.*$/gm, '')
+      .replace(/^\s*class\s+[A-Za-z0-9_,\s]+\s+[A-Za-z0-9_-]+;?\s*$/gm, '')
+      .replace(/^\s*style\s+.*$/gm, '')
+      .trim()
+
     const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`
-    const { svg: outSvg } = await mermaid.render(id, decoded)
+    const { svg: outSvg } = await mermaid.render(id, cleanCode)
 
     const injectedStyle = isDarkMode
       ? `<style>
           #${id} foreignObject { overflow: visible !important; }
-          #${id} foreignObject div, #${id} foreignObject p, #${id} foreignObject span { font-family: Inter, system-ui, sans-serif !important; font-size: 13px !important; line-height: 1.35 !important; margin: 0 !important; padding: 0 !important; color: #f8fafc !important; fill: #f8fafc !important; }
-          #${id} .messageText, #${id} text.messageText { fill: #f8fafc !important; stroke: none !important; font-size: 13px !important; font-weight: 550 !important; }
+          #${id} foreignObject div, #${id} foreignObject p, #${id} foreignObject span { font-family: Inter, system-ui, sans-serif !important; font-size: 14px !important; line-height: 1.4 !important; margin: 0 !important; padding: 2px !important; color: #f8fafc !important; fill: #f8fafc !important; font-weight: 600 !important; text-align: center !important; }
+          #${id} .messageText, #${id} text.messageText { fill: #f8fafc !important; stroke: none !important; font-size: 13.5px !important; font-weight: 550 !important; }
           #${id} .messageLine0, #${id} .messageLine1, #${id} line.messageLine0, #${id} line.messageLine1 { stroke: #94a3b8 !important; stroke-width: 2px !important; }
           #${id} rect.actor, #${id} .actor rect, #${id} g.actor rect { fill: #1e293b !important; stroke: #38bdf8 !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
-          #${id} text.actor, #${id} .actor text, #${id} g.actor text, #${id} g.actor text tspan { fill: #f8fafc !important; font-weight: 600 !important; font-size: 13px !important; }
+          #${id} text.actor, #${id} .actor text, #${id} g.actor text, #${id} g.actor text tspan { fill: #f8fafc !important; font-weight: 600 !important; font-size: 14px !important; }
           #${id} rect.note, #${id} .note rect, #${id} g.note rect { fill: #2e2305 !important; stroke: #d97706 !important; stroke-width: 1.5px !important; rx: 6px !important; ry: 6px !important; }
-          #${id} .noteText, #${id} .noteText tspan, #${id} text.noteText { fill: #fef08a !important; font-size: 12.5px !important; font-weight: 500 !important; }
-          #${id} .node rect, #${id} .node circle, #${id} .node polygon { fill: #1e293b !important; stroke: #38bdf8 !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
-          #${id} .node .label text, #${id} .node text, #${id} .node span, #${id} .node p { fill: #ffffff !important; color: #ffffff !important; font-weight: 600 !important; font-size: 13px !important; }
+          #${id} .noteText, #${id} .noteText tspan, #${id} text.noteText { fill: #fef08a !important; font-size: 13px !important; font-weight: 500 !important; }
+          #${id} .node rect, #${id} .node circle, #${id} .node polygon, #${id} rect.basic { fill: #1e293b !important; stroke: #38bdf8 !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
+          #${id} .node .label text, #${id} .node text, #${id} .node span, #${id} .node p, #${id} .node .nodeLabel { fill: #f8fafc !important; color: #f8fafc !important; font-weight: 600 !important; font-size: 14px !important; }
           #${id} .cluster rect { fill: #0f172a !important; stroke: #3b82f6 !important; stroke-width: 1.75px !important; rx: 10px !important; ry: 10px !important; }
-          #${id} .cluster text, #${id} .cluster span { fill: #93c5fd !important; color: #93c5fd !important; font-weight: 700 !important; font-size: 14px !important; }
+          #${id} .cluster text, #${id} .cluster span, #${id} .cluster .nodeLabel, #${id} .cluster .cluster-label { fill: #93c5fd !important; color: #93c5fd !important; font-weight: 750 !important; font-size: 14.5px !important; }
           #${id} .edgePath .path { stroke: #94a3b8 !important; stroke-width: 2px !important; }
-          #${id} .edgeLabel { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600 !important; }
+          #${id} .edgeLabel { background-color: #1e293b !important; color: #f8fafc !important; font-weight: 600 !important; }
           #${id} .edgeLabel rect { fill: #1e293b !important; }
-          #${id} .edgeLabel text, #${id} .edgeLabel span { fill: #f8fafc !important; color: #f8fafc !important; }
+          #${id} .edgeLabel text, #${id} .edgeLabel span, #${id} .edgeLabel p { fill: #f8fafc !important; color: #f8fafc !important; font-size: 12.5px !important; font-weight: 600 !important; }
           #${id} .actor-line { stroke: #475569 !important; stroke-width: 1.5px !important; }
           #${id} .labelText { fill: #ffffff !important; }
           #${id} .loopText tspan { fill: #93c5fd !important; font-weight: 600 !important; }
         </style>`
       : `<style>
           #${id} foreignObject { overflow: visible !important; }
-          #${id} foreignObject div, #${id} foreignObject p, #${id} foreignObject span { font-family: Inter, system-ui, sans-serif !important; font-size: 13px !important; line-height: 1.35 !important; margin: 0 !important; padding: 0 !important; color: #0f172a !important; fill: #0f172a !important; }
-          #${id} .messageText, #${id} text.messageText { fill: #0f172a !important; stroke: none !important; font-size: 13px !important; font-weight: 550 !important; }
+          #${id} foreignObject div, #${id} foreignObject p, #${id} foreignObject span { font-family: Inter, system-ui, sans-serif !important; font-size: 14px !important; line-height: 1.4 !important; margin: 0 !important; padding: 2px !important; color: #0f172a !important; fill: #0f172a !important; font-weight: 600 !important; text-align: center !important; }
+          #${id} .messageText, #${id} text.messageText { fill: #0f172a !important; stroke: none !important; font-size: 13.5px !important; font-weight: 550 !important; }
           #${id} .messageLine0, #${id} .messageLine1, #${id} line.messageLine0, #${id} line.messageLine1 { stroke: #334155 !important; stroke-width: 2px !important; }
           #${id} rect.actor, #${id} .actor rect, #${id} g.actor rect { fill: #eff6ff !important; stroke: #2563eb !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
-          #${id} text.actor, #${id} .actor text, #${id} g.actor text, #${id} g.actor text tspan { fill: #0f172a !important; font-weight: 600 !important; font-size: 13px !important; }
+          #${id} text.actor, #${id} .actor text, #${id} g.actor text, #${id} g.actor text tspan { fill: #0f172a !important; font-weight: 600 !important; font-size: 14px !important; }
           #${id} rect.note, #${id} .note rect, #${id} g.note rect { fill: #fef3c7 !important; stroke: #f59e0b !important; stroke-width: 1.5px !important; rx: 6px !important; ry: 6px !important; }
-          #${id} .noteText, #${id} .noteText tspan, #${id} text.noteText { fill: #78350f !important; font-size: 12.5px !important; font-weight: 500 !important; }
-          #${id} .node rect, #${id} .node circle, #${id} .node polygon { fill: #ffffff !important; stroke: #2563eb !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
-          #${id} .node .label text, #${id} .node text, #${id} .node span, #${id} .node p { fill: #0f172a !important; color: #0f172a !important; font-weight: 600 !important; font-size: 13px !important; }
-          #${id} .cluster rect { fill: #f8fafc !important; stroke: #94a3b8 !important; stroke-width: 1.75px !important; rx: 10px !important; ry: 10px !important; }
-          #${id} .cluster text, #${id} .cluster span { fill: #1e40af !important; color: #1e40af !important; font-weight: 750 !important; font-size: 14px !important; }
+          #${id} .noteText, #${id} .noteText tspan, #${id} text.noteText { fill: #78350f !important; font-size: 13px !important; font-weight: 500 !important; }
+          #${id} .node rect, #${id} .node circle, #${id} .node polygon, #${id} rect.basic { fill: #ffffff !important; stroke: #2563eb !important; stroke-width: 2px !important; rx: 8px !important; ry: 8px !important; }
+          #${id} .node .label text, #${id} .node text, #${id} .node span, #${id} .node p, #${id} .node .nodeLabel { fill: #0f172a !important; color: #0f172a !important; font-weight: 600 !important; font-size: 14px !important; }
+          #${id} .cluster rect { fill: #f1f5f9 !important; stroke: #64748b !important; stroke-width: 1.75px !important; rx: 10px !important; ry: 10px !important; }
+          #${id} .cluster text, #${id} .cluster span, #${id} .cluster .nodeLabel, #${id} .cluster .cluster-label { fill: #1e3a8a !important; color: #1e3a8a !important; font-weight: 750 !important; font-size: 14.5px !important; }
           #${id} .edgePath .path { stroke: #334155 !important; stroke-width: 2px !important; }
           #${id} .edgeLabel { background-color: #ffffff !important; color: #0f172a !important; font-weight: 600 !important; }
           #${id} .edgeLabel rect { fill: #ffffff !important; }
-          #${id} .edgeLabel text, #${id} .edgeLabel span { fill: #0f172a !important; color: #0f172a !important; }
+          #${id} .edgeLabel text, #${id} .edgeLabel span, #${id} .edgeLabel p { fill: #0f172a !important; color: #0f172a !important; font-size: 12.5px !important; font-weight: 600 !important; }
           #${id} .actor-line { stroke: #94a3b8 !important; stroke-width: 1.5px !important; }
           #${id} .labelText { fill: #0f172a !important; }
           #${id} .loopText tspan { fill: #1e40af !important; font-weight: 600 !important; }
@@ -704,33 +711,29 @@ watch(isDark, () => {
 }
 
 /* Deep SVG Styling & Typographic Perfection */
-:deep(.mermaid-svg-container.is-fit svg),
-:deep(.fullscreen-svg-target svg) {
-  max-width: 100%;
-  height: auto;
-}
-
-:deep(.mermaid-svg-container.is-natural svg) {
-  max-width: none !important;
-  width: auto !important;
-  height: auto;
-}
-
 :deep(.mermaid-svg-container svg),
 :deep(.fullscreen-svg-target svg) {
   font-family: var(--vp-font-family-base) !important;
   text-rendering: optimizeLegibility;
   shape-rendering: geometricPrecision;
   overflow: visible;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 220px;
+  display: block;
+  margin: 0 auto;
 }
 
 /* Light Mode High Contrast Nodes & Typography */
 :deep(.mermaid-svg-container svg .node rect),
 :deep(.mermaid-svg-container svg .node polygon),
 :deep(.mermaid-svg-container svg .node circle),
+:deep(.mermaid-svg-container svg rect.basic),
 :deep(.fullscreen-svg-target svg .node rect),
 :deep(.fullscreen-svg-target svg .node polygon),
-:deep(.fullscreen-svg-target svg .node circle) {
+:deep(.fullscreen-svg-target svg .node circle),
+:deep(.fullscreen-svg-target svg rect.basic) {
   fill: #ffffff !important;
   stroke: #2563eb !important;
   stroke-width: 2px !important;
@@ -750,12 +753,14 @@ watch(isDark, () => {
 :deep(.mermaid-svg-container svg foreignObject span),
 :deep(.fullscreen-svg-target svg foreignObject span) {
   font-family: var(--vp-font-family-base) !important;
-  font-size: 13px !important;
-  line-height: 1.35 !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 2px !important;
   fill: #0f172a !important;
   color: #0f172a !important;
+  font-weight: 600 !important;
+  text-align: center !important;
   overflow: visible !important;
 }
 
@@ -766,26 +771,30 @@ watch(isDark, () => {
 :deep(.fullscreen-svg-target svg .label text),
 :deep(.fullscreen-svg-target svg text) {
   font-family: var(--vp-font-family-base) !important;
-  font-size: 13px !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   fill: #0f172a !important;
 }
 
 :deep(.mermaid-svg-container svg .cluster rect),
 :deep(.fullscreen-svg-target svg .cluster rect) {
-  fill: #f8fafc !important;
-  stroke: #94a3b8 !important;
+  fill: #f1f5f9 !important;
+  stroke: #64748b !important;
   stroke-width: 1.75px !important;
   rx: 10px;
   ry: 10px;
 }
 
 :deep(.mermaid-svg-container svg .cluster text),
-:deep(.fullscreen-svg-target svg .cluster text) {
+:deep(.mermaid-svg-container svg .cluster span),
+:deep(.mermaid-svg-container svg .cluster .nodeLabel),
+:deep(.fullscreen-svg-target svg .cluster text),
+:deep(.fullscreen-svg-target svg .cluster span),
+:deep(.fullscreen-svg-target svg .cluster .nodeLabel) {
   font-family: var(--vp-font-family-base) !important;
-  font-size: 14px !important;
+  font-size: 14.5px !important;
   font-weight: 750 !important;
-  fill: #1e40af !important;
+  fill: #1e3a8a !important;
 }
 
 :deep(.mermaid-svg-container svg .edgePath .path),
@@ -799,6 +808,18 @@ watch(isDark, () => {
   background-color: #ffffff !important;
   border-radius: 6px;
   padding: 2px 4px;
+}
+
+:deep(.mermaid-svg-container svg .edgeLabel text),
+:deep(.mermaid-svg-container svg .edgeLabel span),
+:deep(.mermaid-svg-container svg .edgeLabel p),
+:deep(.fullscreen-svg-target svg .edgeLabel text),
+:deep(.fullscreen-svg-target svg .edgeLabel span),
+:deep(.fullscreen-svg-target svg .edgeLabel p) {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  fill: #0f172a !important;
 }
 
 :deep(.mermaid-svg-container svg .actor),
@@ -822,19 +843,19 @@ watch(isDark, () => {
 :deep(.messageText) {
   fill: #0f172a !important;
   stroke: none !important;
-  font-size: 13px !important;
+  font-size: 13.5px !important;
   font-weight: 550 !important;
 }
 
 :deep(.messageLine0),
 :deep(.messageLine1) {
   stroke: #334155 !important;
-  stroke-width: 1.75px !important;
+  stroke-width: 2px !important;
 }
 
 :deep(.noteText) {
   fill: #78350f !important;
-  font-size: 12.5px !important;
+  font-size: 13px !important;
   font-weight: 550 !important;
 }
 
@@ -842,9 +863,11 @@ watch(isDark, () => {
 .dark :deep(.mermaid-svg-container svg .node rect),
 .dark :deep(.mermaid-svg-container svg .node polygon),
 .dark :deep(.mermaid-svg-container svg .node circle),
+.dark :deep(.mermaid-svg-container svg rect.basic),
 .dark :deep(.fullscreen-svg-target svg .node rect),
 .dark :deep(.fullscreen-svg-target svg .node polygon),
-.dark :deep(.fullscreen-svg-target svg .node circle) {
+.dark :deep(.fullscreen-svg-target svg .node circle),
+.dark :deep(.fullscreen-svg-target svg rect.basic) {
   fill: #1e293b !important;
   stroke: #38bdf8 !important;
   stroke-width: 2px !important;
@@ -877,7 +900,11 @@ watch(isDark, () => {
 }
 
 .dark :deep(.mermaid-svg-container svg .cluster text),
-.dark :deep(.fullscreen-svg-target svg .cluster text) {
+.dark :deep(.mermaid-svg-container svg .cluster span),
+.dark :deep(.mermaid-svg-container svg .cluster .nodeLabel),
+.dark :deep(.fullscreen-svg-target svg .cluster text),
+.dark :deep(.fullscreen-svg-target svg .cluster span),
+.dark :deep(.fullscreen-svg-target svg .cluster .nodeLabel) {
   fill: #93c5fd !important;
 }
 
@@ -890,6 +917,16 @@ watch(isDark, () => {
 .dark :deep(.mermaid-svg-container svg .edgeLabel),
 .dark :deep(.fullscreen-svg-target svg .edgeLabel) {
   background-color: #1e293b !important;
+}
+
+.dark :deep(.mermaid-svg-container svg .edgeLabel text),
+.dark :deep(.mermaid-svg-container svg .edgeLabel span),
+.dark :deep(.mermaid-svg-container svg .edgeLabel p),
+.dark :deep(.fullscreen-svg-target svg .edgeLabel text),
+.dark :deep(.fullscreen-svg-target svg .edgeLabel span),
+.dark :deep(.fullscreen-svg-target svg .edgeLabel p) {
+  color: #f8fafc !important;
+  fill: #f8fafc !important;
 }
 
 .dark :deep(.mermaid-svg-container svg .actor),
@@ -912,7 +949,7 @@ watch(isDark, () => {
 .dark :deep(.messageLine0),
 .dark :deep(.messageLine1) {
   stroke: #94a3b8 !important;
-  stroke-width: 1.75px !important;
+  stroke-width: 2px !important;
 }
 
 .dark :deep(.noteText) {

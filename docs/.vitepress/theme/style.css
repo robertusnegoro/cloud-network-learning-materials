@@ -54,6 +54,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.VPDoc .content-container {
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* Optimal reading measure for narrative paragraphs & lists */
@@ -158,16 +165,44 @@ table td {
 }
 
 /* Technical Tables (O'Reilly / McGraw-Hill Reference Grade) */
-.vp-doc table {
+.table-responsive-wrapper,
+.overflow-x-auto {
   width: 100%;
-  display: table;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.75rem 0;
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  box-shadow: var(--sme-shadow-xs);
+  contain: inline-size;
+}
+
+.table-responsive-wrapper table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: table !important;
+}
+
+.vp-doc table:not(.table-responsive-wrapper table) {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-collapse: separate;
   border-spacing: 0;
   margin: 1.75rem 0;
   border-radius: 10px;
   border: 1px solid var(--vp-c-divider);
-  overflow: hidden;
   box-shadow: var(--sme-shadow-xs);
+  background: var(--vp-c-bg-soft);
 }
 
 .vp-doc th {
@@ -181,6 +216,7 @@ table td {
   border-bottom: 2px solid var(--vp-c-divider);
   border-right: 1px solid var(--vp-c-divider);
   text-align: left;
+  white-space: nowrap;
 }
 
 .vp-doc th:last-child {
@@ -191,7 +227,7 @@ table td {
   padding: 11px 16px;
   border-bottom: 1px solid var(--vp-c-divider);
   border-right: 1px solid var(--vp-c-divider);
-  font-size: 0.935rem;
+  font-size: 0.925rem;
   line-height: 1.6;
   vertical-align: top;
   color: var(--vp-c-text-1);
@@ -209,40 +245,19 @@ table td {
   background-color: var(--vp-c-bg-soft);
 }
 
+.vp-doc tbody tr:nth-child(odd) {
+  background-color: var(--vp-c-bg);
+}
+
 .vp-doc tbody tr:hover {
   background-color: var(--sme-brand-subtle);
 }
 
-/* Responsive Table Wrapper & Isolation */
-.table-responsive-wrapper,
-.overflow-x-auto {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin: 1.25rem 0;
-  border-radius: 10px;
-  border: 1px solid var(--vp-c-divider);
-  background: var(--vp-c-bg);
-}
-
-.table-responsive-wrapper table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-@media (max-width: 768px) {
-  .vp-doc table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-    max-width: 100%;
-  }
+/* Allow code in table cells to wrap cleanly without forcing horizontal overflow explosion */
+.vp-doc td code {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* Custom Callout Containers (SME Tip / Warning / Info) */
@@ -833,12 +848,35 @@ div[class*="language-mermaid"],
   overflow: visible !important;
 }
 
-/* Ensure multiline text and foreignObjects in SVG are never clipped by VitePress paragraph styles */
+/* Ensure multiline text and foreignObjects in SVG are perfectly centered and never clipped */
 .mermaid-diagram-card svg foreignObject,
 .mermaid svg foreignObject,
 .vp-doc .mermaid-diagram-card svg foreignObject,
 .vp-doc .mermaid svg foreignObject {
   overflow: visible !important;
+}
+
+.mermaid-diagram-card svg foreignObject > div,
+.mermaid-diagram-card svg foreignObject > div.label-container,
+.mermaid-diagram-card svg foreignObject > div[xmlns],
+.mermaid svg foreignObject > div,
+.mermaid svg foreignObject > div.label-container,
+.mermaid svg foreignObject > div[xmlns],
+.vp-doc .mermaid-diagram-card svg foreignObject > div,
+.vp-doc .mermaid-diagram-card svg foreignObject > div.label-container,
+.vp-doc .mermaid-diagram-card svg foreignObject > div[xmlns],
+.vp-doc .mermaid svg foreignObject > div,
+.vp-doc .mermaid svg foreignObject > div.label-container,
+.vp-doc .mermaid svg foreignObject > div[xmlns] {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
 .mermaid-diagram-card svg foreignObject div,
@@ -854,7 +892,7 @@ div[class*="language-mermaid"],
 .vp-doc .mermaid svg foreignObject p,
 .vp-doc .mermaid svg foreignObject span {
   font-family: var(--vp-font-family-base) !important;
-  font-size: 13px !important;
+  font-size: 13.5px !important;
   line-height: 1.35 !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -864,7 +902,10 @@ div[class*="language-mermaid"],
 .mermaid-diagram-card svg text,
 .mermaid svg text {
   font-family: var(--vp-font-family-base) !important;
+  font-size: 13.5px !important;
   font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
 }
 
 .mermaid-diagram-card svg tspan,

@@ -26,6 +26,15 @@ export default defineConfig({
         }
         return defaultFence(tokens, idx, options, env, self)
       }
+
+      const defaultTableOpen = md.renderer.rules.table_open || ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options))
+      const defaultTableClose = md.renderer.rules.table_close || ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options))
+      md.renderer.rules.table_open = (tokens, idx, options, env, self) => {
+        return '<div class="table-responsive-wrapper">' + defaultTableOpen(tokens, idx, options, env, self)
+      }
+      md.renderer.rules.table_close = (tokens, idx, options, env, self) => {
+        return defaultTableClose(tokens, idx, options, env, self) + '</div>'
+      }
     }
   },
   vite: {

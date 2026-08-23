@@ -118,10 +118,10 @@ graph TD
         VPC2["VPC Spoke Payment"]
     end
 
-    EdgeRouter <-->|BGP Peering + BFD (ASN 65000)| DXGW
-    DXGW <-->|Transit VIF BGP Peering| TGW
-    TGW -->|Route Propagation| VPC1
-    TGW -->|Route Propagation| VPC2
+    EdgeRouter <-->|"BGP Peering + BFD (ASN 65000)"| DXGW
+    DXGW <-->|"Transit VIF BGP Peering"| TGW
+    TGW -->|"Route Propagation"| VPC1
+    TGW -->|"Route Propagation"| VPC2
 ```
 
 1. **BGP Control Plane**: Direct Connect Gateway (DXGW) dan Transit Gateway (TGW) menjalankan BGP engine terisolasi yang mengonsumsi advertised prefix dari router on-premise.

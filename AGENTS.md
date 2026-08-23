@@ -82,7 +82,10 @@ terraform validate
 
 ### VitePress Markdown (`docs/`)
 - **Frontmatter**: Every markdown page must include YAML frontmatter (`title`, `description`).
-- **Mermaid Diagrams**: Use standard ` ```mermaid ` fences. They are parsed and rendered via `<MermaidRenderer>` client component.
+- **Mermaid Diagrams**:
+  - Use standard ` ```mermaid ` fences parsed and rendered via `<MermaidRenderer>`.
+  - **Zero Hardcoded Styles**: NEVER use `classDef`, inline `style`, or hardcoded `fill:#...`/`color:#...` in markdown Mermaid blocks. The platform's dynamic theme engine injects high-contrast colors automatically for both Light and Dark modes. Hardcoded dark fills break Light Mode contrast (causing unreadable black text on dark boxes).
+  - **Scalable Architecture**: Avoid hardcoding fixed pixel node widths; let Mermaid automatically scale diagrams within the responsive container.
 - **Callout Containers**: Use VitePress containers for callouts:
   ```markdown
   ::: tip CATATAN ARSITEKTUR
@@ -96,10 +99,15 @@ terraform validate
 - **LaTeX Math**: Use `$...$` for inline math and `$$...$$` for display equations (e.g., subnet formulas, bitwise operations).
 
 ### Vue 3 Interactive Components (`docs/.vitepress/theme/components/`)
-- Single File Components (SFC) with `<script setup lang="ts">` or `<script setup>`.
-- Keep components responsive with pure SVG or Tailwind/VitePress CSS variables.
-- Register new components globally in `docs/.vitepress/theme/index.ts`.
-- Ensure client-only execution for window/browser APIs by wrapping with `<ClientOnly>` if embedded inside markdown.
+- **Component Architecture**: Single File Components (SFC) with `<script setup lang="ts">` or `<script setup>`.
+- **Explicit SVG Dimensions**: Always provide explicit `width="N"` and `height="N"` attributes on all inline `<svg>` elements (e.g. `width="16" height="16"`). Never rely solely on Tailwind utility classes (`class="w-4 h-4"`) because VitePress does not run Tailwind post-processing by default, which can cause SVGs to expand to full container width.
+- **Table & Matrix Isolation**:
+  - Always wrap tabular datasets in `.table-responsive-wrapper` (`overflow-x: auto; width: 100%;`).
+  - Use `whitespace: nowrap` for code, IP, ASN, and status columns, and generous min-widths (`min-w-[240px]`) for descriptive columns.
+  - In dense matrix visualizers (e.g., 32-bit bitboards), use responsive container/media queries to collapse into 2-column or 1-column layouts on smaller viewports.
+  - Avoid `transform: scale()` on densely packed grid items; use `filter: brightness()` or border highlights to prevent overlapping adjacent elements.
+- **Registration**: Register new components globally in `docs/.vitepress/theme/index.ts`.
+- **SSR Safety**: Ensure client-only execution for window/browser APIs by wrapping with `<ClientOnly>` if embedded inside markdown.
 
 ### Terraform Labs (`labs/`)
 - **Directory Structure**: Each lab under `labs/<id>-<name>/` must contain:
@@ -144,7 +152,8 @@ cloud-network-learning-materials/
 ## 8. Definition of Done for AI Assistants
 
 Before confirming any task complete:
-1. **Self-Review**: Verify all modified files match repository language standards and technical rigor.
-2. **Build Test**: Run `npm run build` to confirm zero SSR/Markdown rendering errors.
+1. **Self-Review**: Verify all modified files match repository language standards, technical rigor, and dual-theme visual contrast rules (Light & Dark modes).
+2. **Build Test**: Run `npm run build` to confirm zero SSR/Markdown rendering errors (Mandatory gate).
 3. **IaC Validation**: If Terraform files were touched, run `terraform validate`.
 4. **Summary**: Provide concise, structured output referencing modified files with markdown links.
+

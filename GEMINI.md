@@ -16,7 +16,7 @@ npm run preview    # Preview built documentation site
 
 ### Tool & Workflow Guidelines
 - **Precision Edits**: Use `view_file` to inspect lines and `replace_file_content` for atomic changes.
-- **Verification Gate**: Execute `npm run build` using `run_command` before concluding any documentation or frontend change.
+- **Verification Gate**: Execute `npm run build` using `run_command` before concluding any documentation or frontend change. Verify dual-theme visual contrast (Light/Dark mode) and ensure inline `<svg>` elements have explicit `width`/`height` attributes.
 - **Skills & Subagents**: Skill definitions live in `.agents/skills/`. Dispatch subagents via `invoke_subagent` for parallel exploration.
 - **Public Repo Security**: Zero secret policy. Never commit credentials, private keys, or actual AWS account/secret data.
 - **Commit Flag**: Always append `--no-gpg-sign` to avoid passphrase prompts during agent commits.

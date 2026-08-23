@@ -7,15 +7,15 @@ description: "Matematika biner subnetting, bitwise operations, RFC 1918 vs RFC 6
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 1918 / RFC 6598 / RFC 4632" /> <BadgeLabel type="aws" text="AWS IPAM & VPC Hierarchy" />
 
-Dalam arsitektur *cloud network* skala *multi-account* dan *multi-region*, alokasi *IP address space* adalah keputusan fundamental yang bersifat **irreversible** tanpa *downtime* migrasi yang masif. Kesalahan desain CIDR pada tahap inisiasi fondasi *landing zone* dapat mengakibatkan **re-IPing ribuan workload**, fragmentasi *routing table*, *exhaustion* pada *cluster* Kubernetes (EKS), hingga tabrakan rute (*route collision*) pada interkoneksi *hybrid cloud* (Direct Connect / Transit Gateway).
+Dalam arsitektur *cloud network* skala *multi-account* dan *multi-region*, alokasi *IP address space* adalah keputusan fundamental yang bersifat **irreversible** tanpa *downtime* migrasi yang masif. Kesalahan desain **Classless Inter-Domain Routing** (<NetworkTerm term="CIDR" />) pada tahap inisiasi fondasi *landing zone* dapat mengakibatkan **re-IPing ribuan workload**, fragmentasi *routing table*, *exhaustion* pada *cluster* Kubernetes (EKS), hingga tabrakan rute (*route collision*) pada interkoneksi *hybrid cloud* (Direct Connect / Transit Gateway).
 
-Modul ini membedah arsitektur pengalamatan IP dari level manipulasi bit pada register CPU/ASIC hingga implementasi *automated IPAM hierarchy* terdistribusi di AWS.
+Modul ini membedah arsitektur pengalamatan IP dari level manipulasi bit pada register CPU/ASIC hingga implementasi hierarki **IP Address Management** (<NetworkTerm term="IPAM" />) terdistribusi di AWS.
 
 ---
 
 ## 🛠️ Interactive Lab: CIDR & IPAM Hierarchy Allocator
 
-Gunakan simulator interaktif di bawah ini untuk menghitung pembagian subnet VLSM, representasi biner, network ID, broadcast, dan alokasi hierarki pool secara *real-time*:
+Gunakan simulator interaktif di bawah ini untuk menghitung pembagian subnet **Variable Length Subnet Masking** (<NetworkTerm term="VLSM" />), representasi biner, network ID, broadcast, dan alokasi hierarki pool secara *real-time*:
 
 <ClientOnly>
   <CidrCalculator />

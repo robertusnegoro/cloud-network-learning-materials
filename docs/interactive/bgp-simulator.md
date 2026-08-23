@@ -7,7 +7,7 @@ description: Simulator pemilihan jalur BGP (Best Path Election) dengan konfigura
 
 <BadgeLabel type="rfc" text="RFC 4271" /> <BadgeLabel type="aws" text="AWS Direct Connect BGP" />
 
-Algoritma **BGP Best Path Selection** adalah tulang punggung *routing policy* enterprise dan *hybrid cloud connectivity* (AWS Direct Connect & Transit Gateway). Ketika sebuah router menerima beberapa *advertisement* untuk prefix yang sama persis, router akan mengevaluasi atribut BGP secara berurutan hingga ditemukan satu pemenang tunggal (*Best Path*), kecuali jika *BGP Multipath / ECMP* diaktifkan.
+Algoritma **Border Gateway Protocol** (<NetworkTerm term="BGP" />) **Best Path Selection** adalah tulang punggung *routing policy* enterprise dan *hybrid cloud connectivity* (AWS Direct Connect & Transit Gateway). Ketika sebuah router menerima beberapa *advertisement* untuk prefix yang sama persis, router akan mengevaluasi atribut BGP secara berurutan hingga ditemukan satu pemenang tunggal (*Best Path*), kecuali jika *BGP Multipath* / **Equal-Cost Multi-Path** (<NetworkTerm term="ECMP" />) diaktifkan.
 
 <BgpSimulator />
 
@@ -18,7 +18,7 @@ Algoritma **BGP Best Path Selection** adalah tulang punggung *routing policy* en
 3. **Locally Originated**: Memprioritaskan route yang diinisiasi secara lokal (`network` statement, `aggregate-address`) dibandingkan yang dipelajari via BGP neighbor.
 4. **AS-Path Length** *(Terpendek menang)*: Menghitung jumlah AS hop. Teknik *AS-Path Prepending* digunakan untuk membuat jalur terlihat lebih panjang sehingga dijadikan jalur backup.
 5. **Origin Code**: Urutan prioritas `IGP (i)` > `EGP (e)` > `Incomplete (?)`.
-6. **MED (Multi-Exit Discriminator)** *(Terendah menang)*: Digunakan untuk memberi sinyal preferensi entry point ke AS tetangga. Hanya dibandingkan jika berasal dari neighbor AS yang sama (kecuali `always-compare-med` aktif).
+6. **Multi-Exit Discriminator** (<NetworkTerm term="MED" />) *(Terendah menang)*: Digunakan untuk memberi sinyal preferensi entry point ke AS tetangga. Hanya dibandingkan jika berasal dari neighbor AS yang sama (kecuali `always-compare-med` aktif).
 7. **Neighbor Type**: Jalur yang diterima dari tetangga **eBGP** (External) selalu diprioritaskan dibandingkan **iBGP** (Internal).
 8. **IGP Metric to BGP `NEXT_HOP`** *(Terendah menang)*: Jarak IGP internal (OSPF/IS-IS) menuju IP `NEXT_HOP`.
 9. **BGP Multipath / ECMP**: Jika atribut 1 sampai 8 identik dan ECMP diaktifkan, router akan menginjeksi beberapa jalur secara bersamaan ke routing table.

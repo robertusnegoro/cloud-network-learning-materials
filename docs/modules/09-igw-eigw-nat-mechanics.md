@@ -7,7 +7,7 @@ description: "Mekanisme internal Internet Gateway (IGW), Egress-Only IGW (EIGW),
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 3022 / RFC 4862 / RFC 791" /> <BadgeLabel type="aws" text="AWS Edge Gateways" />
 
-Salah satu kesalahpahaman terbesar dalam *cloud networking* adalah menganggap **Internet Gateway (IGW)** sebagai sebuah router fisik, virtual appliance, atau bottleneck bandwidth yang terpusat. Dalam arsitektur AWS, IGW adalah **matriks translasi perangkat lunak terdistribusi tanpa batas bandwidth (*horizontally scaled, highly available SDN translation matrix*)**.
+Salah satu kesalahpahaman terbesar dalam *cloud networking* adalah menganggap **Internet Gateway** (<NetworkTerm term="IGW" />) sebagai sebuah router fisik, virtual appliance, atau bottleneck bandwidth yang terpusat. Dalam arsitektur AWS, IGW adalah **matriks translasi perangkat lunak terdistribusi tanpa batas bandwidth (*horizontally scaled, highly available SDN translation matrix*)**.
 
 ---
 
@@ -40,7 +40,7 @@ graph TD
 Pada protokol IPv6:
 - Setiap perangkat menerima alamat **Globally Unique IPv6 Address (GUA)** (cakupan `2000::/3`) via *Stateless Address Autoconfiguration (SLAAC)* berdasarkan **RFC 4862**.
 - Tidak ada kebutuhan NAT pada IPv6 karena ketersediaan ruang alamat $2^{128}$.
-- **Egress-Only Internet Gateway (EIGW)** bertindak sebagai firewall *stateful egress*: mengizinkan paket keluar (*Outbound IPv6*) dan menerima paket respons (*Established Return Traffic*), namun secara mutlak **menjatuhkan paket inisiasi koneksi dari Internet luar (*Inbound TCP SYN / UDP packets*)**.
+- **Egress-Only Internet Gateway** (<NetworkTerm term="EIGW" />) bertindak sebagai firewall *stateful egress*: mengizinkan paket keluar (*Outbound IPv6*) dan menerima paket respons (*Established Return Traffic*), namun secara mutlak **menjatuhkan paket inisiasi koneksi dari Internet luar (*Inbound TCP SYN / UDP packets*)**.
 
 ---
 

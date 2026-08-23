@@ -1,4 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
+import { h } from 'vue'
 import type { App } from 'vue'
 import './style.css'
 
@@ -13,9 +14,17 @@ import ConntrackCalculator from './components/ConntrackCalculator.vue'
 import BadgeLabel from './components/BadgeLabel.vue'
 import MermaidRenderer from './components/MermaidRenderer.vue'
 import PrintButton from './components/PrintButton.vue'
+import ReadingProgressBar from './components/ReadingProgressBar.vue'
+import NetworkTerm from './components/NetworkTerm.vue'
+import GlossaryExplorer from './components/GlossaryExplorer.vue'
 
 export default {
   extends: DefaultTheme,
+  Layout: () => {
+    return h(DefaultTheme.Layout, null, {
+      'layout-top': () => h(ReadingProgressBar)
+    })
+  },
   enhanceApp({ app }: { app: App }) {
     app.component('CidrCalculator', CidrCalculator)
     app.component('BgpSimulator', BgpSimulator)
@@ -29,5 +38,11 @@ export default {
     app.component('BadgeLabel', BadgeLabel)
     app.component('MermaidRenderer', MermaidRenderer)
     app.component('PrintButton', PrintButton)
+    app.component('ReadingProgressBar', ReadingProgressBar)
+    app.component('NetworkTerm', NetworkTerm)
+    app.component('NetworkAbbr', NetworkTerm)
+    app.component('Term', NetworkTerm)
+    app.component('Abbr', NetworkTerm)
+    app.component('GlossaryExplorer', GlossaryExplorer)
   }
 }

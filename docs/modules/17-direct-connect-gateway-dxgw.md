@@ -7,7 +7,7 @@ description: "Arsitektur global Direct Connect Gateway (DXGW), interkoneksi Mult
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 4271 / RFC 7938 / Multi-Region Backbone" /> <BadgeLabel type="aws" text="AWS Direct Connect Gateway (DXGW)" />
 
-**AWS Direct Connect Gateway (DXGW)** adalah komponen *control plane* global yang memungkinkan satu koneksi Direct Connect fisik di satu lokasi geografis untuk mengakses VPC dan Transit Gateway di seluruh AWS Region secara global (kecuali AWS China). DXGW menghilangkan keharusan menarik koneksi fisik sirkuit Direct Connect ke setiap Region terpisah. Namun, sebagai seorang SME Cloud Network Architect, Anda harus menguasai batasan kuota ketat, mekanika **Allowed Prefixes**, mitigasi benturan **Autonomous System Numbers (ASN)**, dan arsitektur otorisasi **Cross-Account** berskala enterprise.
+**Direct Connect Gateway** (<NetworkTerm term="DXGW" />) adalah komponen *control plane* global yang memungkinkan satu koneksi Direct Connect fisik di satu lokasi geografis untuk mengakses VPC dan Transit Gateway di seluruh AWS Region secara global (kecuali AWS China). DXGW menghilangkan keharusan menarik koneksi fisik sirkuit Direct Connect ke setiap Region terpisah. Namun, sebagai seorang SME Cloud Network Architect, Anda harus menguasai batasan kuota ketat, mekanika **Allowed Prefixes**, mitigasi benturan **Autonomous System Numbers** (<NetworkTerm term="ASN" />), dan arsitektur otorisasi **Cross-Account** berskala enterprise.
 
 ---
 

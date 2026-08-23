@@ -7,7 +7,7 @@ description: "Arsitektur AWS NAT Gateway terkelola, Hyperplane flow engine, Sour
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 3022 / RFC 6598" /> <BadgeLabel type="aws" text="AWS Hyperplane NAT Engine" />
 
-**AWS NAT Gateway** adalah layanan *managed Network Address Translation* berskala enterprise yang didukung oleh mesin *state-machine* terdistribusi **AWS Hyperplane**. Memahami dinamika kehabisan port (*Source Port Exhaustion*), alokasi *Secondary Elastic IP*, dan arsitektur *Private NAT Gateway* untuk menangani *overlapping CIDRs* adalah keahlian mutlak bagi Senior Cloud Network Architect.
+**AWS NAT Gateway** adalah layanan *managed* **Network Address Translation** (<NetworkTerm term="NAT" />) berskala enterprise yang didukung oleh mesin *state-machine* terdistribusi **AWS Hyperplane**. Memahami dinamika kehabisan port (*Source Port Exhaustion*), alokasi *Secondary Elastic IP*, dan arsitektur *Private NAT Gateway* untuk menangani *overlapping CIDRs* adalah keahlian mutlak bagi Senior Cloud Network Architect.
 
 ---
 

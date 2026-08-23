@@ -7,7 +7,7 @@ description: "Zero-proxy application networking, Amazon VPC CNI prefix delegatio
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 9110 (HTTP/2) / RFC 6598 (CGNAT) / AWS SigV4" /> <BadgeLabel type="aws" text="VPC Lattice & Amazon EKS VPC CNI" />
 
-Pertumbuhan arsitektur *microservices* dan *container* (Amazon EKS / ECS) skala besar menghadirkan dua tantangan jaringan paling kompleks: **kehabisan alamat IP (IPv4 exhaustion)** akibat penugasan IP VPC langsung ke setiap Pod, serta **kompleksitas operasional service-to-service routing** lintas puluhan VPC dan akun AWS. **Amazon VPC Lattice** merevolusi komunikasi antar-layanan melalui *zero-proxy application networking* di level *underlay*, sementara **Amazon VPC CNI Prefix Delegation** memecahkan batas densitas komputasi Kubernetes.
+Pertumbuhan arsitektur *microservices* dan *container* (Amazon EKS / ECS) skala besar menghadirkan dua tantangan jaringan paling kompleks: **kehabisan alamat IP (IPv4 exhaustion)** akibat penugasan IP VPC langsung ke setiap Pod, serta **kompleksitas operasional service-to-service routing** lintas puluhan VPC dan akun AWS. **Amazon VPC Lattice** merevolusi komunikasi antar-layanan melalui *zero-proxy application networking* di level *underlay*, sementara **Amazon VPC** **Container Network Interface** (<NetworkTerm term="CNI" />) **Prefix Delegation** memecahkan batas densitas komputasi Kubernetes.
 
 ---
 

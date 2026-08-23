@@ -7,7 +7,7 @@ description: "Mekanika L4 vs L7 load balancing, Hyperplane underlay, Proxy Proto
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 793 / RFC 7230 / RFC 8446 / HAProxy PPv2" /> <BadgeLabel type="aws" text="ELB Architecture & Hyperplane Underlay" />
 
-Di arsitektur *cloud network* skala enterprise, **Elastic Load Balancing (ELB)** bukan sekadar pembagi beban round-robin sederhana. ELB adalah gerbang utama *application ingress* dan *service-to-service communication* yang memproses jutaan *requests per second* (RPS) dengan latensi sub-milidetik, terminasi kriptografi mTLS (*Mutual TLS*), serta penegakan integritas identitas klien melalui *Proxy Protocol v2*.
+Di arsitektur *cloud network* skala enterprise, **Elastic Load Balancing (ELB)** bukan sekadar pembagi beban round-robin sederhana. ELB adalah gerbang utama *application ingress* dan *service-to-service communication* yang memproses jutaan *requests per second* (RPS) dengan latensi sub-milidetik, terminasi kriptografi **Mutual TLS** (<NetworkTerm term="mTLS" />), serta penegakan integritas identitas klien melalui *Proxy Protocol v2*.
 
 ---
 
@@ -19,7 +19,7 @@ Terapkan **TLS 1.3 (RFC 8446)** secara eksklusif pada seluruh *public-facing loa
 
 ### A. Layer 4 (RFC 793 TCP) vs Layer 7 (RFC 7230 / RFC 7540 / RFC 9114 HTTP)
 
-Perbedaan mendasar antara Network Load Balancer (NLB) dan Application Load Balancer (ALB) berakar pada layer OSI tempat terminasi koneksi dilakukan:
+Perbedaan mendasar antara **Network Load Balancer** (<NetworkTerm term="NLB" />) dan **Application Load Balancer** (<NetworkTerm term="ALB" />) berakar pada layer OSI tempat terminasi koneksi dilakukan:
 
 ```
 +-----------------------------------------------------------------------------+

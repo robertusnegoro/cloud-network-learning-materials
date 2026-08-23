@@ -7,7 +7,7 @@ description: "Arsitektur global AWS Cloud WAN, Core Network Engine (CNE), declar
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 7938 / Global SD-WAN / Policy Automation" /> <BadgeLabel type="aws" text="AWS Cloud WAN (Network Manager)" />
 
-Seiring berkembangnya footprint infrastruktur cloud ke skala global (melintasi 3 hingga puluhan Region AWS di berbagai benua), mengelola *inter-region peering mesh* antar **AWS Transit Gateway (TGW)** secara manual memunculkan kompleksitas operasional yang tinggi. **AWS Cloud WAN** menghadirkan paradigma *Global Software-Defined WAN (SD-WAN)* di mana seluruh perutean, segmentasi multi-tenant, dan inspeksi firewall lintas-region diorkestrasi secara terpusat melalui satu dokumen deklaratif: **Global Core Network Policy (JSON)**.
+Seiring berkembangnya footprint infrastruktur cloud ke skala global (melintasi 3 hingga puluhan Region AWS di berbagai benua), mengelola *inter-region peering mesh* antar **AWS Transit Gateway** (<NetworkTerm term="TGW" />) secara manual memunculkan kompleksitas operasional yang tinggi. **AWS Cloud WAN** menghadirkan paradigma *Global Software-Defined WAN* (<NetworkTerm term="SDWAN" />) di mana seluruh perutean, segmentasi multi-tenant, dan inspeksi firewall lintas-region diorkestrasi secara terpusat melalui satu dokumen deklaratif: **Global Core Network Policy (JSON)**.
 
 ---
 

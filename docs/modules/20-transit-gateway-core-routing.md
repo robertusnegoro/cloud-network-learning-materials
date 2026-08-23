@@ -7,7 +7,7 @@ description: "Arsitektur underlay AWS Hyperplane pada Transit Gateway, segregasi
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 7938 / Hyperplane SDN / Hub-and-Spoke" /> <BadgeLabel type="aws" text="AWS Transit Gateway (TGW)" />
 
-Ketika skala arsitektur cloud berkembang melampaui puluhan VPC, model koneksi titik-ke-titik (*point-to-point*) menggunakan **VPC Peering** menjadi tidak dapat dipertahankan karena kompleksitas kuadratik $O(N^2)$ (100 VPC membutuhkan $\frac{100 \times 99}{2} = 4,950$ koneksi peering). **AWS Transit Gateway (TGW)** hadir sebagai *Regional Virtual Router* terdistribusi yang ditenagai oleh mesin **AWS Hyperplane**. Modul ini membedah mekanika perutean *Hub-and-Spoke*, segregasi *multi-tenant* route table, *blackhole route prevention*, dan interkoneksi backbone lintas region (*TGW Inter-Region Peering*).
+Ketika skala arsitektur cloud berkembang melampaui puluhan VPC, model koneksi titik-ke-titik (*point-to-point*) menggunakan **VPC Peering** menjadi tidak dapat dipertahankan karena kompleksitas kuadratik $O(N^2)$ (100 VPC membutuhkan $\frac{100 \times 99}{2} = 4,950$ koneksi peering). **AWS Transit Gateway** (<NetworkTerm term="TGW" />) hadir sebagai *Regional Virtual Router* terdistribusi yang ditenagai oleh mesin **AWS Hyperplane**. Modul ini membedah mekanika perutean *Hub-and-Spoke*, segregasi *multi-tenant* route table, *blackhole route prevention*, dan interkoneksi backbone lintas region (*TGW Inter-Region Peering*).
 
 ---
 

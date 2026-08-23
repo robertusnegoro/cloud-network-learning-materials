@@ -13,7 +13,7 @@ Di dalam arsitektur cloud enterprise, **VPC Route Table** bukan sekadar tabel st
 
 ## 🧪 Interactive Lab: AWS Hybrid Route Table Resolver Sandbox
 
-Uji skenario resolusi routing dinamis berbasis algoritma *Longest Prefix Match (LPM)* dan evaluasi konflik rute statis vs terpropagasi di bawah ini:
+Uji skenario resolusi routing dinamis berbasis algoritma **Longest Prefix Match** (<NetworkTerm term="LPM" />) dan evaluasi konflik rute statis vs terpropagasi di bawah ini:
 
 <ClientOnly>
   <AwsNetworkSandbox />

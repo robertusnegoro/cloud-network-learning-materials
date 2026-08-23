@@ -7,7 +7,7 @@ description: "Arsitektur enterprise VPC, secondary CIDR RFC 6598 expansion, AWS 
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="aws" text="Multi-CIDR VPC & AWS RAM" /> <BadgeLabel type="arch" text="Enterprise Multi-Account Backbone" />
 
-Dalam organisasi berskala enterprise dengan ratusan akun AWS (*multi-account landing zone*), perdebatan arsitektural klasik selalu berkisar pada: **apakah setiap akun harus memiliki VPC sendiri yang saling dihubungkan via Transit Gateway, ataukah menggunakan pola Shared VPC berbasis AWS Resource Access Manager (RAM)?**
+Dalam organisasi berskala enterprise dengan ratusan akun AWS (*multi-account landing zone*), perdebatan arsitektural klasik selalu berkisar pada: **apakah setiap akun harus memiliki VPC sendiri yang saling dihubungkan via Transit Gateway, ataukah menggunakan pola Shared VPC berbasis AWS Resource Access Manager (<NetworkTerm term="RAM" />)?**
 
 Kesalahan dalam memilih pola arsitektur ini berdampak langsung pada tagihan *cross-AZ data transfer*, kompleksitas *Transit Gateway route tables*, dan fragmentasi *IP address space*. Modul ini membedah arsitektur VPC multi-CIDR dan pola *VPC Subnet Sharing* terdistribusi dari level underlay routing hingga blueprint otomasi Terraform.
 
@@ -17,7 +17,7 @@ Kesalahan dalam memilih pola arsitektur ini berdampak langsung pada tagihan *cro
 
 ### 1.1 VPC sebagai Batas Isolasi Logis L3
 
-Virtual Private Cloud (VPC) adalah partisi virtual jaringan terisolasi di atas *AWS software-defined infrastructure*.
+**Virtual Private Cloud** (<NetworkTerm term="VPC" />) adalah partisi virtual jaringan terisolasi di atas *AWS software-defined infrastructure*.
 
 ```mermaid
 graph TD

@@ -7,7 +7,7 @@ description: "Arsitektur Private VIF, Transit VIF, Public VIF, manipulasi BGP 13
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 4271 / RFC 1997 / RFC 5880 / IEEE 802.1Q" /> <BadgeLabel type="aws" text="Direct Connect VIFs & BGP Policies" />
 
-Setelah lapisan fisik (Layer 1) dan *Data Link* (Layer 2) terbentuk melalui port *Direct Connect*, perutean logika *hybrid* dikonfigurasi melalui **Virtual Interfaces (VIFs)**. Setiap VIF membawa sesi **Border Gateway Protocol (BGP-4)** melalui *VLAN Tagging (IEEE 802.1Q)*. Untuk seorang Principal Cloud Network Architect, pemahaman mendalam tentang *BGP Best Path Algorithm*, manipulasi metrik (AS-Path Prepending, MED, Local Preference via BGP Communities), serta failover sub-detik menggunakan **BFD (Bidirectional Forwarding Detection)** adalah penentu utama keandalan jaringan perbankan dan *enterprise critical mission*.
+Setelah lapisan fisik (Layer 1) dan *Data Link* (Layer 2) terbentuk melalui port *Direct Connect*, perutean logika *hybrid* dikonfigurasi melalui **Virtual Interfaces** (<NetworkTerm term="VIF" />). Setiap VIF membawa sesi **Border Gateway Protocol** (<NetworkTerm term="BGP" />) melalui *VLAN Tagging (IEEE 802.1Q)*. Untuk seorang Principal Cloud Network Architect, pemahaman mendalam tentang *BGP Best Path Algorithm*, manipulasi metrik (AS-Path Prepending, MED, Local Preference via BGP Communities), serta failover sub-detik menggunakan **Bidirectional Forwarding Detection** (<NetworkTerm term="BFD" />) adalah penentu utama keandalan jaringan perbankan dan *enterprise critical mission*.
 
 ---
 

@@ -7,7 +7,7 @@ description: "Anatomi 20-byte TCP header, 11-State TCP FSM, matematika BDP & Mat
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 793 / RFC 1191 / RFC 4821 / RFC 7323" /> <BadgeLabel type="aws" text="Nitro TCP Offload & Jumbo Frames" />
 
-Dalam arsitektur *high-performance enterprise cloud*, kegagalan performa throughput dan latensi jarang disebabkan oleh keterbatasan fisik bandwidth *link*. Penyebab utamanya hampir selalu bermuara pada **mekanika transport layer (L4)**: *misconfigured MTU boundaries*, *ICMP black holes* yang melumpuhkan PMTUD, *TCP window exhaustion* pada koneksi *high-latency*, atau *congestion collapse* akibat algoritma kendali kemacetan yang tidak cocok dengan karakteristik *underlay*.
+Dalam arsitektur *high-performance enterprise cloud*, kegagalan performa throughput dan latensi jarang disebabkan oleh keterbatasan fisik bandwidth *link*. Penyebab utamanya hampir selalu bermuara pada **mekanika transport layer (L4)**: batasan ukuran transmisi **Maximum Transmission Unit** (<NetworkTerm term="MTU" />), pembentukan *ICMP black holes* yang melumpuhkan **Path MTU Discovery** (<NetworkTerm term="PMTUD" />), penyesuaian **Maximum Segment Size** (<NetworkTerm term="MSS" />), saturasi jendela transmisi (**Congestion Window** / <NetworkTerm term="CWND" /> dan **Receiver Window** / <NetworkTerm term="RWND" />) pada koneksi *high-latency*, atau *congestion collapse* akibat algoritma kendali kemacetan yang tidak cocok dengan karakteristik *underlay*.
 
 Modul ini mengupas tuntas protokol TCP dari level bit header dan *Finite State Machine* (FSM) hingga *hardware offload* pada AWS Nitro dan penanganan insiden transmisi paket skala produksi.
 
@@ -40,12 +40,12 @@ TCP header standar tanpa *options* memiliki panjang 20 byte (160 bit), tersusun 
 ```
 
 #### Bedah Flag Kontrol Kritis:
-- **SYN (Synchronize)**: Inisiasi koneksi dan sinkronisasi initial sequence number (ISN).
+- **SYN (Synchronize)**: Inisiasi koneksi dan sinkronisasi **Initial Sequence Number** (<NetworkTerm term="ISN" />).
 - **ACK (Acknowledgment)**: Mengindikasikan field Acknowledgment Number valid.
 - **FIN (Finish)**: Pengirim telah selesai mentransmisikan data.
 - **RST (Reset)**: Menolak atau memutus koneksi secara paksa (indikasi port tertutup, state mismatch, atau drop oleh firewall).
 - **PSH (Push)**: Meminta receiver segera menyerahkan buffer data ke application layer tanpa menunggu buffer penuh.
-- **ECE & CWR (RFC 3168)**: *Explicit Congestion Notification* (ECN) untuk sinyal kemacetan antrean tanpa perlu menjatuhkan paket (*zero-loss congestion signaling*).
+- **ECE & CWR (RFC 3168)**: Bagian dari **Explicit Congestion Notification** (<NetworkTerm term="ECN" />) untuk sinyal kemacetan antrean tanpa perlu menjatuhkan paket (*zero-loss congestion signaling*).
 
 #### TCP Options Kritis:
 - **Maximum Segment Size (MSS, Option 2, 4 bytes)**: Menyatakan ukuran payload data TCP terbesar yang dapat diterima receiver.

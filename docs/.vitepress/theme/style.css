@@ -44,21 +44,105 @@
 }
 
 /* ==========================================================================
-   1. Modern Typography & Text Wrapping Standards
+   1. Book-Grade Typography, Reading Ergonomics & Content Measure
    ========================================================================== */
+.vp-doc {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  letter-spacing: -0.008em;
+  color: var(--vp-c-text-1);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimal reading measure for narrative paragraphs & lists */
+.vp-doc p,
+.vp-doc ul,
+.vp-doc ol,
+.vp-doc blockquote {
+  max-width: 820px;
+}
+
+.vp-doc p {
+  margin-top: 0;
+  margin-bottom: 1.4rem;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--vp-c-text-1);
+  text-wrap: pretty;
+}
+
+/* Headings Rhythm & Structural Balance */
 h1, h2, h3, h4, h5, h6,
 .interactive-title,
 .cheat-card-title,
 .hero-name {
   text-wrap: balance;
-  letter-spacing: -0.015em;
+  color: var(--vp-c-text-1);
 }
 
-p, li, blockquote,
-.interactive-desc,
-.drill-explanation,
-.scenario-desc {
-  text-wrap: pretty;
+.vp-doc h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.vp-doc h2 {
+  font-size: 1.55rem;
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  margin-top: 3.25rem;
+  margin-bottom: 1.15rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc h3 {
+  font-size: 1.25rem;
+  font-weight: 650;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  margin-top: 2.25rem;
+  margin-bottom: 0.85rem;
+}
+
+.vp-doc h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+  color: var(--vp-c-text-2);
+}
+
+/* List Ergonomics */
+.vp-doc ul,
+.vp-doc ol {
+  padding-left: 1.6rem;
+  margin: 0.75rem 0 1.4rem;
+}
+
+.vp-doc li {
+  margin-bottom: 0.45rem;
+  line-height: 1.72;
+  font-size: 1.05rem;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc li > p {
+  margin: 0.25rem 0;
+}
+
+/* Strong & Emphasis Contrast */
+.vp-doc strong,
+.vp-doc b {
+  font-weight: 700;
+  color: var(--vp-c-text-1);
 }
 
 /* Tabular numbers for precise technical figures */
@@ -71,6 +155,134 @@ pre,
 table td {
   font-variant-numeric: tabular-nums lining-nums;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11", "zero";
+}
+
+/* Technical Tables (O'Reilly / McGraw-Hill Reference Grade) */
+.vp-doc table {
+  width: 100%;
+  display: table;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.75rem 0;
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-divider);
+  overflow: hidden;
+  box-shadow: var(--sme-shadow-xs);
+}
+
+.vp-doc th {
+  background-color: var(--vp-c-bg-alt);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--vp-c-text-2);
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--vp-c-divider);
+  border-right: 1px solid var(--vp-c-divider);
+  text-align: left;
+}
+
+.vp-doc th:last-child {
+  border-right: none;
+}
+
+.vp-doc td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--vp-c-divider);
+  border-right: 1px solid var(--vp-c-divider);
+  font-size: 0.935rem;
+  line-height: 1.6;
+  vertical-align: top;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc td:last-child {
+  border-right: none;
+}
+
+.vp-doc tr:last-child td {
+  border-bottom: none;
+}
+
+.vp-doc tbody tr:nth-child(even) {
+  background-color: var(--vp-c-bg-soft);
+}
+
+.vp-doc tbody tr:hover {
+  background-color: var(--sme-brand-subtle);
+}
+
+/* Custom Callout Containers (SME Tip / Warning / Info) */
+.vp-doc .custom-block {
+  border-radius: 12px;
+  padding: 1.15rem 1.4rem;
+  margin: 1.85rem 0;
+  border-left-width: 4px !important;
+  box-shadow: var(--sme-shadow-xs);
+}
+
+.vp-doc .custom-block .custom-block-title {
+  font-size: 0.825rem;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.vp-doc .custom-block p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+}
+
+.vp-doc .custom-block p:last-child {
+  margin-bottom: 0;
+}
+
+/* Monospace & Inline Code Badges */
+.vp-doc code:not(pre code) {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.88em;
+  padding: 0.2em 0.45em;
+  border-radius: 6px;
+  background-color: var(--vp-c-bg-alt);
+  border: 1px solid var(--vp-c-divider);
+  color: var(--vp-c-brand-1);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dark .vp-doc code:not(pre code) {
+  color: #60a5fa;
+  background-color: rgba(30, 41, 59, 0.6);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+/* Fenced Code Blocks & Blueprints */
+.vp-doc div[class*="language-"] {
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-divider);
+  margin: 1.75rem 0;
+  box-shadow: var(--sme-shadow-sm);
+  overflow: hidden;
+}
+
+.vp-doc div[class*="language-"] pre {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  padding: 1.15rem 1.25rem;
+}
+
+/* ASCII Flowcharts & Architecture Blueprints */
+.vp-doc pre code {
+  font-family: var(--vp-font-family-mono);
+  line-height: 1.35;
+  letter-spacing: 0;
 }
 
 /* Modern Scrollbars & Prevent Layout Shift */
@@ -519,26 +731,38 @@ input[type="range"]:active::-webkit-slider-thumb {
 }
 
 /* ==========================================================================
-   9. Mermaid Diagram Container Styling
+   9. Mermaid Diagram Container & High-Resolution SVG Engine
    ========================================================================== */
 .mermaid,
 div[class*="language-mermaid"],
-.vp-doc .mermaid {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.vp-doc .mermaid,
+.mermaid-diagram-card {
+  width: 100%;
+  margin: 1.85rem 0;
+  border-radius: 14px;
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
-  padding: 1.5rem 1rem;
-  margin: 1.5rem 0;
-  overflow-x: auto;
   box-shadow: var(--sme-shadow-xs);
+  transition: all 0.2s ease;
 }
 
-.mermaid svg {
+.mermaid svg,
+.mermaid-diagram-card svg {
   max-width: 100%;
   height: auto;
+  font-family: var(--vp-font-family-base) !important;
+  text-rendering: optimizeLegibility;
+  shape-rendering: geometricPrecision;
+}
+
+/* Ensure SVG text has high contrast and comfortable font size */
+.mermaid-diagram-card svg text {
+  font-family: var(--vp-font-family-base) !important;
+  font-weight: 500;
+}
+
+.mermaid-diagram-card:hover {
+  box-shadow: var(--sme-shadow-md);
 }
 
 /* ==========================================================================

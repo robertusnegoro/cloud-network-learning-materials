@@ -19,6 +19,7 @@ Halaman ini dirancang sebagai **referensi cepat satu halaman** (Printable / PDF 
   <div class="stat-box">
     <div class="stat-label">Navigasi Cepat</div>
     <div class="text-sm flex flex-col gap-1 mt-1 font-medium">
+      <a href="#0-kamus-singkatan-akronim-jaringan-sme-glossary" class="text-blue-500 hover:underline">0. Kamus Singkatan & Akronim Jaringan (SME Glossary)</a>
       <a href="#1-tabel-dekode-desimal-flag-tcp-vpc-flow-logs-wireshark" class="text-blue-500 hover:underline">1. Dekode Desimal Flag TCP (VPC Flow Logs)</a>
       <a href="#2-matriks-ringkas-13-step-bgp-best-path-selection" class="text-blue-500 hover:underline">2. Matriks 13-Step BGP Best Path Selection</a>
       <a href="#3-kamus-aws-bgp-community-tags-direct-connect-vpn" class="text-blue-500 hover:underline">3. Kamus AWS BGP Community Tags</a>
@@ -29,11 +30,19 @@ Halaman ini dirancang sebagai **referensi cepat satu halaman** (Printable / PDF 
     <div class="stat-label">Spesifikasi Dokumen</div>
     <div class="text-xs text-[var(--vp-c-text-2)] leading-relaxed mt-1">
       <strong>Target:</strong> Produksi SEV-1, Desain Arsitektur & Sertifikasi SME.<br/>
-      <strong>Protokol:</strong> RFC 793, RFC 4271, RFC 1997, RFC 4360, RFC 1191, RFC 8926.<br/>
+      <strong>Protokol:</strong> RFC 793, RFC 4271, RFC 1997, RFC 4360, RFC 1191, RFC 8926, RFC 4632.<br/>
       <strong>Cetak:</strong> Klik tombol di atas untuk cetak otomatis format A4 / PDF.
     </div>
   </div>
 </div>
+
+---
+
+## 0. Kamus Singkatan & Akronim Jaringan (SME Glossary)
+
+<ClientOnly>
+  <GlossaryExplorer />
+</ClientOnly>
 
 ---
 

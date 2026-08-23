@@ -14,7 +14,7 @@ Ketika aplikasi enterprise melayani pengguna global, transmisi paket data melalu
 ## 1. Layer 1: Protocol Mechanics & RFC Theory
 
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
-Aktifkan **HTTP/3 (RFC 9000)** pada seluruh distribusi CloudFront untuk mengeliminasi fenomena *Head-of-Line (HoL) Blocking* di layer transport pada koneksi *mobile/lossy networks*. Untuk API dinamis dengan payload besar, pasang kompresi **Brotli (`br`)** dan **Gzip** secara otomatis di level edge untuk memangkas ukuran transfer data hingga 30%.
+Aktifkan **HTTP/3** (<NetworkTerm term="QUIC" /> - RFC 9000) pada seluruh distribusi CloudFront untuk mengeliminasi fenomena *Head-of-Line (HoL) Blocking* di layer transport pada koneksi *mobile/lossy networks*. Untuk API dinamis dengan payload besar, pasang kompresi **Brotli (`br`)** dan **Gzip** secara otomatis di level edge untuk memangkas ukuran transfer data hingga 30%.
 :::
 
 ### A. BGP Anycast Routing Architecture (RFC 4786 / RFC 7098)

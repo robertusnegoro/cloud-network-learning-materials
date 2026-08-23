@@ -7,7 +7,7 @@ description: "Virtualisasi PCIe SR-IOV, antarmuka multi-homed Linux policy routi
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="aws" text="ENI, EFA & AWS VPC CNI" /> <BadgeLabel type="perf" text="High Performance Computing & AI/ML" />
 
-Dalam arsitektur *cloud compute*, **Elastic Network Interface (ENI)** adalah komponen virtualisasi yang menghubungkan instans komputasi dengan *VPC Data Plane*. Perkembangan beban kerja modern—mulai dari *high-density container orchestration* (Amazon EKS) hingga *distributed Large Language Model (LLM) training*—menuntut arsitektur antarmuka jaringan khusus: **IPv4 Prefix Delegation** untuk mengeliminasi batasan kuota IP pod, dan **Elastic Fabric Adapter (EFA)** dengan *OS Kernel Bypass* untuk komunikasi GPU-to-GPU berlatensi ultra-rendah.
+Dalam arsitektur *cloud compute*, **Elastic Network Interface** (<NetworkTerm term="ENI" />) adalah komponen virtualisasi yang menghubungkan instans komputasi dengan *VPC Data Plane*. Perkembangan beban kerja modern—mulai dari *high-density container orchestration* (Amazon EKS) hingga *distributed Large Language Model (LLM) training*—menuntut arsitektur antarmuka jaringan khusus: **IPv4 Prefix Delegation** untuk mengeliminasi batasan kuota IP pod, dan **Elastic Fabric Adapter** (<NetworkTerm term="EFA" />) dengan *OS Kernel Bypass* untuk komunikasi GPU-to-GPU berlatensi ultra-rendah.
 
 Modul ini mengupas tuntas ENI dan EFA dari *PCIe Virtual Functions* dan tabel *Linux policy routing* hingga orkestrasi cluster AI skala enterprise.
 

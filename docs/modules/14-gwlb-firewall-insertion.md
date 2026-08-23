@@ -7,14 +7,14 @@ description: "Mekanisme internal AWS Gateway Load Balancer (GWLB), enkapsulasi G
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 8926 (GENEVE) / TLV 0x0108" /> <BadgeLabel type="aws" text="AWS GWLB & Hyperplane" />
 
-**AWS Gateway Load Balancer (GWLB)** menggabungkan kemampuan *transparent Layer 3 gateway* dengan *distributed Layer 4 load balancer* yang didukung oleh mesin **AWS Hyperplane**. GWLB memungkinkan penyisipan (*inline insertion*) armada Next-Generation Firewall (Palo Alto Networks VM-Series, Fortinet FortiGate, Check Point CloudGuard) secara horizontal dan transparan **tanpa mengubah header paket IP asli (Zero SNAT/DNAT)**.
+**Gateway Load Balancer** (<NetworkTerm term="GWLB" />) menggabungkan kemampuan *transparent Layer 3 gateway* dengan *distributed Layer 4 load balancer* yang didukung oleh mesin **AWS Hyperplane**. GWLB memungkinkan penyisipan (*inline insertion*) armada Next-Generation Firewall (Palo Alto Networks VM-Series, Fortinet FortiGate, Check Point CloudGuard) secara horizontal dan transparan **tanpa mengubah header paket IP asli (Zero SNAT/DNAT)**.
 
 ---
 
 ## 1. Layer 1: Protocol Mechanics & RFC Theory
 
 ### A. Format Paket & Enkapsulasi Protokol GENEVE (RFC 8926)
-GWLB membungkus seluruh paket IP asli (termasuk L2/L3/L4 headers) ke dalam datagram **GENEVE (Generic Network Virtualization Encapsulation)** yang berjalan di atas **UDP Port 6081**:
+GWLB membungkus seluruh paket IP asli (termasuk L2/L3/L4 headers) ke dalam datagram **Generic Network Virtualization Encapsulation** (<NetworkTerm term="GENEVE" />) yang berjalan di atas **UDP Port 6081**:
 
 ```
 +-----------------------------------------------------------------------------------------------+

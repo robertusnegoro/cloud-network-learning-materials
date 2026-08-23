@@ -7,7 +7,7 @@ description: "Mekanika Deep Packet Inspection, sintaks aturan Suricata IPS, engi
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="Suricata Engine v7 / RFC 6066 (TLS SNI) / Deep Packet Inspection" /> <BadgeLabel type="aws" text="AWS Network Firewall & Centralized Inspection" />
 
-Keamanan jaringan enterprise modern menuntut inspeksi lalu lintas lebih dalam daripada sekadar penyaringan 5-Tuple Layer 4. Ancaman siber tingkat lanjut—seperti *Remote Code Execution (RCE)* (misal: Log4Shell), *Command & Control (C2) beaconing*, dan eksfiltrasi data terenkripsi—memerlukan kemampuan **Deep Packet Inspection (DPI)** dan **Intrusion Prevention System (IPS)**. **AWS Network Firewall** menyediakan layanan inspeksi stateful terkelola penuh (*fully managed*) berbasis mesin open-source berstandar industri: **Suricata**.
+Keamanan jaringan enterprise modern menuntut inspeksi lalu lintas lebih dalam daripada sekadar penyaringan 5-Tuple Layer 4. Ancaman siber tingkat lanjut—seperti *Remote Code Execution (RCE)* (misal: Log4Shell), *Command & Control (C2) beaconing*, dan eksfiltrasi data terenkripsi—memerlukan kemampuan **Deep Packet Inspection (DPI)** dan **Intrusion Prevention System** (<NetworkTerm term="IPS" />). **AWS Network Firewall** menyediakan layanan inspeksi stateful terkelola penuh (*fully managed*) berbasis mesin open-source berstandar industri: **Suricata**.
 
 ---
 

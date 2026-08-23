@@ -31,7 +31,7 @@ graph LR
 ```
 
 ### Mengapa Gateway Load Balancer Menggunakan GENEVE?
-Protokol **GENEVE (Generic Network Virtualization Encapsulation - RFC 8926)** dipilih oleh AWS untuk Gateway Load Balancer karena mendukung *variable-length Type-Length-Value (TLV) metadata options*.
+Protokol **Generic Network Virtualization Encapsulation** (<NetworkTerm term="GENEVE" /> - RFC 8926) dipilih oleh AWS untuk Gateway Load Balancer karena mendukung *variable-length Type-Length-Value (TLV) metadata options*.
 
 - **TLV Class `0x0108`**: Digunakan AWS untuk menyisipkan informasi *VPC Endpoint (GWLBe) ID* dan *Original ENI Attachment ID*.
 - Appliance firewall (Palo Alto, Fortinet, Suricata) membaca metadata ini untuk mengetahui dari VPC mana traffic berasal, kemudian me-re-encapsulate packet dengan TLV yang sama saat mengembalikan traffic ke GWLB.

@@ -7,15 +7,15 @@ description: "BGP-4 RFC 4271 mechanics, 13-Step Best Path Decision Algorithm, BF
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 4271 / RFC 5880 / RFC 7911 / RFC 1997" /> <BadgeLabel type="aws" text="Direct Connect, TGW & Cloud WAN BGP" />
 
-Dalam arsitektur jaringan *hybrid cloud* skala enterprise, **Border Gateway Protocol (BGP-4)** adalah *lingua franca* yang menghubungkan on-premise datacenter, *co-location facilities*, dan AWS Cloud Backbone. Ketiadaan pemahaman komprehensif atas *attribute ordering*, *path election algorithm*, dan *asymmetric routing traps* sering kali berujung pada insiden SEV-1: *blackholing*, *traffic oscillation*, atau *failover delay* hingga 90 detik saat link fisik terputus.
+Dalam arsitektur jaringan *hybrid cloud* skala enterprise, **Border Gateway Protocol** (<NetworkTerm term="BGP" />) adalah *lingua franca* protokol routing dinamis yang menghubungkan on-premise datacenter, *co-location facilities*, dan AWS Cloud Backbone. Ketiadaan pemahaman komprehensif atas *attribute ordering*, *path election algorithm*, dan *asymmetric routing traps* sering kali berujung pada insiden SEV-1: *blackholing*, *traffic oscillation*, atau *failover delay* hingga 90 detik saat link fisik terputus.
 
-Modul ini membedah BGP-4 dari struktur pesan biner dan 13-step election algorithm hingga integrasi BFD untuk *sub-second failover* pada Direct Connect dan Transit Gateway.
+Modul ini membedah BGP-4 dari struktur pesan biner dan 13-step election algorithm hingga integrasi **Bidirectional Forwarding Detection** (<NetworkTerm term="BFD" />) untuk *sub-second failover* pada Direct Connect dan Transit Gateway.
 
 ---
 
 ## 🛠️ Interactive Lab: BGP 13-Step Decision Simulator
 
-Gunakan simulator interaktif di bawah ini untuk mengeksplorasi kalkulasi bobot atribut BGP (Local Pref, AS Path, MED, Origin, dsb.) dalam menentukan *Best Path*:
+Gunakan simulator interaktif di bawah ini untuk mengeksplorasi kalkulasi bobot atribut BGP (Local Pref, AS Path, **Multi-Exit Discriminator** / <NetworkTerm term="MED" />, Origin, dsb.) dalam menentukan *Best Path*:
 
 <ClientOnly>
   <BgpSimulator />
@@ -30,7 +30,7 @@ Gunakan simulator interaktif di bawah ini untuk mengeksplorasi kalkulasi bobot a
 BGP-4 adalah *Path-Vector Routing Protocol* yang beroperasi di atas transport **TCP Port 179**. Berbeda dengan IGP (OSPF/IS-IS) yang berfokus pada *shortest cost path* di dalam satu Autonomous System, BGP dirancang untuk *policy-based inter-domain routing*.
 
 #### 4 Tipe Pesan BGP:
-1. **OPEN (Type 1)**: Inisiasi sesi BGP, negosiasi ASN, Hold Time, BGP Identifier (Router ID), dan *Multiprotocol Capabilities* (RFC 5492).
+1. **OPEN (Type 1)**: Inisiasi sesi BGP, negosiasi **Autonomous System Number** (<NetworkTerm term="ASN" />), Hold Time, BGP Identifier (Router ID), dan *Multiprotocol Capabilities* (RFC 5492).
 2. **UPDATE (Type 2)**: Mengumumkan rute baru yang dapat dijangkau (*NLRI - Network Layer Reachability Information*) beserta atributnya (*Path Attributes*), atau menarik rute (*Withdrawn Routes*).
 3. **NOTIFICATION (Type 3)**: Mengindikasikan terjadinya error fatal (misal: Hold Timer Expired, Bad BGP Identifier). Sesi BGP langsung di-reset ke status IDLE.
 4. **KEEPALIVE (Type 4)**: Pesan periodik 19-byte untuk memvalidasi liveness peer (default 1/3 dari Hold Time).

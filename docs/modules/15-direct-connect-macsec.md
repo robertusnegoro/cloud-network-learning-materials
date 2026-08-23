@@ -7,7 +7,7 @@ description: "Arsitektur fisik AWS Direct Connect, Meet-Me-Room (MMR), LOA-CFA, 
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="IEEE 802.1AE / IEEE 802.3ad / IEEE 802.1Q" /> <BadgeLabel type="aws" text="AWS Direct Connect & MACsec" />
 
-AWS Direct Connect (DX) menyediakan jalur jaringan privat fisik berkecepatan tinggi yang menghubungkan *data center*, *colocation facility*, atau *corporate on-premises network* langsung ke infrastruktur backbone global AWS tanpa melintasi internet publik. Untuk skala *enterprise*, Direct Connect bukan sekadar kabel fiber optik sederhana, melainkan ekosistem interkoneksi Layer 1 hingga Layer 3 yang membutuhkan kontrol ketat terhadap integritas fisik, redundansi agregasi tautan (*Link Aggregation*), dan enkripsi *wire-speed* di Layer 2 menggunakan **IEEE 802.1AE MACsec**.
+AWS Direct Connect (DX) menyediakan jalur jaringan privat fisik berkecepatan tinggi yang menghubungkan *data center*, *colocation facility*, atau *corporate on-premises network* langsung ke infrastruktur backbone global AWS tanpa melintasi internet publik. Untuk skala *enterprise*, Direct Connect bukan sekadar kabel fiber optik sederhana, melainkan ekosistem interkoneksi Layer 1 hingga Layer 3 yang membutuhkan kontrol ketat terhadap integritas fisik, redundansi agregasi tautan (*Link Aggregation*), dan enkripsi *wire-speed* di Layer 2 menggunakan **IEEE 802.1AE** (<NetworkTerm term="MACsec" />).
 
 ---
 
@@ -50,7 +50,7 @@ MKA mengatur otentikasi mutual dan distribusi ephemeral session keys (**SAK - Se
 $$\text{SAK Rotation Trigger} = \text{Packet Number Overflow} \lor \text{Time-based Expiry (default 1 hour)}$$
 
 ### C. Link Aggregation Control Protocol (IEEE 802.3ad / LACP)
-LACP memungkinkan penggabungan hingga 4 physical links 1G/10G/100G menjadi satu entri logis tunggal (**LAG - Link Aggregation Group**).
+LACP memungkinkan penggabungan hingga 4 physical links 1G/10G/100G menjadi satu entri logis tunggal (**Link Aggregation Group** / <NetworkTerm term="LAG" />).
 - **LACPDU (LACP Data Units)** dikirimkan ke multicast destination MAC `01:80:C2:00:00:02` dengan EtherType `0x8809`.
 - Mode LACP wajib diset ke **Active Mode** di sisi Customer Edge router.
 - *Frame Distribution Hashing*: Traffic didistribusikan ke anggota link LAG berdasarkan kalkulasi hash:

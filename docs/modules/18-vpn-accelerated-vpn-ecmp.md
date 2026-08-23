@@ -7,7 +7,7 @@ description: "Kriptografi IPsec IKEv2, enkripsi AES-GCM, anycast AWS Accelerated
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 7296 (IKEv2) / RFC 4303 (ESP) / RFC 3947 (NAT-T)" /> <BadgeLabel type="aws" text="AWS Accelerated Site-to-Site VPN" />
 
-Meskipun *AWS Direct Connect* menjadi tulang punggung utama interkoneksi enterprise, **AWS Site-to-Site VPN** tetap menjadi pilar vital sebagai jalur cadangan terotomatisasi (*automated backup link*), konektivitas kantor cabang (*branch offices*), maupun interkoneksi terenkripsi cepat sebelum sirkuit fisik Direct Connect selesai di-provisioning. Dengan hadirnya **AWS Accelerated Site-to-Site VPN** yang ditenagai jaringan *Anycast Global Accelerator* dan kapabilitas **Equal-Cost Multi-Path (ECMP)**, seorang Principal Network Engineer dapat merancang arsitektur VPN dengan latensi terendah dan throughput agregat melampaui batas single-tunnel 1.25 Gbps.
+Meskipun *AWS Direct Connect* menjadi tulang punggung utama interkoneksi enterprise, **AWS Site-to-Site VPN** tetap menjadi pilar vital sebagai jalur cadangan terotomatisasi (*automated backup link*), konektivitas kantor cabang (*branch offices*), maupun interkoneksi terenkripsi cepat sebelum sirkuit fisik Direct Connect selesai di-provisioning. Dengan hadirnya **AWS Accelerated Site-to-Site VPN** yang ditenagai jaringan *Anycast Global Accelerator* dan kapabilitas **Equal-Cost Multi-Path** (<NetworkTerm term="ECMP" />), seorang Principal Network Engineer dapat merancang arsitektur VPN dengan latensi terendah dan throughput agregat melampaui batas single-tunnel 1.25 Gbps.
 
 ---
 

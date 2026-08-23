@@ -7,7 +7,7 @@ description: "Arsitektur OpenVPN, integrasi SAML 2.0 & mTLS, evaluasi postur per
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="NIST SP 800-207 / RFC 5280 (mTLS) / SAML 2.0" /> <BadgeLabel type="aws" text="AWS Client VPN & AWS Verified Access" />
 
-Kebutuhan akses kerja jarak jauh (*remote workforce*) dan integrasi pihak ketiga (*third-party contractors*) telah mengubah lanskap keamanan jaringan perusahaan. Pendekatan tradisional berbasis *tunnel* jaringan (seperti **AWS Client VPN**) yang memberikan akses jaringan Layer 3 luas mulai bertransformasi ke paradigma **Zero Trust Network Access (ZTNA)** melalui **AWS Verified Access (AVA)**. Modul ini membedah arsitektur protokol, evaluasi *device posture* berbasis standar **NIST SP 800-207**, implementasi **Cedar Policy Language**, serta strategi migrasi jaringan privat enterprise modern.
+Kebutuhan akses kerja jarak jauh (*remote workforce*) dan integrasi pihak ketiga (*third-party contractors*) telah mengubah lanskap keamanan jaringan perusahaan. Pendekatan tradisional berbasis *tunnel* jaringan (seperti **AWS Client VPN**) yang memberikan akses jaringan Layer 3 luas mulai bertransformasi ke paradigma **Zero Trust Network Access** (<NetworkTerm term="ZTNA" />) melalui **AWS Verified Access (AVA)**. Modul ini membedah arsitektur protokol, evaluasi *device posture* berbasis standar **NIST SP 800-207**, implementasi **Cedar Policy Language**, serta strategi migrasi jaringan privat enterprise modern.
 
 ---
 
@@ -17,7 +17,7 @@ Kebutuhan akses kerja jarak jauh (*remote workforce*) dan integrasi pihak ketiga
 AWS Client VPN dibangun di atas protokol **OpenVPN (Layer 4 TLS over UDP/TCP)**:
 - Menggunakan **UDP port 443** (default) atau **TCP port 443** untuk menembus firewall korporat yang membatasi protokol UDP.
 - **Autentikasi Ganda (Dual-Factor)**:
-  1. **Mutual TLS (mTLS - RFC 5280)**: Validasi sertifikat digital X.509 klien dan server yang dikelola melalui AWS Certificate Manager (ACM).
+  1. **Mutual TLS** (<NetworkTerm term="mTLS" /> - RFC 5280): Validasi sertifikat digital X.509 klien dan server yang dikelola melalui AWS Certificate Manager (ACM).
   2. **SAML 2.0 Federated Identity**: Autentikasi berbasis token IDP (seperti Okta, Microsoft Entra ID / Azure AD, PingFederate).
 
 ```

@@ -7,7 +7,7 @@ description: "Mekanika enkapsulasi GENEVE, VXLAN, GRE, protokol IPsec IKEv2/ESP,
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 7348 / RFC 8926 / RFC 7296 / RFC 4301" /> <BadgeLabel type="aws" text="Geneve, VXLAN & AWS VPN Underlay" />
 
-*Software-Defined Networking* (SDN) modern bertumpu pada konsep **Network Virtualization Overlays (NVO3)**: memisahkan identitas logis (*Endpoint Identifier - EID*) dari lokasi fisik perangkat pada topologi fisik (*Routing Locator - RLOC*). Di AWS, teknologi *overlay* menggerakkan seluruh ekosistem isolasi VPC, enkripsi IPsec VPN, dan penyisipan *inline security appliances* melalui Gateway Load Balancer (GWLB) berbasis **GENEVE**.
+**Software-Defined Networking** (<NetworkTerm term="SDWAN" full="Software-Defined Networking (SDN)" desc="Paradigma arsitektur jaringan yang memisahkan control plane dari data plane fisik untuk orkestrasi dinamis.">SDN</NetworkTerm>) modern bertumpu pada konsep **Network Virtualization Overlays (NVO3)**: memisahkan identitas logis (*Endpoint Identifier - EID*) dari lokasi fisik perangkat pada topologi fisik (*Routing Locator - RLOC*). Di AWS, teknologi *overlay* menggerakkan seluruh ekosistem isolasi VPC, enkripsi IPsec VPN, dan penyisipan *inline security appliances* melalui **Gateway Load Balancer** (<NetworkTerm term="GWLB" />) berbasis **Generic Network Virtualization Encapsulation** (<NetworkTerm term="GENEVE" />).
 
 Modul ini membedah protokol enkapsulasi overlay dari struktur bit header dan kriptografi ESP hingga implementasi inspeksi firewall *zero-loss* skala enterprise.
 
@@ -15,7 +15,7 @@ Modul ini membedah protokol enkapsulasi overlay dari struktur bit header dan kri
 
 ## 🛠️ Interactive Lab: Packet Flow & Encapsulation Tracer
 
-Gunakan simulator interaktif di bawah ini untuk menelusuri bagaimana frame L2, paket L3, dan payload L4 dienkapsulasi ke dalam header GENEVE, VXLAN, dan ESP secara *hop-by-hop*:
+Gunakan simulator interaktif di bawah ini untuk menelusuri bagaimana frame L2, paket L3, dan payload L4 dienkapsulasi ke dalam header <NetworkTerm term="GENEVE" />, **Virtual Extensible LAN** (<NetworkTerm term="VXLAN" />), dan ESP secara *hop-by-hop*:
 
 <ClientOnly>
   <PacketTracer />

@@ -85,7 +85,7 @@ graph LR
 - **Sub-Microsecond Congestion Response**: Menggunakan pengukuran RTT presisi tinggi untuk menghindari jalur fisik yang sedang mengalami mikro-kongesti (*congestion avoidance*).
 
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
-Aktifkan **ENA Express** pada instans EC2 generasi terbaru (misal: c6i, m6i, r6i, c7g) untuk komunikasi inter-node yang membutuhkan latensi ultra-rendah dan throughput konsisten. ENA Express secara otomatis membungkus trafik TCP/UDP di dalam protokol SRD di level Nitro tanpa memerlukan perubahan kode aplikasi apa pun.
+Aktifkan **Elastic Network Adapter Express** (<NetworkTerm term="ENA" /> Express) pada instans EC2 generasi terbaru (misal: c6i, m6i, r6i, c7g) untuk komunikasi inter-node yang membutuhkan latensi ultra-rendah dan throughput konsisten. ENA Express secara otomatis membungkus trafik TCP/UDP di dalam protokol SRD di level Nitro tanpa memerlukan perubahan kode aplikasi apa pun.
 :::
 
 ---
@@ -94,7 +94,7 @@ Aktifkan **ENA Express** pada instans EC2 generasi terbaru (misal: c6i, m6i, r6i
 
 ### 2.1 Arsitektur AWS Nitro System
 
-Sistem AWS Nitro mengalihkan (*offload*) seluruh fungsi virtualisasi jaringan, storage, dan keamanan dari CPU host server ke kartu ASIC/SoC terdedikasi:
+Sistem AWS Nitro mengalihkan (*offload*) seluruh fungsi virtualisasi jaringan, storage, dan keamanan dari CPU host server ke kartu chip kustom terdedikasi (<NetworkTerm term="ASIC" /> / System-on-Chip):
 
 ```mermaid
 graph TD
@@ -117,9 +117,9 @@ graph TD
 
 **Hyperplane** adalah platform internal AWS terdistribusi berskala masif (*massively scalable distributed flow tracking engine*) yang menjadi fondasi layanan stateful AWS, termasuk:
 - **AWS NAT Gateway**
-- **Network Load Balancer (NLB)**
-- **Gateway Load Balancer (GWLB)**
-- **AWS PrivateLink (Interface Endpoints)**
+- **Network Load Balancer** (<NetworkTerm term="NLB" />)
+- **Gateway Load Balancer** (<NetworkTerm term="GWLB" />)
+- **AWS PrivateLink** (Interface Endpoints)
 - **Amazon EFS**
 
 ```mermaid

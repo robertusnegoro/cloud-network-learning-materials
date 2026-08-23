@@ -7,7 +7,7 @@ description: "Mekanika stateful connection tracking di Nitro ASIC, untracked con
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 2979 / RFC 793 / RFC 6056 (Ephemeral Ports)" /> <BadgeLabel type="aws" text="Nitro Security Engine & Conntrack Mechanics" />
 
-Di dalam Amazon VPC, keamanan jaringan tingkat paket dikendalikan oleh dua lapisan proteksi utama: **Security Groups** (stateful firewall di level ENI) dan **Network Access Control Lists / NACLs** (stateless firewall di level subnet). Bagi seorang **Principal Cloud Network Architect**, memahami perbedaan mekanika keduanya—khususnya implikasi *hardware connection tracking* pada Nitro Card dan jebakan *ephemeral return ports* pada NACLs—adalah kunci mencegah pemadaman sistem (*SEV-1 outage*) dan kebocoran keamanan.
+Di dalam Amazon VPC, keamanan jaringan tingkat paket dikendalikan oleh dua lapisan proteksi utama: **Security Groups** (<NetworkTerm term="SG" />) sebagai *stateful firewall* di level ENI dan **Network Access Control Lists** (<NetworkTerm term="NACL" />) sebagai *stateless firewall* di level subnet. Bagi seorang **Principal Cloud Network Architect**, memahami perbedaan mekanika keduanya—khususnya implikasi *hardware connection tracking* pada Nitro Card dan jebakan *ephemeral return ports* pada NACLs—adalah kunci mencegah pemadaman sistem (*SEV-1 outage*) dan kebocoran keamanan.
 
 ---
 

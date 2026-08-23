@@ -7,7 +7,7 @@ description: "Taksonomi serangan DDoS L3/L4/L7, mitigasi hardware underlay Black
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 4987 (SYN Flood) / RFC 7230 (Slowloris) / OWASP Top 10" /> <BadgeLabel type="aws" text="AWS WAF v2 & Shield Advanced" />
 
-Di era komputasi modern, serangan *Distributed Denial of Service* (DDoS) dan eksploitasi web aplikasi telah berevolusi menjadi ancaman berskala multi-terabit dan serangan layer aplikasi (*Layer 7*) yang sangat canggih. Untuk melindungi ketersediaan (*availability*) dan integritas sistem enterprise, AWS menyediakan arsitektur pertahanan berlapis: **AWS Shield Standard & Advanced** pada layer transport underlay (L3/L4) dan **AWS WAF (Web Application Firewall)** pada layer aplikasi (L7).
+Di era komputasi modern, serangan **Distributed Denial of Service** (<NetworkTerm term="DDoS" />) dan eksploitasi web aplikasi telah berevolusi menjadi ancaman berskala multi-terabit dan serangan layer aplikasi (*Layer 7*) yang sangat canggih. Untuk melindungi ketersediaan (*availability*) dan integritas sistem enterprise, AWS menyediakan arsitektur pertahanan berlapis: **AWS Shield Standard & Advanced** pada layer transport underlay (L3/L4) dan **Web Application Firewall** (<NetworkTerm term="WAF" />) pada layer aplikasi (L7).
 
 ---
 

@@ -482,6 +482,60 @@ export const NETWORK_TERMS: Record<string, TermDefinition> = {
     category: 'vpc-core',
     categoryLabel: 'Multi-Account Architecture',
     moduleLink: '/modules/07-vpc-architecture-multi-cidr'
+  },
+
+  // --- Global Ingress & Anycast (Global Accelerator) ---
+  AGA: {
+    abbr: 'AGA',
+    full: 'AWS Global Accelerator',
+    desc: 'Layanan jaringan global yang menggunakan 2 alamat IP Anycast statis dan jaringan backbone privat AWS untuk mengarahkan trafik pengguna ke endpoint regional (ALB, NLB, EC2) dengan latensi minimal dan failover sub-10 detik.',
+    rfc: 'RFC 4786 / RFC 7098',
+    category: 'app-mesh',
+    categoryLabel: 'Global Edge & Ingress',
+    moduleLink: '/modules/25-cloudfront-global-accelerator'
+  },
+  ANYCAST: {
+    abbr: 'ANYCAST',
+    full: 'BGP Anycast Routing',
+    desc: 'Teknik perutean jaringan di mana satu alamat IP diiklankan secara simultan dari ratusan PoP (Point of Presence) global melalui BGP, sehingga paket diarahkan ke PoP terdekat secara otomatis berdasarkan topologi routing internet.',
+    rfc: 'RFC 4786 / RFC 7098',
+    category: 'routing-bgp',
+    categoryLabel: 'BGP & Anycast',
+    moduleLink: '/modules/25-cloudfront-global-accelerator'
+  },
+  CRA: {
+    abbr: 'CRA',
+    full: 'Custom Routing Accelerator',
+    desc: 'Tipe akselerator AWS Global Accelerator yang memetakan rentang port listener eksternal secara deterministik ke IP privat dan port tujuan spesifik pada instance EC2 di dalam subnet VPC (ideal untuk game matchmaking dan VoIP).',
+    category: 'app-mesh',
+    categoryLabel: 'Global Edge & Ingress',
+    moduleLink: '/modules/25-cloudfront-global-accelerator'
+  },
+  BYOIP: {
+    abbr: 'BYOIP',
+    full: 'Bring Your Own IP',
+    desc: 'Fitur yang memungkinkan enterprise membawa rentang alamat IPv4 (/24) atau IPv6 (/48) milik sendiri yang telah divalidasi dengan RPKI/ROA ke AWS untuk diiklankan via Global Accelerator atau EC2.',
+    rfc: 'RFC 6480 / RFC 6482',
+    category: 'vpc-core',
+    categoryLabel: 'IPAM & Routing',
+    moduleLink: '/modules/25-cloudfront-global-accelerator'
+  },
+  ROA: {
+    abbr: 'ROA',
+    full: 'Route Origin Authorization',
+    desc: 'Objek kriptografi terautentikasi dalam hierarki RPKI yang mengotorisasi Autonomous System Number (ASN) tertentu (seperti ASN 16509 AWS) untuk mengiklankan prefix IP tertentu di BGP global.',
+    rfc: 'RFC 6482',
+    category: 'routing-bgp',
+    categoryLabel: 'BGP & Security',
+    moduleLink: '/modules/25-cloudfront-global-accelerator'
+  },
+  INZ: {
+    abbr: 'INZ',
+    full: 'Independent Network Zones',
+    desc: 'Dua zona jaringan terisolasi secara fisik dan logis pada underlay AWS Anycast yang masing-masing mengalokasikan 1 Static Anycast IP independen untuk menjamin redundansi BGP total jika satu zona mengalami gangguan.',
+    category: 'aws-underlay',
+    categoryLabel: 'Underlay Architecture',
+    moduleLink: '/modules/25-cloudfront-global-accelerator'
   }
 }
 

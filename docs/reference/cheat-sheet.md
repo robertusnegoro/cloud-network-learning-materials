@@ -24,6 +24,7 @@ Halaman ini dirancang sebagai **referensi cepat satu halaman** (Printable / PDF 
       <a href="#2-matriks-ringkas-13-step-bgp-best-path-selection" class="text-blue-500 hover:underline">2. Matriks 13-Step BGP Best Path Selection</a>
       <a href="#3-kamus-aws-bgp-community-tags-direct-connect-vpn" class="text-blue-500 hover:underline">3. Kamus AWS BGP Community Tags</a>
       <a href="#4-matriks-mtu-mismatch-rekomendasi-mss-clamping-per-tipe-link" class="text-blue-500 hover:underline">4. Matriks MTU Mismatch & Rekomendasi MSS</a>
+      <a href="#8-matriks-global-ingress-aws-global-accelerator-anycast-routing" class="text-blue-500 hover:underline">8. Matriks Global Ingress & AWS Global Accelerator</a>
     </div>
   </div>
   <div class="stat-box">
@@ -356,6 +357,43 @@ Jika terdapat rute statis menuju **Transit Gateway** dan rute statis menuju **VP
 
 ---
 
+## 8. Matriks Global Ingress: AWS Global Accelerator & Anycast Routing
+
+### A. Komparasi Ingress Global AWS: CloudFront vs Global Accelerator vs Route 53 ARC vs Elastic IP
+
+| Parameter Arsitektur | Amazon CloudFront | AWS Global Accelerator (Standard) | AWS Global Accelerator (Custom Routing) | Route 53 Application Recovery Controller (ARC) |
+| :--- | :---: | :---: | :---: | :---: |
+| **OSI Layer Operation** | **Layer 7 (HTTP/HTTPS/HTTP3)** | **Layer 4 (TCP / UDP)** | **Layer 4 (TCP / UDP)** | **Layer 3 / DNS Application Layer** |
+| **Alamat IP Statis** | Dedicated IP ($600/bln) | **2 Static Anycast IPs Bawaan** | **2 Static Anycast IPs Bawaan** | Bergantung Target Unicast |
+| **Independent Network Zones** | N/A | **2 Zona Terisolasi (Zone A & B)** | **2 Zona Terisolasi (Zone A & B)** | Multi-AZ / Multi-Region Control |
+| **Mekanisme Perutean** | Edge Reverse Proxy & Cache | 5-Tuple Consistent Hashing | **Deterministic Port-to-Socket Mapping** | DNS ARC Routing Control Policies |
+| **Target Endpoints** | S3, ALB, NLB, Custom Origin | ALB, NLB, EC2, Elastic IP | **VPC Subnet (EC2 ENIs)** | Cross-Region VPC Resources |
+| **Client IP Preservation** | Header `X-Forwarded-For` | **Native L3 IPv4 Header** | **Native L3 IPv4 Header** | Native L3 Unicast |
+| **Waktu Failover (RTO)** | 30–60s (DNS TTL Dependent) | **< 10 Detik (BGP Underlay Shift)** | Manual / API Driven | 10–30s (Routing Controls) |
+| **Protokol Non-HTTP** | ❌ Tidak didukung | ✅ TCP, UDP, VoIP, FIX, Gaming | ✅ Dedicated Game/VoIP Sockets | ✅ Semua protokol L3/L4 |
+| **BYOIP Support** | Ya (/24 IPv4) | Ya (/24 IPv4, /48 IPv6) | Ya (/24 IPv4) | Ya (via Route 53 / VPC) |
+
+---
+
+### B. Rumus & Parameter Kritis AWS Global Accelerator
+
+1. **Formula Bandwidth-Delay Product (BDP) & Transport Savings**:
+   $$\text{BDP (bits)} = \text{Bandwidth (bps)} \times \text{RTT (sec)}$$
+   $$\text{TCP Handshake Latency}_{\text{GA}} \approx 3 \times \text{RTT}_{\text{Edge PoP}} \quad (\sim 6\text{ ms vs } \sim 540\text{ ms Public Internet})$$
+
+2. **Formula Alokasi Port Custom Routing Accelerator (CRA)**:
+   $$\text{Total External Ports} = N_{\text{IP Subnet}} \times N_{\text{Target Ports per EC2}}$$
+   $$P_{\text{ext}} = P_{\text{base}} + (\text{Index}_{\text{ENI}} \times \Delta P_{\text{dest}}) + (P_{\text{dest}} - P_{\text{start}})$$
+
+3. **Formula Distribusi Trafik Efektif (Traffic Dial & Endpoint Weight)**:
+   $$\text{Trafik Regional } i = D_i \times \frac{W_{i,j}}{\sum W_k}$$
+
+::: warning ATURAN SECURITY GROUP: CLIENT IP PRESERVATION
+Ketika `client_ip_preservation_enabled = true`, Security Group pada backend target (EC2/ALB/NLB) **WAJIB** mengizinkan CIDR publik klien (`0.0.0.0/0` atau prefix IP tertentu), **BUKAN** hanya IP internal VPC Global Accelerator. Jika Security Group hanya mengizinkan subnet VPC, seluruh koneksi akan di-drop (`tcp-flags = 2` REJECT)!
+:::
+
+---
+
 <div class="p-4 bg-[var(--vp-c-bg-soft)] rounded-xl border border-[var(--vp-c-divider)] mt-8">
   <h3 class="text-sm font-bold text-blue-400 mb-2">Ringkasan Praktis Troubleshooting Lapangan</h3>
   <ul class="text-xs text-[var(--vp-c-text-2)] space-y-2 pl-4 list-disc">
@@ -363,5 +401,6 @@ Jika terdapat rute statis menuju **Transit Gateway** dan rute statis menuju **VP
     <li><strong>Traffic dari AWS selalu lewat jalur sekunder (VPN):</strong> Periksa apakah On-Premises router lupa mengirim BGP Community <code>7224:9300</code> pada Direct Connect primary link.</li>
     <li><strong>VPC Flow Logs mencatat ACCEPT tapi client mendapat Connection Reset:</strong> Periksa <code>tcp-flags = 4 / 20</code>. Security Group membuka port, namun aplikasi di EC2 tidak listening pada target port.</li>
     <li><strong>Asymmetric State Drop pada Firewall Terpusat:</strong> Pastikan <code>appliance_mode_support = "enable"</code> pada TGW VPC Attachment menuju Security/Inspection VPC.</li>
+    <li><strong>Koneksi Klien Timeout pada Global Accelerator saat Client IP Preservation Aktif:</strong> Security Group pada backend target hanya membuka subnet internal VPC. Tambahkan rule Ingress yang mengizinkan CIDR publik klien (<code>0.0.0.0/0</code>).</li>
   </ul>
 </div>

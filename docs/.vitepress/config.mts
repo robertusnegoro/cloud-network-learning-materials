@@ -70,7 +70,8 @@ export default defineConfig({
           { text: 'Interactive Topology Explorer', link: '/interactive/topology-explorer' },
           { text: '15 SEV-1 Troubleshooting Drills', link: '/interactive/troubleshooting-drills' },
           { text: 'Direct Connect BGP Community Calculator', link: '/interactive/dx-community-calc' },
-          { text: 'Security Group Conntrack & NAT Calculator', link: '/interactive/conntrack-calculator' }
+          { text: 'Security Group Conntrack & NAT Calculator', link: '/interactive/conntrack-calculator' },
+          { text: 'Global Accelerator & Anycast Simulator', link: '/interactive/global-accelerator-sim' }
         ]
       },
       {
@@ -82,7 +83,8 @@ export default defineConfig({
           { text: 'Lab 04: Financial Partner Private NAT Interconnect', link: '/labs/04-financial-partner-private-nat' },
           { text: 'Lab 05: Hybrid Direct Connect & Accelerated VPN', link: '/labs/05-hybrid-direct-connect-vpn-bfd' },
           { text: 'Lab 06: VPC Lattice Microservices Mesh', link: '/labs/06-vpc-lattice-microservices' },
-          { text: 'Lab 07: Central Ingress/Egress Inspection Firewall', link: '/labs/07-centralized-ingress-egress-firewall' }
+          { text: 'Lab 07: Central Ingress/Egress Inspection Firewall', link: '/labs/07-centralized-ingress-egress-firewall' },
+          { text: 'Lab 08: Multi-Region Global Accelerator & NLB Failover', link: '/labs/08-global-accelerator-multi-region' }
         ]
       },
       { text: 'SME Reference', link: '/reference/cheat-sheet' }
@@ -106,7 +108,8 @@ export default defineConfig({
           { text: 'Global Topology Explorer', link: '/interactive/topology-explorer' },
           { text: '15 SEV-1 Troubleshooting War Rooms', link: '/interactive/troubleshooting-drills' },
           { text: 'Direct Connect Community Tool', link: '/interactive/dx-community-calc' },
-          { text: 'Conntrack & NAT Port Calculator', link: '/interactive/conntrack-calculator' }
+          { text: 'Conntrack & NAT Port Calculator', link: '/interactive/conntrack-calculator' },
+          { text: 'Global Accelerator & Anycast Simulator', link: '/interactive/global-accelerator-sim' }
         ]
       },
       {
@@ -119,7 +122,8 @@ export default defineConfig({
           { text: 'Lab 04: Financial Partner Private NAT Interconnect', link: '/labs/04-financial-partner-private-nat' },
           { text: 'Lab 05: Hybrid Direct Connect & Accelerated VPN', link: '/labs/05-hybrid-direct-connect-vpn-bfd' },
           { text: 'Lab 06: VPC Lattice Microservices Mesh', link: '/labs/06-vpc-lattice-microservices' },
-          { text: 'Lab 07: Central Ingress/Egress Inspection Firewall', link: '/labs/07-centralized-ingress-egress-firewall' }
+          { text: 'Lab 07: Central Ingress/Egress Inspection Firewall', link: '/labs/07-centralized-ingress-egress-firewall' },
+          { text: 'Lab 08: Multi-Region Global Accelerator & NLB Failover', link: '/labs/08-global-accelerator-multi-region' }
         ]
       },
       {

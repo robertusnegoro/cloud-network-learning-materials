@@ -7,7 +7,15 @@ description: "Pencegahan asimetri routing stateful firewall dengan Appliance Mod
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 2784 (GRE) / RFC 2236 (IGMPv2) / Stateful Symmetry" /> <BadgeLabel type="aws" text="TGW Appliance Mode & Connect" />
 
-Pada arsitektur keamanan *enterprise hub-and-spoke*, menempatkan *Next-Generation Firewall (NGFW)* terpusat (seperti Palo Alto Networks, Fortinet FortiGate, atau Check Point) di dalam *Inspection VPC* seringkali memicu insiden fatal: **TCP Reset / Silent Packet Drops** akibat *Asymmetric Routing*. Modul ini membedah fitur-fitur tingkat lanjut AWS Transit Gateway: **TGW Appliance Mode** untuk penjaminan simetri stateful inspeksi, **TGW Multicast** untuk streaming finansial berlatensi rendah, dan **TGW Connect** berbasis enkapsulasi **GRE (RFC 2784)** untuk interkoneksi SD-WAN berkecepatan hingga 20 Gbps per attachment.
+Modul ini membedah fitur-fitur tingkat lanjut AWS Transit Gateway: **TGW Appliance Mode** untuk penjaminan simetri stateful inspeksi, **TGW Multicast** untuk streaming finansial berlatensi rendah, dan **TGW Connect** berbasis enkapsulasi **GRE (RFC 2784)** untuk interkoneksi SD-WAN berkecepatan hingga 20 Gbps per attachment.
+
+## 🏛️ Socratic Dilemma: The Asymmetric Firewall Black Hole
+
+::: tip THE ENGINEERING DILEMMA (FIRST-PRINCIPLES HOOK)
+*   **The Naïve Centralized Security Setup**: Menempatkan sepasang Next-Gen Firewall (Palo Alto / Fortinet) di Inspection VPC terpusat (AZ-1a dan AZ-1b) yang terhubung ke Transit Gateway.
+*   **The Stateful Asymmetry Breakdown**: Client di Spoke VPC 1 (AZ-1a) mengirim TCP SYN ke server di Spoke VPC 2 (AZ-1b). TGW meneruskan paket request ke Firewall di **AZ-1a**. Firewall mencatat sesi di connection table dan meneruskannya ke server di Spoke VPC 2. Ketika server membalas dengan TCP SYN-ACK dari AZ-1b, TGW default meneruskannya ke Firewall di **AZ-1b**! Karena Firewall di AZ-1b tidak pernah melihat paket SYN awal, firewall langsung men-drop paket SYN-ACK sebagai *Out-of-State Traffic* $\to$ **Koneksi terputus seketika!**
+*   **The Architecture Invariant**: **"Stateful inspection demands bilateral path symmetry."** Untuk menjamin paket bolak-balik selalu melewati antarmuka firewall di AZ yang sama persis, Anda wajib mengaktifkan **Appliance Mode** pada VPC Attachment milik Inspection VPC.
+:::
 
 ---
 
@@ -35,6 +43,36 @@ Ketika `appliance_mode_support = "enable"` diaktifkan pada VPC Attachment milik 
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
 Aktifkan `appliance_mode_support = "enable"` **HANYA pada attachment Inspection/Security VPC**. Jangan pernah mengaktifkannya pada Spoke VPC biasa karena akan menambah kalkulasi hashing underlay yang tidak diperlukan dan membatasi fleksibilitas distribusi traffic multi-AZ aplikasi normal.
 :::
+
+<ClientOnly>
+  <ConceptCheckpoint
+    title="Pause & Predict: Skenario Cross-AZ Asymmetric Drop"
+    badge="Socratic Systems Question"
+    scenario="Terdapat Inspection VPC dengan firewall di AZ-1a dan AZ-1b. Workload Client A berada di Spoke VPC 1 (AZ-1a) dan Server B berada di Spoke VPC 2 (AZ-1b). TGW menghubungkan Spoke 1 -> Inspection VPC -> Spoke 2. Fitur Appliance Mode pada attachment Inspection VPC berstatus 'disable'. Apa yang terjadi saat Client A mengirim HTTP GET ke Server B?"
+    :options="[
+      {
+        id: 'A',
+        text: 'Koneksi berjalan lancar karena TGW otomatis menyinkronkan memori conntrack antar firewall.',
+        isCorrect: false,
+        feedback: 'Salah. AWS TGW tidak memiliki akses atau visibilitas ke memori connection table firewall pihak ketiga (Palo Alto/Fortinet).'
+      },
+      {
+        id: 'B',
+        text: 'Trafik forward (SYN) masuk ke Firewall AZ-1a. Namun trafik reverse (SYN-ACK) dari Spoke 2 masuk ke Firewall AZ-1b. Firewall AZ-1b men-drop paket SYN-ACK karena tidak ada record handshake SYN awal di state table-nya (Out-of-State Drop).',
+        isCorrect: true,
+        feedback: 'Tepat! Tanpa Appliance Mode, TGW memilih ENI attachment di AZ asal paket pengirim. Karena paket SYN berasal dari Spoke 1 (AZ-1a), paket masuk ke ENI AZ-1a. Karena paket balasan SYN-ACK berasal dari Spoke 2 (AZ-1b), paket masuk ke ENI AZ-1b. Akibatnya terjadi asymmetric routing dan drop total oleh stateful firewall.'
+      },
+      {
+        id: 'C',
+        text: 'Server B menerima request dan membalas melalui Internet Gateway lokal tanpa lewat TGW.',
+        isCorrect: false,
+        feedback: 'Salah. VPC Route Table mengarahkan seluruh lalu lintas inter-VPC kembali ke TGW.'
+      }
+    ]"
+    explanation="Appliance Mode memaksa TGW mempertahankan symmetric hashing flow. Ketika diaktifkan pada attachment Inspection VPC, baik forward maupun return packet di-pin ke ENI di AZ yang sama persis sepanjang masa hidup flow 5-tuple."
+    invariant="Invariant Appliance Mode: Selalu aktifkan Appliance Mode pada TGW VPC Attachment milik Inspection VPC yang menampung Stateful Firewalls (Palo Alto, Fortinet, Check Point, Suricata)."
+  />
+</ClientOnly>
 
 ---
 
@@ -210,3 +248,18 @@ router bgp 65001
 - Appliance Mode Supported      - BGP + BFD native over GRE       - High CPU crypto overhead
 - Best for Central Inspection   - Best for SD-WAN Integration     - Best for Legacy IPsec
 ```
+
+<ClientOnly>
+  <DidacticBridge
+    toolTitle="Global Topology Explorer"
+    toolLink="/interactive/topology-explorer"
+    toolDesc="Eksplorasi topologi hub-and-spoke multi-VPC dengan Inspection VPC terpusat."
+    labTitle="Lab 02: TGW Hub & GWLB Appliance Mode"
+    labLink="/labs/02-tgw-gwlb-appliance-mode"
+    labDesc="Deploy blueprint Terraform TGW Appliance Mode dengan armada inspection firewall."
+    drillTitle="War Room #08: TGW Appliance Mode Asymmetric Drop"
+    drillLink="/interactive/troubleshooting-drills"
+    drillDesc="Diagnosa dan perbaiki insiden koneksi drop inter-AZ akibat ketiadaan Appliance Mode."
+  />
+</ClientOnly>
+

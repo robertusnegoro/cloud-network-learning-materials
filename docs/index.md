@@ -43,6 +43,57 @@ features:
 
 <div class="home-roadmap-container">
 
+## 🧭 Jalur Belajar Berbasis Peran (MIT-Grade Learning Tracks)
+
+Untuk mencegah *cognitive overload* dari 34 modul teknis yang mendalam, pilih **Jalur Belajar (Learning Track)** yang sesuai dengan target kompetensi dan spesialisasi Anda:
+
+<div class="grid-3 mt-4">
+  <div class="p-4 bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)] flex flex-col justify-between">
+    <div>
+      <div class="inline-block px-2 py-0.5 text-xs font-bold bg-blue-500/10 text-blue-400 rounded-full mb-2">Track 1 • Fast Track</div>
+      <h3 class="text-base font-bold text-[var(--vp-c-text-1)] mb-1">Cloud Platform Architect</h3>
+      <p class="text-xs text-[var(--vp-c-text-2)] mb-3">Fokus pada arsitektur topologi VPC, private connectivity, ingress/egress security, dan hybrid routing.</p>
+      <div class="text-xs font-mono text-[var(--vp-c-brand-1)] mb-3">Modul: 01, 07, 08, 09, 10, 11, 13, 20, 23, 24, 27</div>
+    </div>
+    <a href="/cloud-network-learning-materials/modules/01-subnetting-vlsm-ipam" class="text-xs font-bold text-blue-400 hover:underline">Mulai Track Architect →</a>
+  </div>
+
+  <div class="p-4 bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)] flex flex-col justify-between">
+    <div>
+      <div class="inline-block px-2 py-0.5 text-xs font-bold bg-purple-500/10 text-purple-400 rounded-full mb-2">Track 2 • Deep Systems</div>
+      <h3 class="text-base font-bold text-[var(--vp-c-text-1)] mb-1">Protocol & Underlay Specialist</h3>
+      <p class="text-xs text-[var(--vp-c-text-2)] mb-3">Fokus pada fisika protokol RFC, konvergensi BGP, hardware Nitro/Hyperplane, MTU/PMTUD, dan MACsec.</p>
+      <div class="text-xs font-mono text-purple-400 mb-3">Modul: 02, 03, 04, 05, 06, 14, 15, 16, 17, 21, 22, 26</div>
+    </div>
+    <a href="/cloud-network-learning-materials/modules/02-tcp-mechanics-mtu-mss" class="text-xs font-bold text-purple-400 hover:underline">Mulai Track Systems →</a>
+  </div>
+
+  <div class="p-4 bg-[var(--vp-c-bg-alt)] rounded-xl border border-[var(--vp-c-divider)] flex flex-col justify-between">
+    <div>
+      <div class="inline-block px-2 py-0.5 text-xs font-bold bg-amber-500/10 text-amber-400 rounded-full mb-2">Track 3 • SME Mastery</div>
+      <h3 class="text-base font-bold text-[var(--vp-c-text-1)] mb-1">Principal & Incident Commander</h3>
+      <p class="text-xs text-[var(--vp-c-text-2)] mb-3">Kurikulum menyeluruh 34 modul, 8 Terraform Labs, dan investigasi 15 Skenario SEV-1 Outage War Room.</p>
+      <div class="text-xs font-mono text-amber-400 mb-3">Semua Modul (01 - 34) + Labs + War Rooms</div>
+    </div>
+    <a href="/cloud-network-learning-materials/interactive/troubleshooting-drills" class="text-xs font-bold text-amber-400 hover:underline">Masuk War Rooms →</a>
+  </div>
+</div>
+
+---
+
+## 🔬 Metodologi Pembelajaran Aktif: 4-Step Mastery Loop
+
+Setiap topik dalam materi ini distrukturkan mengikuti siklus pembelajaran aktif sistem terdistribusi:
+
+```mermaid
+graph LR
+    S1["1. Socratic Dilemma<br/>(Mengapa sistem lama gagal?)"] --> S2["2. Interactive Simulation<br/>(Uji & prediksi state)"]
+    S2 --> S3["3. Deep Mechanism & Invariants<br/>(Bongkar underlay & aturan baku)"]
+    S3 --> S4["4. IaC Lab & Failure Injection<br/>(Deploy & pecahkan SEV-1)"]
+```
+
+---
+
 ## Peta Jalan Kurikulum Master (8-Part, 34-Module Roadmap)
 
 Kurikulum ini dirancang dengan metodologi **7-Layer Deep Technical Architecture**: setiap modul menyajikan teori protokol standar RFC, rancang bangun underlay AWS, analisis batas performa (*hard limits*), alur paket *hop-by-hop*, blueprint Terraform siap pakai, skenario *failure modes* produksi, serta kerangka *tradeoff* arsitektur level Principal.

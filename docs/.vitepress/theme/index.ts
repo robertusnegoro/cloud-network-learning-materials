@@ -18,6 +18,8 @@ import ReadingProgressBar from './components/ReadingProgressBar.vue'
 import NetworkTerm from './components/NetworkTerm.vue'
 import GlossaryExplorer from './components/GlossaryExplorer.vue'
 import GlobalAcceleratorSim from './components/GlobalAcceleratorSim.vue'
+import ConceptCheckpoint from './components/ConceptCheckpoint.vue'
+import DidacticBridge from './components/DidacticBridge.vue'
 
 export default {
   extends: DefaultTheme,
@@ -46,5 +48,7 @@ export default {
     app.component('Abbr', NetworkTerm)
     app.component('GlossaryExplorer', GlossaryExplorer)
     app.component('GlobalAcceleratorSim', GlobalAcceleratorSim)
+    app.component('ConceptCheckpoint', ConceptCheckpoint)
+    app.component('DidacticBridge', DidacticBridge)
   }
 }

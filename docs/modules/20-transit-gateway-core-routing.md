@@ -9,6 +9,14 @@ description: "Arsitektur underlay AWS Hyperplane pada Transit Gateway, segregasi
 
 Ketika skala arsitektur cloud berkembang melampaui puluhan VPC, model koneksi titik-ke-titik (*point-to-point*) menggunakan **VPC Peering** menjadi tidak dapat dipertahankan karena kompleksitas kuadratik $O(N^2)$ (100 VPC membutuhkan $\frac{100 \times 99}{2} = 4,950$ koneksi peering). **AWS Transit Gateway** (<NetworkTerm term="TGW" />) hadir sebagai *Regional Virtual Router* terdistribusi yang ditenagai oleh mesin **AWS Hyperplane**. Modul ini membedah mekanika perutean *Hub-and-Spoke*, segregasi *multi-tenant* route table, *blackhole route prevention*, dan interkoneksi backbone lintas region (*TGW Inter-Region Peering*).
 
+## 🏛️ Socratic Dilemma: The Quadratic Full-Mesh Collapse
+
+::: tip THE ENGINEERING DILEMMA (FIRST-PRINCIPLES HOOK)
+*   **The Naïve Solution**: Menghubungkan setiap VPC secara langsung menggunakan VPC Peering gratis tanpa gateway sentral.
+*   **The Quadratic Scaling Wall**: Pada 10 VPC, dibutuhkan 45 peering links. Pada 100 VPC, dibutuhkan **4,950 peering links**. Selain itu, VPC Peering bersifat **non-transitive** (VPC A tidak bisa berbicara ke VPC C melalui VPC B). Mengelola ribuan entri rute statis di 100 route table yang berbeda adalah mimpi buruk operasional yang mustahil dipertahankan.
+*   **The Architecture Invariant**: **"Decouple Ingress Lookup from Egress Reachability."** AWS Transit Gateway memecah perutean menjadi dua konsep terpisah: **Association (1:1)** menentukan tabel mana yang mengevaluasi paket dari spoke, sedangkan **Propagation (1:N)** menentukan ke tabel mana prefix spoke diiklankan.
+:::
+
 ---
 
 ## 1. Protocol Mechanics & RFC Theory
@@ -58,6 +66,36 @@ graph TD
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
 Saat membuat AWS Transit Gateway untuk enterprise, **SELALU nonaktifkan `Default Route Table Association` dan `Default Route Table Propagation`**. Jika dibiarkan aktif (default konsol), seluruh VPC yang di-attach akan otomatis saling terhubung (*flat any-to-any network*), melanggar prinsip isolasi keamanan PCI-DSS dan SOC-2.
 :::
+
+<ClientOnly>
+  <ConceptCheckpoint
+    title="Pause & Predict: The TGW Association vs Propagation Disconnect"
+    badge="Socratic Systems Question"
+    scenario="Seorang engineer membuat VPC Dev dan menghubungkannya ke TGW via VPC Attachment. Engineer tersebut mengasosiasikan (Associate) attachment tersebut ke TGW Route Table 'TGW-RT-DEV'. Namun, saat EC2 di VPC Dev mengirim request ke database di VPC Shared Services, koneksi gagal total (100% loss). Route Table subnet di VPC Dev sudah mengarahkan 10.0.0.0/8 ke tgw-attach-dev. Mengapa paket di-drop di TGW?"
+    :options="[
+      {
+        id: 'A',
+        text: 'VPC Dev membutuhkan peering langsung ke Shared Services VPC.',
+        isCorrect: false,
+        feedback: 'Salah. Transit Gateway dirancang untuk menggantikan peering langsung.'
+      },
+      {
+        id: 'B',
+        text: 'Asosiasi (Association) hanya menentukan tabel mana yang dipakai untuk mengevaluasi paket MASUK dari Dev. Jika rute Shared Services belum di-propagate ke TGW-RT-DEV dan rute Dev belum di-propagate ke TGW-RT-SHARED, paket forward dan return akan di-drop.',
+        isCorrect: true,
+        feedback: 'Tepat! Asosiasi adalah relasi 1:1 untuk incoming packet lookup. Agar paket bisa diteruskan, TGW-RT-DEV harus memiliki rute target (via Propagation atau Static Route). Selain itu, rute balik menuju VPC Dev juga harus terdaftar pada TGW Route Table yang diasosiasikan ke Shared Services VPC.'
+      },
+      {
+        id: 'C',
+        text: 'TGW hanya mendukung protokol UDP, bukan TCP.',
+        isCorrect: false,
+        feedback: 'Salah. TGW adalah L3 virtual router yang mendukung TCP, UDP, dan ICMP.'
+      }
+    ]"
+    explanation="TGW routing adalah proses evaluasi dua arah (Forward & Return path). Setiap arah membutuhkan lookup pada TGW Route Table terkait yang harus memiliki entri rute aktif."
+    invariant="Invariant TGW Routing: Association (1:1) = Tabel Lookup Masuk. Propagation (1:N) = Iklankan Prefix ke Tabel Lain. Komunikasi dua arah membutuhkan rute forward DAN rute return."
+  />
+</ClientOnly>
 
 ---
 
@@ -230,3 +268,18 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "prod_to_sec" {
 - Complex $O(N^2)$ scaling      - Granular Route Tables           - Automated Core Network Edges
 - Best for 2-5 VPCs heavy data  - Best for 5-100 VPCs 1-3 Regions - Best for Global Scale (>3 Regions)
 ```
+
+<ClientOnly>
+  <DidacticBridge
+    toolTitle="AWS Route Table LPM Sandbox"
+    toolLink="/interactive/aws-sandbox"
+    toolDesc="Simulasikan evaluasi rute LPM dan interaksi Route Table Spoke dengan TGW."
+    labTitle="Lab 02: TGW Hub & GWLB Appliance Mode"
+    labLink="/labs/02-tgw-gwlb-appliance-mode"
+    labDesc="Deploy arsitektur hub-spoke multi-VPC dengan segregasi Route Table Prod/Dev."
+    drillTitle="War Room #07: TGW Blackhole Route & Association Disconnect"
+    drillLink="/interactive/troubleshooting-drills"
+    drillDesc="Investigasi rute blackhole dan perbaiki kegagalan propagasi rute di TGW."
+  />
+</ClientOnly>
+

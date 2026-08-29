@@ -7,7 +7,15 @@ description: "Mekanisme internal AWS Gateway Load Balancer (GWLB), enkapsulasi G
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 8926 (GENEVE) / TLV 0x0108" /> <BadgeLabel type="aws" text="AWS GWLB & Hyperplane" />
 
-**Gateway Load Balancer** (<NetworkTerm term="GWLB" />) menggabungkan kemampuan *transparent Layer 3 gateway* dengan *distributed Layer 4 load balancer* yang didukung oleh mesin **AWS Hyperplane**. GWLB memungkinkan penyisipan (*inline insertion*) armada Next-Generation Firewall (Palo Alto Networks VM-Series, Fortinet FortiGate, Check Point CloudGuard) secara horizontal dan transparan **tanpa mengubah header paket IP asli (Zero SNAT/DNAT)**.
+Modul ini mengupas mekanisme internal **Gateway Load Balancer (GWLB)**, protokol enkapsulasi GENEVE RFC 8926, penanganan metadata TLV Class 0x0108, serta arsitektur armada firewall terpusat (1-Arm vs 2-Arm).
+
+## 🏛️ Socratic Dilemma: The Inline Inspection Paradox
+
+::: tip THE ENGINEERING DILEMMA (FIRST-PRINCIPLES HOOK)
+*   **The Naïve Firewall Insertion**: Sebelum ada GWLB, untuk mengarahkan trafik melalui firewall third-party (seperti Palo Alto / Fortinet), engineer terpaksa melakukan **Source NAT (SNAT)** di firewall.
+*   **The Scaling & Forensic Failure**: SNAT menghapus IP asli pengirim (*source IP address loss*), sehingga sistem analitik SIEM dan log server tujuan hanya melihat IP internal firewall. Selain itu, firewall virtual tradisional rentan menjadi *single point of failure* (SPOF) dan sulit di-scale secara horizontal tanpa setup cluster active/standby yang rumit.
+*   **The Architecture Invariant**: **"Inspect without mutating."** AWS GWLB memecahkan paradoks ini dengan membungkus paket asli ke dalam enkapsulasi **GENEVE (RFC 8926, UDP 6081)** dengan metadata TLV Class `0x0108`. Paket asli (L2-L7) tetap 100% utuh tanpa modifikasi IP, sementara Hyperplane mendistribusikan traffic secara simetris ke armada firewall auto-scaling.
+:::
 
 ---
 
@@ -46,6 +54,36 @@ graph TD
 ### C. Persyaratan Kritis MTU Jaringan (8,500 Bytes)
 Enkapsulasi GENEVE menambahkan overhead header sebesar **64 bytes**. Oleh karena itu:
 - Interface appliance firewall yang menerima trafik GENEVE **wajib mendukung MTU minimal 8,500 bytes (atau 9,001 bytes Jumbo Frames)** untuk mencegah fragmentasi paket data pelanggan.
+
+<ClientOnly>
+  <ConceptCheckpoint
+    title="Pause & Predict: Misteri Paket Return yang Ditolak oleh GWLB"
+    badge="Socratic Systems Question"
+    scenario="Sebuah firewall virtual Linux kustom menerima datagram GENEVE (UDP port 6081) dari GWLB, memeriksa payload, lalu meng-encapsulate ulang paket dan mengirimkannya kembali ke GWLB. Namun seluruh paket drop di GWLB dan tidak pernah diteruskan ke spoke destination. Log Wireshark menunjukkan bahwa software firewall membuat ulang GENEVE header baru tanpa menyalin metadata TLV Option (Class 0x0108). Mengapa GWLB men-drop paket ini?"
+    :options="[
+      {
+        id: 'A',
+        text: 'GWLB memerlukan Port UDP 4789 (VXLAN), bukan Port 6081.',
+        isCorrect: false,
+        feedback: 'Salah. Standar GWLB adalah GENEVE (RFC 8926) pada port UDP 6081.'
+      },
+      {
+        id: 'B',
+        text: 'GWLB membaca metadata TLV Class 0x0108 (Client Flow Cookie & Attachment ID) untuk memetakan paket kembali ke VPC Endpoint (GWLBe) asal secara stateless. Jika TLV metadata hilang, GWLB kehilangan konteks sesi dan men-drop paket secara senyap.',
+        isCorrect: true,
+        feedback: 'Tepat! Metadata AWS TLV (Class 0x0108, Type 0x01) adalah jangkar identitas paket. GWLB tidak menyimpan state tabel mapping per-packet di memori gateway, melainkan mengandalkan metadata yang disuntikkan ke dalam GENEVE header. Appliance firewall wajib mempertahankan TLV options tersebut saat me-return paket.'
+      },
+      {
+        id: 'C',
+        text: 'Firewall harus melakukan Source NAT sebelum mengembalikan paket ke GWLB.',
+        isCorrect: false,
+        feedback: 'Salah. Keunggulan utama GWLB adalah inspeksi transparan Zero SNAT.'
+      }
+    ]"
+    explanation="GWLB beroperasi secara transparent dan stateless di sisi forwarder. Metadata TLV Option Class 0x0108 bertindak sebagai cookie penentu rute balik menuju GWLB Endpoint (GWLBe) pemohon."
+    invariant="Invariant GENEVE GWLB: Appliance Firewall WAJIB mempertahankan (preserve) AWS TLV Option Header (Class 0x0108) saat mengirimkan kembali paket terinspeksi ke GWLB."
+  />
+</ClientOnly>
 
 ---
 
@@ -292,3 +330,18 @@ aws ec2 describe-vpc-endpoints \
 ### Rekomendasi Keputusan SME:
 - Gunakan **AWS Gateway Load Balancer (GWLB)** jika organisasi Anda memiliki lisensi korporat untuk **Palo Alto Networks VM-Series, Fortinet FortiGate, atau Check Point**, serta membutuhkan fitur DPI Layer 7 kelas enterprise (Decryption, Threat Prevention, URL Filtering) dengan arsitektur auto-scaling transparan.
 - Gunakan **AWS Network Firewall (Module 28)** jika Anda menginginkan solusi *fully managed Cloud-Native Suricata IPS/IDS* tanpa perlu mengelola OS dan patching instance firewall virtual.
+
+<ClientOnly>
+  <DidacticBridge
+    toolTitle="Packet Flow & Encapsulation Tracer"
+    toolLink="/interactive/packet-tracer"
+    toolDesc="Lacak aliran paket GENEVE 2-Arm dan validasi TLV metadata encapsulation."
+    labTitle="Lab 02: TGW Hub & GWLB Appliance Mode"
+    labLink="/labs/02-tgw-gwlb-appliance-mode"
+    labDesc="Deploy inspeksi tersentralisasi dengan AWS Gateway Load Balancer dan TGW Appliance Mode."
+    drillTitle="War Room #02: GWLB Geneve Header Strip & Asymmetric Drop"
+    drillLink="/interactive/troubleshooting-drills"
+    drillDesc="Pecahkan insiden koneksi drop saat firewall appliance memodifikasi header GENEVE."
+  />
+</ClientOnly>
+

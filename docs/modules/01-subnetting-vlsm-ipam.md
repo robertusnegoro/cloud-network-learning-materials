@@ -11,6 +11,14 @@ Dalam arsitektur *cloud network* skala *multi-account* dan *multi-region*, aloka
 
 Modul ini membedah arsitektur pengalamatan IP dari level manipulasi bit pada register CPU/ASIC hingga implementasi hierarki **IP Address Management** (<NetworkTerm term="IPAM" />) terdistribusi di AWS.
 
+## 🏛️ Socratic Dilemma: The Cost of Irreversible Decisions
+
+::: tip THE ENGINEERING DILEMMA (FIRST-PRINCIPLES HOOK)
+*   **The Naïve Solution**: Mengalokasikan blok `/24` (256 IP) secara seragam untuk setiap subnet di seluruh VPC AWS karena dianggap "cukup untuk server biasa".
+*   **The Scaling Wall**: Ketika workload bertransformasi menjadi microservices dengan ribuan container (EKS/ECS) dan autoscaling groups, IP subnet habis dalam hitungan hari. Sebaliknya, pada subnet database, ratusan IP terbuang menganggur (*stranded IPs*). Lebih parah lagi, mengubah ukuran Primary CIDR VPC yang sudah terisi workload adalah **operasi destruktif yang mustahil tanpa re-building infrastruktur**.
+*   **The Architecture Invariant**: **"IP space is an immutable resource."** Arsitek Principal merancang hierarki IPAM dengan pemisahan *Primary RFC 1918 CIDR* untuk infrastruktur node dan *Secondary RFC 6598 CIDR (`100.64.0.0/10`)* untuk data plane container.
+:::
+
 ---
 
 ## 🛠️ Interactive Lab: CIDR & IPAM Hierarchy Allocator
@@ -136,6 +144,36 @@ Misalkan Subnet CIDR: 10.100.10.0/24 (Total 256 IP)
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
 Ukuran subnet minimum yang diizinkan di AWS VPC adalah `/28` (16 IP, **11 usable**). Jangan pernah membuat subnet `/28` untuk workload dinamis seperti Application Load Balancer (ALB) atau NAT Gateway, karena ALB membutuhkan minimal 8 IP bebas per AZ untuk *scaling* dan *maintenance health checks*. Tetapkan minimal `/24` untuk subnet workload publik/privat.
 :::
+
+<ClientOnly>
+  <ConceptCheckpoint
+    title="Pause & Predict: Batas Minimum Subnet untuk Application Load Balancer"
+    badge="Socratic Systems Question"
+    scenario="Seorang engineer membuat subnet publik dengan CIDR /28 (16 IP) di 2 Availability Zone. Engineer tersebut kemudian men-deploy Application Load Balancer (ALB) bertipe internet-facing pada kedua subnet tersebut dan menempatkan 2 instance EC2 di dalamnya. Apa yang terjadi saat traffic ke ALB melonjak 10x lipat?"
+    :options="[
+      {
+        id: 'A',
+        text: 'ALB otomatis menambah IP baru dari pool AWS global tanpa memakan kuota subnet lokal.',
+        isCorrect: false,
+        feedback: 'Salah. ALB menggunakan ENI internal yang mengambil IP privat langsung dari subnet lokal VPC Anda, bukan pool publik AWS global.'
+      },
+      {
+        id: 'B',
+        text: 'ALB gagal melakukan auto-scaling (scaling failure) dan me-reject koneksi baru karena subnet /28 kehabisan usable IP.',
+        isCorrect: true,
+        feedback: 'Tepat! Subnet /28 hanya memiliki 11 usable IP (16 - 5 AWS reserved). ALB memerlukan minimal 8 IP bebas per AZ saat scaling. Dengan 2 EC2 instance (2 IP), tersisa hanya 9 IP, sehingga saat ALB mencoba menambah ENI baru untuk traffic spike, alokasi IP gagal dan terjadi scaling failure (504 / 502 errors).'
+      },
+      {
+        id: 'C',
+        text: 'AWS Nitro otomatis memperbesar subnet mask menjadi /24 secara elastis.',
+        isCorrect: false,
+        feedback: 'Salah. Subnet mask bersifat statis dan immutable setelah dibuat; AWS tidak dapat memperbesar subnet secara otomatis.'
+      }
+    ]"
+    explanation="AWS merekomendasikan ukuran subnet minimal /24 untuk load balancer tier publik guna memastikan kapasitas scaling IP yang memadai saat peak traffic atau deployment blue/green."
+    invariant="Invariant Subnet AWS: Subnet mask bersifat statis dan immutable. Selalu sediakan headroom minimal 50-100 IP bebas untuk subnet yang dihuni oleh resource elastis (ALB, NAT Gateway, EKS Pods)."
+  />
+</ClientOnly>
 
 ---
 
@@ -349,3 +387,18 @@ graph TD
 | **Blast Radius Keamanan** | Luas (Perlu Security Group sangat ketat) | Sangat Terisolasi (VPC Level Boundary) | **Tinggi (Terisolasi per Subnet Tier & NACL)** |
 | **Skalabilitas EKS / Container** | Terbatas pada sisa IP subnet | Rendah (Cepat terjadi exhaustion) | **Hampir Tanpa Batas (Jutaan IP via 100.64.0.0/10)** |
 | **Kompleksitas Routing Table** | Sederhana | Sangat Kompleks (Ribuan rute di TGW) | **Terkendali (1 Rute Agregat per Tier)** |
+
+<ClientOnly>
+  <DidacticBridge
+    toolTitle="CIDR & IPAM Hierarchy Allocator"
+    toolLink="/interactive/cidr-calculator"
+    toolDesc="Hitung pembagian subnet VLSM, representasi biner, dan alokasi pool hierarkis secara visual."
+    labTitle="Lab 01: Enterprise IPAM & Multi-Tier VPC"
+    labLink="/labs/01-enterprise-ipam-vpc"
+    labDesc="Deploy blueprint Terraform AWS IPAM dan multi-tier VPC dengan Secondary RFC 6598 CIDR."
+    drillTitle="War Room #01: EKS Subnet IP Exhaustion"
+    drillLink="/interactive/troubleshooting-drills"
+    drillDesc="Pecahkan insiden produksi saat pod Kubernetes gagal beroperasi akibat kehabisan IP subnet."
+  />
+</ClientOnly>
+

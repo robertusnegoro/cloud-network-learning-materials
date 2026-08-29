@@ -11,6 +11,14 @@ Dalam arsitektur jaringan *hybrid cloud* skala enterprise, **Border Gateway Prot
 
 Modul ini membedah BGP-4 dari struktur pesan biner dan 13-step election algorithm hingga integrasi **Bidirectional Forwarding Detection** (<NetworkTerm term="BFD" />) untuk *sub-second failover* pada Direct Connect dan Transit Gateway.
 
+## 🏛️ Socratic Dilemma: The 90-Second Dark Outage
+
+::: tip THE ENGINEERING DILEMMA (FIRST-PRINCIPLES HOOK)
+*   **The Naïve Setup**: Menghubungkan Direct Connect Primary dan Secondary menggunakan BGP standar dengan timer default (`Keepalive=30s`, `HoldTime=90s`).
+*   **The Physical Failure**: Ketika kabel fiber optik L2 penyedia telco mengalami gangguan di tengah jalan (bukan pada physical port router), link port lokal tetap menunjukkan status `UP` (Carrier Detect tidak drop). Akibatnya, BGP router lokal dan AWS DXGW **membutuhkan waktu 90 detik penuh sebelum Hold Timer kedaluwarsa** dan rute dialihkan ke link backup. Selama 90 detik ini, jutaan transaksi pembayaran perbankan mengalami packet drop total (*black hole*).
+*   **The Architecture Invariant**: **"BGP is a routing engine, not a link-state sensor."** BGP tidak dirancang untuk deteksi kegagalan mikro. Untuk mencapai failover instan tanpa membebani CPU router, kita wajib mengaktifkan **Bidirectional Forwarding Detection (BFD, RFC 5880)** dengan interval 300ms (3x multiplier = 900ms failover) atau sub-second hardware offload.
+:::
+
 ---
 
 ## 🛠️ Interactive Lab: BGP 13-Step Decision Simulator
@@ -157,6 +165,36 @@ AWS menyediakan *BGP Communities* standar untuk mengontrol preferensi rute masuk
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
 Untuk skenario Active/Passive Hybrid Cloud, kombinasikan **BGP Community `7224:7300`** pada link primer dan **BGP Community `7224:7100` + AS-Path Prepending (3x)** pada link sekunder. Pendekatan ini menjamin traffic rekayasa simetris masuk dan keluar dari AWS tanpa menimbulkan *asymmetric routing loops*.
 :::
+
+<ClientOnly>
+  <ConceptCheckpoint
+    title="Pause & Predict: The Asymmetric BGP Attribute Trap"
+    badge="Socratic Systems Question"
+    scenario="Sebuah perusahaan memiliki 2 link Direct Connect: DX-1 (Primary) dan DX-2 (Secondary). Router on-premise mengiklankan prefix 10.50.0.0/16 ke kedua link. Pada DX-2, engineer menambahkan 3x AS-Path Prepend (ASN: 65001 65001 65001 65001). Di sisi lain, router on-premise menerima rute default dari AWS di kedua link dengan konfigurasi default (Local Pref 100). Apa arah aliran trafik TCP antara instance EC2 dan database on-premise?"
+    :options="[
+      {
+        id: 'A',
+        text: 'Trafik mengalir simetris melalui DX-1 untuk arah pergi maupun arah pulang.',
+        isCorrect: false,
+        feedback: 'Salah. Router on-premise memiliki Local Pref 100 di kedua link dan jika link DX-2 memiliki IGP metric/router ID lebih rendah, on-premise akan mengirim traffic keluar via DX-2!'
+      },
+      {
+        id: 'B',
+        text: 'Trafik berisiko asimetris: AWS mengirimkan traffic ke On-Premise via DX-1 (karena AS-Path lebih pendek), tetapi On-Premise berpotensi mengirim traffic ke AWS via DX-2 jika Local Preference di router lokal tidak diset lebih tinggi untuk DX-1.',
+        isCorrect: true,
+        feedback: 'Tepat! AS-Path Prepending hanya memengaruhi keputusan rute masuk AWS (Inbound to On-Prem). AS-Path Prepend TIDAK memengaruhi keputusan rute keluar On-Premise (Outbound to AWS). Jika di on-premise terdapat stateful firewall, paket balasan akan di-drop karena asimetris!'
+      },
+      {
+        id: 'C',
+        text: 'AS-Path Prepending otomatis mengubah Local Preference di router on-premise menjadi 50.',
+        isCorrect: false,
+        feedback: 'Salah. AS-Path adalah atribut well-known mandatory yang dievaluasi setelah Local Preference. Prepending tidak memengaruhi Local Preference lokal.'
+      }
+    ]"
+    explanation="Dalam desain BGP hybrid, Anda harus merekayasa dua arah secara eksplisit: gunakan Local Preference (atau BGP Community 7224:7300 / 7224:7100) untuk mengatur preferensi di AWS, dan set Local Preference di router on-premise untuk mengatur preferensi arah keluar ke AWS."
+    invariant="Invariant BGP: AS-Path Prepend hanya mengontrol arah trafik MASUK ke router Anda (Inbound). Untuk mengontrol arah trafik KELUAR dari router Anda (Outbound), Anda mutlak harus menggunakan Local Preference."
+  />
+</ClientOnly>
 
 ---
 
@@ -308,3 +346,18 @@ graph TD
 | **Waktu Konvergensi Failover** | Instantaneous (ECMP Hash Remap) | **< 1 Detik (dengan BFD)** | < 1 Detik (dengan BFD) |
 | **Kemudahan Operasional & Debugging** | Kompleks | **Sangat Sederhana & Terprediksi** | Rumit (Rentan human error) |
 | **Rekomendasi Arsitektur Perbankan** | Khusus Stateless Workload | **Standar Rekomendasi Regulasi SME** | Khusus Migrasi Transisional |
+
+<ClientOnly>
+  <DidacticBridge
+    toolTitle="BGP 13-Step Decision Simulator"
+    toolLink="/interactive/bgp-simulator"
+    toolDesc="Uji bobot Weight, Local Pref, AS-Path, Origin, dan MED secara interaktif."
+    labTitle="Lab 05: Hybrid Direct Connect & Accelerated VPN"
+    labLink="/labs/05-hybrid-direct-connect-vpn-bfd"
+    labDesc="Deploy BGP dynamic routing dan BFD sub-second failover dengan Terraform."
+    drillTitle="War Room #05: BFD Flapping & Sub-Second Failover Loop"
+    drillLink="/interactive/troubleshooting-drills"
+    drillDesc="Investigasi BGP session flap dan isolasi rute yang menyebabkan outage interkoneksi."
+  />
+</ClientOnly>
+

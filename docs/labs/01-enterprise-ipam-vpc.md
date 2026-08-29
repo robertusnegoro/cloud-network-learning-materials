@@ -55,6 +55,18 @@ terraform apply
 
 ---
 
+## 🔬 Pre-Lab Hypothesis & Engineering Worksheet
+
+Sebelum menjalankan `terraform apply`, latih intuisi sistem Anda dengan memprediksi output metrik di bawah ini:
+
+| Parameter & Probe Sistem | Prediksi Teoretis (Sebelum Deploy) | Cara Verifikasi CLI / Console | Validasi First-Principles |
+| :--- | :--- | :--- | :--- |
+| **Usable IPs pada Subnet Publik `/24`** | $\mathbf{251\text{ Usable IPs}}$ ($256 - 5$) | `aws ec2 describe-subnets --query "Subnets[*].[CidrBlock,AvailableIpAddressCount]"` | 5 IP pertama dan terakhir (Base, Router, DNS, AWS reserved, Broadcast) direservasi oleh AWS Nitro VPC. |
+| **Kapasitas Alokasi Pod Subnet `/19`** | $\mathbf{8,187\text{ Pod IPs}}$ ($8192 - 5$) | Cek `AvailableIpAddressCount` pada subnet EKS | Secondary RFC 6598 (`100.64.0.0/10`) mengisolasi pod IP tanpa menguras ruang privat korporasi `10.0.0.0/8`. |
+| **Scope Pool IPAM Regional** | *Hanya aktif di region `ap-southeast-3`* | `aws ec2 describe-ipam-pools` | Setiap regional pool terikat secara ketat (*locale-bound*) ke satu AWS region. |
+
+---
+
 ## 🛠️ Modul Pelaksanaan Langkah-demi-Langkah (6-Point Blueprint)
 
 ---

@@ -68,6 +68,18 @@ terraform apply
 
 ---
 
+## 🔬 Pre-Lab Hypothesis & Engineering Worksheet
+
+Sebelum menjalankan `terraform apply`, latih intuisi sistem Anda dengan memprediksi output metrik di bawah ini:
+
+| Skenario Alur Paket | Prediksi Tanpa Appliance Mode | Prediksi Dengan Appliance Mode (`enable`) | Validasi Telemetri Log |
+| :--- | :--- | :--- | :--- |
+| **Spoke-A (AZ-a) $\to$ Spoke-B (AZ-b)** | Paket forward masuk Firewall AZ-a; paket return masuk Firewall AZ-b $\to$ **DROP (Asymmetric failure)**. | Paket forward dan return **di-pin ke Firewall AZ-a secara simetris** $\to$ **SUCCESS 100%**. | Cek log Suricata: status flow tercatat `established` tanpa alert `out-of-state RST`. |
+| **Enkapsulasi GWLB GENEVE** | Interface Firewall memproses UDP port 6081 dengan MTU 8500+ | Paket asli (Src/Dst IP pelanggan) tetap 100% utuh di dalam payload GENEVE | Wireshark capture: Geneve base header + AWS TLV Option `0x0108`. |
+| **Isolasi Domain TGW** | Spoke VPC tidak bisa langsung menjangkau Spoke lain tanpa melewati Inspection RTB | Default route `0.0.0.0/0` diarahkan ke TGW VPC Attachment Inspection VPC | `aws ec2 get-transit-gateway-route-table-propagations` |
+
+---
+
 ## 🛠️ Modul Pelaksanaan Langkah-demi-Langkah (6-Point Blueprint)
 
 ---

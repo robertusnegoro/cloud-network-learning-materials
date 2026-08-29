@@ -7,7 +7,15 @@ description: "Mekanika stateful connection tracking di Nitro ASIC, untracked con
 
 <BadgeLabel type="sme" text="Level: Principal / SME" /> <BadgeLabel type="rfc" text="RFC 2979 / RFC 793 / RFC 6056 (Ephemeral Ports)" /> <BadgeLabel type="aws" text="Nitro Security Engine & Conntrack Mechanics" />
 
-Di dalam Amazon VPC, keamanan jaringan tingkat paket dikendalikan oleh dua lapisan proteksi utama: **Security Groups** (<NetworkTerm term="SG" />) sebagai *stateful firewall* di level ENI dan **Network Access Control Lists** (<NetworkTerm term="NACL" />) sebagai *stateless firewall* di level subnet. Bagi seorang **Principal Cloud Network Architect**, memahami perbedaan mekanika keduanya—khususnya implikasi *hardware connection tracking* pada Nitro Card dan jebakan *ephemeral return ports* pada NACLs—adalah kunci mencegah pemadaman sistem (*SEV-1 outage*) dan kebocoran keamanan.
+Modul ini membedah perbedaan mekanika keduanya—khususnya implikasi *hardware connection tracking* pada Nitro Card dan jebakan *ephemeral return ports* pada NACLs—adalah kunci mencegah pemadaman sistem (*SEV-1 outage*) dan kebocoran keamanan.
+
+## 🏛️ Socratic Dilemma: The Stateless Return Port Black Hole
+
+::: tip THE ENGINEERING DILEMMA (FIRST-PRINCIPLES HOOK)
+*   **The Naïve Lockdown**: Seorang security engineer mengunci Subnet Database dengan NACL: Inbound Rule 100 ALLOW TCP 3306 dari App Subnet, dan Outbound Rule 100 ALLOW TCP 3306 ke App Subnet ("agar database hanya boleh bicara port 3306").
+*   **The Stateless Failure**: Ketika App Server mengirim query SQL dari port ephemeral-nya (misal `10.0.1.50:52410` $\to$ `10.0.2.100:3306`), paket masuk lolos. Namun ketika Database membalas (`10.0.2.100:3306` $\to$ `10.0.1.50:52410`), paket balasan memiliki Destination Port **52410**. Karena NACL bersifat **stateless**, NACL mengevaluasi port tujuan paket balasan terhadap tabel outbound. Outbound rule hanya mengizinkan port 3306 $\to$ **Paket balasan di-drop 100%!**
+*   **The Architecture Invariant**: **"Stateless firewalls require explicit return path symmetry."** Berbeda dengan Security Group yang otomatis mengingat state flow di Nitro conntrack table, NACL wajib memiliki aturan Inbound/Outbound untuk rentang **Ephemeral Ports (TCP 1024-65535)**.
+:::
 
 ---
 
@@ -45,6 +53,36 @@ Ketika klien membuka koneksi TCP/UDP ke server (misal: `10.0.1.50` menghubungi `
 - **AWS Elastic Load Balancing / NAT Gateway**: `1024 – 65535`
 
 $$\text{TCP Session 5-Tuple: } (\text{SrcIP: } 10.0.1.50, \ \text{SrcPort: } \mathbf{49821}, \ \text{DstIP: } 140.82.121.4, \ \text{DstPort: } 443, \ \text{Proto: } 6)$$
+
+<ClientOnly>
+  <ConceptCheckpoint
+    title="Pause & Predict: Jebakan Ephemeral Port pada Subnet Database"
+    badge="Socratic Systems Question"
+    scenario="Seorang engineer membuat custom NACL untuk subnet Database (MySQL port 3306). Aturan Inbound: Rule 100 ALLOW TCP 3306 dari App Subnet (10.0.1.0/24). Aturan Outbound: Rule 100 ALLOW TCP 3306 ke App Subnet (10.0.1.0/24). Security Group di EC2 App dan RDS sudah mengizinkan port 3306. Mengapa seluruh koneksi dari App Server ke RDS Database mengalami connection timeout (100% loss)?"
+    :options="[
+      {
+        id: 'A',
+        text: 'NACL tidak mendukung protokol MySQL TCP 3306.',
+        isCorrect: false,
+        feedback: 'Salah. NACL mendukung seluruh port TCP/UDP dari 1 hingga 65535.'
+      },
+      {
+        id: 'B',
+        text: 'NACL bersifat stateless. App Server menginisiasi koneksi dari ephemeral port (misal 52140). Ketika Database membalas, paket balasan memiliki Destination Port 52140. Outbound NACL yang hanya mengizinkan port 3306 akan men-drop paket balasan tersebut!',
+        isCorrect: true,
+        feedback: 'Tepat! Ini adalah kesalahan paling umum dalam konfigurasi stateless filtering. Karena NACL tidak menyimpan state, paket keluar dievaluasi ulang dari awal. Port tujuan paket balasan adalah ephemeral port client (1024-65535), bukan port 3306. Outbound NACL wajib mengizinkan TCP 1024-65535 ke App Subnet.'
+      },
+      {
+        id: 'C',
+        text: 'App Server harus dikonfigurasi menggunakan port 3306 sebagai port sumber.',
+        isCorrect: false,
+        feedback: 'Salah. Client OS secara dinamis memilih ephemeral port acak (RFC 6056) untuk membedakan ribuan soket konkuren.'
+      }
+    ]"
+    explanation="Berbeda dengan Security Group yang bersifat stateful (jawaban otomatis lolos via conntrack), NACL bersifat stateless murni sehingga trafik balasan harus diizinkan secara eksplisit pada rentang port ephemeral."
+    invariant="Invariant Stateless NACL: Setiap aturan Inbound untuk server wajib diimbangi dengan aturan Outbound yang mengizinkan Ephemeral Ports (TCP 1024-65535) ke subnet klien."
+  />
+</ClientOnly>
 
 ---
 
@@ -288,3 +326,18 @@ graph TD
 | **Dukungan Aturan DENY** | Tidak (Hanya implicit deny) | **Ya (Explicit Deny by Rule Number)** | **Ya (Stateful & Stateless Deny)** |
 | **Biaya Tambahan** | **Gratis (Termasuk dalam VPC)** | **Gratis (Termasuk dalam VPC)** | $0.395/jam per AZ + $0.065/GB data |
 | **Best-Practice Use Case** | Keamanan microservices standar & database | Isolasi subnet database & pemblokiran IP darurat | Inspeksi lalu lintas keluar internet & IDS/IPS regulasi |
+
+<ClientOnly>
+  <DidacticBridge
+    toolTitle="Security Group Conntrack & NAT Calculator"
+    toolLink="/interactive/conntrack-calculator"
+    toolDesc="Kalkulasikan batas conntrack allowance hardware Nitro dan port NAT exhaustion."
+    labTitle="Lab 07: Central Ingress/Egress Inspection Firewall"
+    labLink="/labs/07-centralized-ingress-egress-firewall"
+    labDesc="Deploy arsitektur inspeksi terpusat dengan Security Groups, NACLs, dan Network Firewall."
+    drillTitle="War Room #12: Conntrack Exhaustion & NACL Ephemeral Trap"
+    drillLink="/interactive/troubleshooting-drills"
+    drillDesc="Investigasi insiden conntrack allowance drop dan kegagalan respons port ephemeral."
+  />
+</ClientOnly>
+

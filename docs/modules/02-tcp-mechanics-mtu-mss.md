@@ -11,6 +11,14 @@ Dalam arsitektur *high-performance enterprise cloud*, kegagalan performa through
 
 Modul ini mengupas tuntas protokol TCP dari level bit header dan *Finite State Machine* (FSM) hingga *hardware offload* pada AWS Nitro dan penanganan insiden transmisi paket skala produksi.
 
+## 🏛️ Socratic Dilemma: The Mystery of the Frozen SSH Session
+
+::: tip THE ENGINEERING DILEMMA (FIRST-PRINCIPLES HOOK)
+*   **The Naïve Observation**: *"Koneksi SSH ke server EC2 privat berhasil terbuka, login prompt muncul, dan otentikasi password berhasil. Namun, begitu saya menjalankan `cat /var/log/syslog` atau perintah dengan output teks panjang, terminal langsung membeku total tanpa error message!"*
+*   **The Physics / Scaling Wall**: Handshake TCP awal (SYN, SYN-ACK, ACK) dan transmisi password berukuran kecil (<100 byte), sehingga muat dalam MTU terkecil sekalipun. Namun, ketika server mengirimkan output log bervolume besar, server mengirimkan paket sebesar **MTU lokalnya (9001 byte)** dengan flag `DF=1` (Don't Fragment). Router transit di VPN tunnel (MTU 1426) men-drop paket tersebut dan mengirim pesan balasan **ICMP Type 3 Code 4 (Fragmentation Needed)**. Jika Security Group atau Firewall memblokir pesan ICMP ini, server pengirim tidak pernah tahu bahwa paketnya di-drop $\to$ **Inilah PMTUD Black Hole!**
+*   **The Architecture Invariant**: **"TCP cannot self-heal without feedback."** Tanpa sinyal balik ICMP Type 3 Code 4, koneksi TCP payload besar akan mengalami retransmission timeout (RTO) hingga koneksi terputus. Solusinya: buka ICMP Type 3 Code 4 atau pasang **MSS Clamping (`1386`)** di border router.
+:::
+
 ---
 
 ## Layer 1: Protocol Mechanics & RFC Theory
@@ -156,6 +164,36 @@ graph TD
 ::: tip STANDAR BEST PRACTICE INDUSTRI (SME RECOMMENDATION)
 Aktifkan **ENA Express** pada workload dengan traffic inter-instance yang masif (misal: Apache Kafka, Cassandra, Redis clusters, dan distributed database replication) untuk mengeliminasi microburst TCP retransmissions dan memangkas p99 tail latency hingga 50%.
 :::
+
+<ClientOnly>
+  <ConceptCheckpoint
+    title="Pause & Predict: The Silent PMTUD Black Hole"
+    badge="Socratic Systems Question"
+    scenario="EC2 App Server (MTU 9001, DF=1) di VPC mentransfer database dump 50 GB ke On-Premise via IPsec VPN Tunnel (MTU 1426). Ingress Security Group di EC2 memblokir semua protokol kecuali TCP port 22 dan 443. Mengapa handshake TCP berhasil 100%, tetapi transfer data membeku (hang) saat pengiriman payload data pertama?"
+    :options="[
+      {
+        id: 'A',
+        text: 'VPN Tunnel mengalami crash karena tidak mampu menangani data sebesar 50 GB.',
+        isCorrect: false,
+        feedback: 'Salah. VPN Tunnel tidak crash; tunnel beroperasi normal tetapi MTU-nya lebih kecil daripada paket jumbo yang dikirimkan.'
+      },
+      {
+        id: 'B',
+        text: 'Handshake TCP berhasil karena ukurannya kecil (<100 byte), namun paket payload 9001 byte di-drop di router VPN. Pesan notifikasi ICMP Type 3 Code 4 (Fragmentation Needed) di-drop oleh Security Group EC2, sehingga EC2 terus melakukan retransmisi tanpa menyadari perlunya mengecilkan ukuran paket.',
+        isCorrect: true,
+        feedback: 'Tepat! Ini adalah definisi klasik PMTUD Black Hole. Karena ICMP Type 3 Code 4 diblokir oleh Security Group EC2, kernel server tidak pernah menerima feedback untuk menurunkan ukuran MSS. Server terus menunggu ACK untuk paket 9001 byte hingga timeout.'
+      },
+      {
+        id: 'C',
+        text: 'AWS Nitro secara otomatis memecah paket IPsec menjadi potongan 1426 byte tanpa perlu ICMP.',
+        isCorrect: false,
+        feedback: 'Salah. Flag DF=1 (Don\'t Fragment) melarang fragmentasi di layer L3. Router transit wajib men-drop paket dan mengirimkan ICMP Type 3 Code 4.'
+      }
+    ]"
+    explanation="Path MTU Discovery (RFC 1191) mutlak membutuhkan sinyal umpan balik ICMP Type 3 Code 4. Tanpa sinyal ini, endpoint pengirim tidak memiliki visibilitas terhadap batasan MTU jalur transit."
+    invariant="Invariant PMTUD: Jangan pernah memblokir ICMP Type 3 Code 4 pada Security Group atau Firewalls. Jika kebijakan keamanan melarang ICMP, pasang TCP MSS Clamping (misal: 1386 byte) pada boundary router."
+  />
+</ClientOnly>
 
 ---
 
@@ -309,3 +347,18 @@ graph TD
 | **Resiko PMTUD Black Hole** | Sangat Tinggi | **Nol (Zero Risk)** | **Nol (Dieliminasi oleh MSS Clamping)** |
 | **Kompatibilitas Direct Connect** | Butuh aktivasi Jumbo VIF | Universal | Universal |
 | **Rekomendasi Arsitektur** | Khusus HPC / Big Data Isolat | Workload publik murni | **Standar Enterprise Rekomendasi SME** |
+
+<ClientOnly>
+  <DidacticBridge
+    toolTitle="Packet Flow & Encapsulation Tracer"
+    toolLink="/interactive/packet-tracer"
+    toolDesc="Lacak perubahan header L2/L3/L4 dan enkapsulasi paket hop-by-hop dari EC2 hingga internet gateway."
+    labTitle="Lab 05: Hybrid Direct Connect & Accelerated VPN"
+    labLink="/labs/05-hybrid-direct-connect-vpn-bfd"
+    labDesc="Deploy hybrid network dengan MSS Clamping dan konfigurasi BFD sub-second failover."
+    drillTitle="War Room #04: MTU Mismatch & PMTUD Black Hole"
+    drillLink="/interactive/troubleshooting-drills"
+    drillDesc="Analisis packet loss dan perbaiki kegagalan transfer payload besar pada link hybrid."
+  />
+</ClientOnly>
+
